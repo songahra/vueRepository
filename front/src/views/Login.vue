@@ -3,7 +3,7 @@
         <v-layout align-center row wrap>
         <v-flex xs12>
             <v-card>
-                 <v-toolbar flat height="30">
+                 <v-toolbar flat height="50" color="primary">
       <v-toolbar-title>로그인</v-toolbar-title>
     </v-toolbar>
     <div class="pa-3">
@@ -16,6 +16,9 @@
             type="password"
             label="비밀번호 입력"
           ></v-text-field>
+          <v-btn block large depressed>
+          로그인
+          </v-btn>
           </div>
           </v-card>
     </v-flex>
