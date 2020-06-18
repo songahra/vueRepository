@@ -1,61 +1,103 @@
 <template>
-  <v-app>
+  <v-app id="inspire">
+    <!-- navigation  -->
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+    >
+      <v-list dense>
+        <v-list-item router-link to="/">
+          <v-list-item-action>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item router-link to="/#">
+          <v-list-item-action>
+            <v-icon>mdi-file-multiple-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>기술문의</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+           <v-list-item router-link to="/#">
+          <v-list-item-action>
+            <v-icon>mdi-file-multiple-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>지식관리</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+           <v-list-item router-link to="/#">
+          <v-list-item-action>
+            <v-icon>mdi-file-multiple-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>지식자료실</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item router-link to="/#">
+          <v-list-item-action>
+            <v-icon>mdi-file-multiple-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>지식자산 통계</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item router-link to="/#">
+          <v-list-item-action>
+            <v-icon>mdi-file-multiple-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>공지사항</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+          <v-list-item router-link to="/#">
+          <v-list-item-action>
+            <v-icon>mdi-file-multiple-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>설정</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+          <v-list-item router-link to="/#">
+          <v-list-item-action>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>프로필 관리</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- Header -->
     <v-app-bar
       app
-      color="primary"
+      color="indigo"
       dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title>솔루션지식자산화시스템</v-toolbar-title>
     </v-app-bar>
 
-    <v-content>
-      <HelloWorld/>
-    </v-content>
+    <!-- Main -->
+    <v-main>
+      <router-view></router-view>
+    </v-main>
+
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
-
 export default {
-  name: 'App',
-
-  components: {
-    HelloWorld
+  props: {
+    source: String
   },
-
   data: () => ({
-    //
+    drawer: null
   })
 }
 </script>
