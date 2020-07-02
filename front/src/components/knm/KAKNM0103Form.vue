@@ -60,8 +60,8 @@
                 </v-simple-table>
             </div>
             <div class="row col-md-6">
-            <input class="btn btn-default col-md-3" @click="checkedbtn" type="button" value="선택">
-            <input class="btn btn-default col-md-3" @click="close" type="button" value="취소">
+            <input class="btn btn-default col-md-3" @click="checked" type="button" value="선택">
+            <input class="btn btn-default col-md-3" @click="$emit('close')" type="button" value="취소">
             </div>
             </form>
         </div>
@@ -81,7 +81,6 @@ export default {
   components: {
     CheckBox
   },
-  props: ['dialog'],
   data: () => {
     return {
       checked_id: '',
@@ -120,12 +119,7 @@ export default {
         .then((res) => console.log(res))
         .catch(console.error())
     },
-    checkedbtn () {
-      console.log('checked event')
-      this.$emit('checkedbtn', this.maxDate, this.maxDate)
-    },
-    close () {
-      console.log('child-close')
+    del_data () {
       this.$emit('close')
     }
   },
