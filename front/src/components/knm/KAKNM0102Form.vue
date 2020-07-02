@@ -13,23 +13,8 @@
     <div>
       <v-text-field label="제목" placeholder="제목" id="title" type="textarea" cols="30" rows="6" v-model="title" ></v-text-field>
       <v-text-field label="프로젝트" placeholder="프로젝트" id="project_id" type="project_id" v-model="project_id" ></v-text-field>
-      <v-btn small color="primary" @click.prevent="btnSearch" @close="isDialog=false">찾기</v-btn>
-      <div class="form-group" style="resize: none;width: 526.66666px;">
-        <label for="solution_id">솔루션명  :  </label>
-        <select name="solution_id" id="solution_id" v-model="soluation_id">
-        <option selected>--선택--</option>
-        <option value="SL010000">iGate</option>
-        <option value="SL020000">eCross</option>
-        <option value="SL030000">Xtorm</option>
-        <option value="SL040000">eXperDB</option>
-        <option value="SL050000">Libeka</option>
-        <option value="SL060000">iWorks</option>
-        <option value="SL070000">iXeb</option>
-        <option value="SL080000">APIM</option>
-        <option value="SL090000">MyGuard</option>
-        <option value="SL100000">문서중앙화</option>
-        </select>
-      </div>
+      <v-btn small color="primary" @click="btnSearch">찾기</v-btn><modals-container />
+      <v-text-field label="솔루션 명" placeholder="솔루션명" id="solution_code" type="solution_code" v-model="solution_code" ></v-text-field>
       <v-text-field label="태그#01" placeholder="태그 #01" id="tag_tag" type="tag_tag" v-model="tag_tag" ></v-text-field>
       <v-text-field label="태그#02" placeholder="태그 #02" id="tag_tag_add" type="tag_tag_add" v-model="tag_tag_add" ></v-text-field>
       <v-text-field label="에러코드" placeholder="에러코드" id="tag_erc" type="tag_erc" v-model="tag_erc" ></v-text-field>
@@ -62,7 +47,6 @@
       </v-col>
     </v-row>
     </form>
-    <KAKNM0103P1 :dialog="isDialog" @close="close"></KAKNM0103P1>
   </v-container>
 </template>
 
@@ -72,9 +56,9 @@ const axios = require('axios').default
 
 export default {
   name: 'KAKNM0102From',
-  components: {
-    KAKNM0103P1
-  },
+  //   components: {
+  //     HelloWorld
+  //   },
   icons: {
     iconfont: 'faSvg'
   },
@@ -82,7 +66,7 @@ export default {
     return {
       question_id: '',
       project_id: '',
-      solution_id: '',
+      solution_code: '',
       tag_tag: '',
       tag_tag_add: '',
       tag_erc: '',
@@ -90,11 +74,7 @@ export default {
       title: '',
       content_q: '',
       content_s: '',
-      err_log: '',
-      userid: '',
-      errors: [],
-      isDialog: false
-
+      err_log: ''
     }
   },
   porps: [
@@ -104,64 +84,39 @@ export default {
     onSubmit: function () {
       const url = 'http://localhost:8080/knm/writeForm'
       const data = {
-        title: this.title,
-        project_id: this.project_id,
-        solution_id: this.solution_id,
+        question_id: this.question_id,
+        solution_code: this.solution_code,
         tag_tag: this.tag_tag,
-        tag_tag_add: this.tag_tag_add,
+        tag_tag_02: this.tag_tag_02,
         tag_erc: this.tag_erc,
         tag_ert: this.tag_ert,
+        title: this.title,
         content_q: this.content_q,
         content_s: this.content_s,
-        err_log: this.err_log,
-        userid: function () {
-          return this.$store.state.userid
-        }
+        err_log: this.err_log
       }
-
-      this.errors = []
-      if (!this.title) {
-        alert('제목 작성은 필수입니다.')
-        return
-      }
-      if (!this.project_id) {
-        alert('프로젝트명 입력은 필수입니다.')
-        return
-      }
-      if (!this.solution_code) {
-        alert('솔루션명 선택은 필수입니다.')
-        return
-      }
-      if (!this.tag_tag) {
-        alert('태크#01 입력은 필수입니다.')
-        return
-      }
-      if (!this.content_q) {
-        alert('질문 내용 작성은 필수입니다.')
-        return
-      }
-      if (!this.content_s) {
-        alert('환경 및 상황 작성은 필수입니다.')
-      } else {
-        console.log('data : ' + this.$store.state.userid)
-        axios.post(url, data)
+      // console.log("data : "+  this.srchNames)
+      axios.post(url, data)
         // .then((res) => {
         //   this.lists = res.data
         //   console.log('getList')
         //   console.log(this.lists)
         //   return res
         // })
-          .then((res) => console.log(res))
-          .catch(console.error())
-      }
+        .then((res) => console.log(res))
+        .catch(console.error())
     },
     btnSearch: function () {
-      console.log('btnSearch실행')
-      this.isDialog = true
-    },
-    close () {
-      console.log('grand-parent-close')
-      this.isDialog = !this.isDialog
+      this.$modal.show(KAKNM0103P1, {
+        hot_table: 'data',
+        modal: this.$modal
+      },
+      {
+        name: 'dynamic-modal',
+        width: '330px',
+        height: '130px',
+        draggable: true
+      })
     }
   },
   mounted () {
@@ -172,5 +127,47 @@ export default {
 </script>
 
 <style scoped>
+.content-detail-content-info {
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+}
+
+.content-detail-content-info-left {
+  width: 720px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.content-detail-content-info-right {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.content-detail-content {
+  border: 1px solid black;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  min-height: 720px;
+}
+
+.content-detail-button {
+  border: 1px solid black;
+  margin-top: 1rem;
+  padding: 2rem;
+}
+
+.content-detail-comment {
+  border: 1px solid black;
+  margin-top: 1rem;
+  padding: 2rem;
+}
 
 </style>
