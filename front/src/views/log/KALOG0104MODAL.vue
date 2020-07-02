@@ -36,7 +36,7 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <step1 />
+          <step1 /> <!-- 약관동의 step1 -->
           <v-btn
             color="primary"
             :disabled="isDisabled"
@@ -53,7 +53,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <signup />
+          <step2 /> <!-- 회원 정보 입력 step2 -->
           <v-btn
             color="primary"
             :disabled="isDisabled"
@@ -74,14 +74,13 @@
 </template>
 
 <script>
-import step1 from '@/components/step1.vue'
-import signup from '@/views/Signup.vue'
+import step1 from '@/components/log/KALOG0102.vue' // 약관동의 step1
+import step2 from '@/components/log/KALOG0103.vue' // 회원정보 입력 step2
 
 export default {
   components: {
     step1,
-    signup
-
+    step2
   },
   props: ['dialog'],
   data () {

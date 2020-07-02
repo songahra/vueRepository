@@ -78,7 +78,7 @@
 
 <script>
 import { loginUser, expToken } from '@/api/login.js'
-import Modal3 from '@/components/Modal3.vue'
+import Modal3 from '@/views/log/KALOG0104MODAL.vue'
 export default {
   components: {
     Modal3
