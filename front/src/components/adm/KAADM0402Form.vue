@@ -5,69 +5,84 @@
             <div class="card shadow">
                 <div class="card-body">
                 <h4 class="card-title">지식포인트</h4>
-                    <button type="/">조회</button> |
-                    <a href="/">기술문의</a>
+                  <div class="form-group" style="resize: none;width: 600px;">
+                      <label for="customer">등록기간</label>
+                      <v-text-field slot="activator" label="시작일" id="reg_date_start" value="" v-model="reg_date_start"></v-text-field>~
+                      <!-- <v-date-picker locale="en-in" :max="maxDate" v-model="reg_date_start"></v-date-picker> -->
+                      <v-text-field slot="activator" label="종료일" id="reg_date_end" value="" v-model="reg_date_end"></v-text-field>
+                      <!-- <v-date-picker :max="maxDate" v-model="reg_date_end"></v-date-picker> -->
+                    </div>
+                    <div>
+                    <v-btn small color="primary" type="submit" >조회</v-btn>
+                    </div>
                 </div>
 
                 <table class="table table-hover" id="list">
                     <thead>
                         <tr>
                             <th>사용자</th>
+                            <th>사용자 아이디</th>
                             <th>질문</th>
                             <th>답변</th>
                             <th>평가</th>
-                            <!-- <th>평점</th> -->
+                            <th>평점</th>
                             <th>지식포인트</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr :key= "index" v-for= "(list, index ) in lists" >
                             <td>{{list.userName }}</td>
-                            <td>{{list.question }}</td>
-                            <td>{{list.answer }}</td>
-                            <td>{{list.score_count}}</td>
-                            <!-- <td>{{list. }}</td> -->
+                            <td>{{list.user_id }}</td>
+                            <a href
+                            @click.prevent="searchPoint(list.user_id, 'q')"><td>{{list.question }}</td></a>
+                            <a href
+                            @click.prevent="searchPoint(list.user_id, 'a')"><td>{{list.answer }}</td></a>
+                            <a href
+                            @click.prevent="searchPoint(list.user_id, 'sc')"><td>{{list.scoreCount}}</td></a>
+                            <td>{{list.avgScore }}</td>
                             <td>{{list.point }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             </form>
+            <Modal2
+              :dialog="isDialog"
+              :propsdata="params"
+              @close="isDialog=false"
+            />
         </div>
     </div>
 </template>
+
 <script>
 import 'url-search-params-polyfill'
-
-const axios = require('axios').default
+import Modal2 from '@/components/adm/KAADM0402POPForm'
+import { getUserList, getSearchUserList } from '@/api/adm/Point.js'
 
 export default {
+  components: {
+    Modal2
+  },
   name: 'KAADM0402From',
-  //   components: {
-  //     HelloWorld
-  //   },
   data: () => {
     return {
-    //   title: '',
-    //   status: '',
-      lists: ''
+      reg_date_start: '2020-06-01',
+      reg_date_end: '2020-07-01',
+      lists: '',
+      isDialog: false,
+      params: ''
     }
   },
   methods: {
-    onSubmit: function () {
-      const url = 'http://localhost:8080/KAADM04/user'
-      // var params = new URLSearchParams()
-      // params.append('title', this.title)
-      // params.append('status', this.status)
-      //   const data = {
-      //     params: {
-      //       title: this.title,
-      //       status: this.status
-      //     }
-      //   }
-
-      console.log(url)
-      axios.get(url)
+    onSubmit () {
+      const data = {
+        params: {
+          reg_date_start: this.reg_date_start,
+          reg_date_end: this.reg_date_end
+        }
+      }
+      getUserList(data)
         .then((res) => {
           this.lists = res.data
           console.log('getUserList')
@@ -76,18 +91,40 @@ export default {
         })
         .then((res) => console.log(res))
         .catch(console.error())
+    },
+    searchPoint (user, t) {
+      var u = user
+      var type = t
+      const data = {
+        params: {
+          reg_date_start: this.reg_date_start,
+          reg_date_end: this.reg_date_end,
+          user: u,
+          type: type
+        }
+      }
+      getSearchUserList(data)
+        .then((res) => {
+          this.params = res.data
+          return res
+        })
+      console.log(this.isDialog)
+      console.log(this.params)
+      this.isDialog = true
     }
   },
   mounted () {
     console.log('mounted!!')
-    const url = 'http://localhost:8080/KAADM04/user'
-
-    axios.get(url)
-      // .then((res) => console.log(res)
-      //                var data = res
-      //                return res)
+    const data = {
+      params: {
+        reg_date_start: '',
+        reg_date_end: ''
+      }
+    }
+    getUserList(data)
       .then((res) => {
         this.lists = res.data
+        console.log('getUserList')
         console.log(this.lists)
         return res
       })
@@ -96,48 +133,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.content-detail-content-info {
-  border: 1px solid black;
-  display: flex;
-  justify-content: space-between;
-}
-
-.content-detail-content-info-left {
-  width: 720px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-}
-
-.content-detail-content-info-right {
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-}
-
-.content-detail-content {
-  border: 1px solid black;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  min-height: 720px;
-}
-
-.content-detail-button {
-  border: 1px solid black;
-  margin-top: 1rem;
-  padding: 2rem;
-}
-
-.content-detail-comment {
-  border: 1px solid black;
-  margin-top: 1rem;
-  padding: 2rem;
-}
-</style>
