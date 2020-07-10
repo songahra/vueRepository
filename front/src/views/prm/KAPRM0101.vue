@@ -23,7 +23,20 @@
             height="300"
             width="300"
             :src="get_img_src"
-          />
+          >
+            <template v-slot:placeholder>
+              <v-row
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
+              >
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                />
+              </v-row>
+            </template>
+          </v-img>
         </v-col>
 
         <v-col
@@ -46,13 +59,19 @@
 
             <v-col>
               <v-card-text class="text--primary">
+                <div> {{ user_id }}</div>
+              </v-card-text>
+            </v-col>
+
+            <v-col>
+              <v-card-text class="text--primary">
                 <div>소속회사 {{ company }}</div>
               </v-card-text>
             </v-col>
 
             <v-col>
               <v-card-text class="text--primary">
-                <div>담당 솔루션 {{ solution }}</div>
+                <div>담당 솔루션 {{ solution }} </div>
               </v-card-text>
             </v-col>
 
@@ -65,21 +84,39 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-card-actions>
-      <input
+    <v-card-actions xs10>
+      <!-- <input
         type="file"
         @change="onFileSelected"
+      > -->
+      <!-- accept 클릭했을 때 이미지 파일만 뜨게해주는 역할 -->
+      <v-card-text class="d-inline pa-2">
+        <v-file-input
+          v-model="image"
+          :rules="rules"
+          accept="image/*"
+          placeholder="Pick an avatar"
+          prepend-icon="mdi-camera"
+          label="Avatar"
+          @change="onUpload"
+        />
+      </v-card-text>
+      <v-alert
+        v-model="alert"
+        dense
+        type="error"
       >
-      <v-btn @click="onUpload">
-        업로드
-      </v-btn>
+        이미지 파일만 업로드 하세요
+      </v-alert>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import { userType, userSolution } from '@/api/login.js'
+import { userType, userSolution } from '@/api/Login.js'
 import { formData } from '@/api/Signup.js'
+import { selectProfile } from '@/api/Profile.js'
+
 export default {
   data: () => {
     return {
@@ -88,7 +125,12 @@ export default {
       imageBytes: '',
       selectedFile: null,
       uploadData: '',
-      imgSrc: ''
+      imgSrc: '',
+      image: null,
+      rules: [
+        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!' + value.type
+      ],
+      alert: false
     }
   },
   computed: {
@@ -103,37 +145,54 @@ export default {
     },
     company: function () {
       return this.$store.state.company
+    },
+    dept: function () {
+      return this.$store.state.dept
     }
   },
-  created () {
+  mounted () {
+  },
+  async created () {
     this.userType()
     this.userSolution()
+
+    const userdata = {
+      user_id: this.$store.state.userid
+    }
+    console.log(userdata)
+    const { data } = await selectProfile(userdata)
+    this.imgSrc = data
+    console.log(this.imgSrc)
   },
   methods: {
-    onFileSelected (event) {
-      console.log(event)
-      this.selectedFile = event.target.files[0]
-      console.log(this.selectedFile)
-    },
+    // onFileSelected (event) {
+    //   console.log(event)
+    //   // this.selectedFile = event.target.files[0]
+    //   this.selectedFile = this.event.target.files[0]
+    //   console.log(this.selectedFile)
+    //   console.log(this.selectedFile.size)
+    //   console.log(this.selectedFile.type)
+    //   console.log(this.selectedFile.type === 'image/*')
+    // },
     async onUpload () {
       try {
         var fd = new FormData()
-        fd.append('image', this.selectedFile)
-        console.log(fd)
-
-        const { data } = await formData(fd)
-        // this.decodedStr = atob(data)
-        // console.log(data)
-        this.imgSrc = data
-        // const uploadData = this.data
-        // console.log(this.decodedStr)
-        // console.log(uploadData)
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'] // 이미지 파일만 업로드
+        if (!allowedTypes.includes(this.image.type)) {
+          this.alert = true // 이미지 파일이 아닐 경우 alert 창 띄움
+        } else {
+          this.alert = false
+          console.log('이미지파일 맞음')
+          console.log(this.image.type === 'image/*')
+          fd.append('profile_image', this.image)
+          fd.append('user_id', this.user_id)
+          const { data } = await formData(fd)
+          this.imgSrc = data
+        }
       } catch (error) {
       } finally {
 
       }
-      // axios.post('http://localhost:8080/api/prm/upload', fd, {
-      // }).then((res) => { console.log(res) })
     },
     userType () {
       const type = this.$store.state.usertype
@@ -144,20 +203,6 @@ export default {
       this.solution = userSolution(code)
     },
 
-    handleImage (event) {
-      const selectedImage = event.target.files[0]
-      this.createBase64Image(this.selectedImage)
-      console.log(this.createBase64Image(selectedImage))
-    },
-
-    createBase64Image (fileObject) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        this.image = e.target.result
-        console.log(this.image)
-      }
-      this.imageBytes = reader.readAsBinaryString(fileObject)
-    },
     updateProfile () {
       this.$router.push('/profileUpdate') // 프로필 수정화면으로 이동
     }

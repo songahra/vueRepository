@@ -3,6 +3,12 @@ import axios from 'axios'
 const instance = axios.create({
   baseURL: process.env.VUE_APP_API_URL
 })
+
+// 솔루션 목록 가져오는 api 구현
+function getSolution () {
+  return instance.get('api/test/getSolution')
+}
+
 // 로그인 api 구현
 function loginUser (userData) {
   return instance.post('api/test/login', userData)
@@ -21,6 +27,9 @@ function expToken (exp) {
     console.log(today <= expDate)
     console.log(today)
   } else {
+    // 유효기간 만료
+    alert('로그인 해주세요!')
+    this.$router.push({ name: 'Login' }) // name: 라우터에서 설정해준 name으로 보낼 수도 있음
     // exp 만료 시 토큰 삭제, store삭제
     localStorage.removeItem('token')
   }
@@ -76,4 +85,4 @@ function userSolution (code) {
       return '문서중앙화'
   }
 }
-export { loginUser, expToken, userType, userSolution }
+export { loginUser, expToken, userType, userSolution, getSolution }

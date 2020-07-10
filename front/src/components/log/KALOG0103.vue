@@ -80,8 +80,8 @@
                     outlined
                     dense
                     required
-                    item-text="name"
-                    item-value="code"
+                    item-text="codeContent"
+                    item-value="codeId"
                   />
                 </v-col>
               </v-row>
@@ -124,6 +124,8 @@
 
 <script>
 import { signupUser } from '@/api/Signup.js'
+import { getSolution } from '@/api/Login.js'
+
 export default {
   components: {
 
@@ -149,7 +151,7 @@ export default {
       rules: {
         required: value => !!value || '비밀번호를 입력하세요!',
         min: v => v.length >= 10 || '10자 이상',
-        chk1: v => /[A-Z]/.test(v) || '영어 대문자 포함',
+        chk1: v => /[A-Z]/.test(v) || ' 영어 대문자 포함',
         chk2: v => /[a-z]/.test(v) || '영어 소문자 포함',
         chk3: v => /[0-9]/.test(v) || '숫자 포함'
       },
@@ -170,61 +172,30 @@ export default {
       ],
       solution: null,
       items: [
-        {
-          name: 'iGate',
-          code: 'SL010000'
-        },
-        {
-          name: 'eCross',
-          code: 'SL020000'
-        },
-        {
-          name: 'Xtorm',
-          code: 'SL030000'
-        },
-        {
-          name: 'eXperDB',
-          code: 'SL040000'
-        },
-        {
-          name: 'Libeka',
-          code: 'SL050000'
-        },
-        {
-          name: 'iWorks',
-          code: 'SL060000'
-        },
-        {
-          name: 'iXeb',
-          code: 'SL070000'
-        },
-        {
-          name: 'APIM',
-          code: 'SL080000'
-        },
-        {
-          name: 'MyGuard',
-          code: 'SL090000'
-        },
-        {
-          name: '문서중앙화',
-          code: 'SL100000'
-        }
-      ]
+      ],
+      user_name: '',
+      company: ''
     }
   }, // data
+  async created () {
+    const { data } = await getSolution()
+
+    console.log('data::::: ', data)
+    this.items = data
+  },
   methods: {
     // 회원가입
     async submitForm () {
       try {
         // 비즈니스 로직
         const userData = {
+
           user_id: this.user_id,
           user_name: this.user_name,
           user_pw: this.user_pw,
           company: this.company,
           user_type: this.user_type.code,
-          solution: this.solution.code,
+          solution: this.solution.codeId,
           dept: this.dept
 
         }
@@ -232,10 +203,10 @@ export default {
         const res = await signupUser(userData)
         if (res.status === 200) {
           alert(res.data)
-          this.$router.push('/login')
+          this.$router.push('/home').catch(() => {})
         } else {
           alert('회원가입 실패')
-          this.$router.push('/login')
+          this.$router.push('login')
         }
       } catch (error) {
 
@@ -243,6 +214,7 @@ export default {
 
       }
     }
+
   }
 }
 </script>

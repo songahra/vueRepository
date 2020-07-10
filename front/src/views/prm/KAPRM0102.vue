@@ -9,12 +9,18 @@
         <v-tab>프로필 관리</v-tab>
         <v-tab>지식 포인트</v-tab>
       </v-tabs>
-      <v-btn><span>취소</span></v-btn>
-      <v-btn><span>확인</span></v-btn>
+      <v-btn
+        @click="() => {this.$router.go(-1)}"
+      >
+        <!-- 이전 단계로 이동-->
+        <span>취소</span>
+      </v-btn>
+      <v-btn @click="submitForm">
+        <span>확인</span>
+      </v-btn>
     </v-toolbar>
 
     <v-container>
-      0
       <v-row justify="space-between">
         <v-col cols="auto">
           <v-img
@@ -62,6 +68,15 @@
 
             <v-col class="px-0">
               <v-card-text class="text--primary">
+                <v-text-field
+                  v-model="dept"
+                  label="부서"
+                />
+              </v-card-text>
+            </v-col>
+
+            <v-col class="px-0">
+              <v-card-text class="text--primary">
                 <div>소속회사 {{ company }}</div>
               </v-card-text>
             </v-col>
@@ -71,18 +86,28 @@
                 <v-combobox
                   v-model="solution"
                   :items="items"
-                  label="Combobox"
+                  label="담당 솔루션"
                   outlined
                   dense
-                  item-text="name"
-                  item-value="code"
+                  item-text="codeContent"
+                  item-value="codeId"
+                  @change="selectSolution"
                 />
               </v-card-text>
             </v-col>
 
             <v-col class="px-0">
               <v-card-text class="text--primary">
-                <div>권한 {{ usertype }}</div>
+                <v-combobox
+                  v-model="user_type"
+                  :items="items2"
+                  label="권한"
+                  outlined
+                  dense
+                  item-text="name"
+                  item-value="code"
+                  @change="selectType"
+                />
               </v-card-text>
             </v-col>
           </v-row>
@@ -98,6 +123,7 @@
       >
         사진업로드
       </v-btn>
+
       <Modal
         :dialog="isAddBoard"
         @close="isAddBoard=false"
@@ -107,8 +133,9 @@
 </template>
 
 <script>
-import { userType, userSolution } from '@/api/login.js'
-import Modal from '@/components/prm/KAPRM0102MODAL.vue'
+import { userType, userSolution, getSolution } from '@/api/Login.js'
+import { updateProfile } from '@/api/Profile.js'
+import Modal from '@/components/prm/KAPRM0103.vue' // 1. 비밀번호 변경 모달
 
 export default {
   components: {
@@ -118,47 +145,19 @@ export default {
     return {
       isAddBoard: false,
       code: '',
+      typeCode: '',
+      dept: '',
       solution: 'solution',
-      items: [
+      user_type: 'user_type',
+      items: [],
+      items2: [
         {
-          name: 'iGate',
-          code: 'SL010000'
+          name: '답변자',
+          code: 'A'
         },
         {
-          name: 'eCross',
-          code: 'SL020000'
-        },
-        {
-          name: 'Xtorm',
-          code: 'SL030000'
-        },
-        {
-          name: 'eXperDB',
-          code: 'SL040000'
-        },
-        {
-          name: 'Libeka',
-          code: 'SL050000'
-        },
-        {
-          name: 'iWorks',
-          code: 'SL060000'
-        },
-        {
-          name: 'iXeb',
-          code: 'SL070000'
-        },
-        {
-          name: 'APIM',
-          code: 'SL080000'
-        },
-        {
-          name: 'MyGuard',
-          code: 'SL090000'
-        },
-        {
-          name: '문서중앙화',
-          code: 'SL100000'
+          name: '질문자',
+          code: 'Q'
         }
       ]
     }
@@ -174,23 +173,54 @@ export default {
       return this.$store.state.company
     }
   },
+  async created () {
+    const { data } = await getSolution()
 
-  created () {
+    console.log('data: ', data)
+    this.items = data
     this.userType()
-    const code = this.$store.state.solution
-    this.solution = userSolution(code)
-    console.log(this.solution)
-    console.log(code)
+    this.code = this.$store.state.solution
+    console.log('code는?' + this.code.code)
+    this.solution = userSolution(this.code)
+    this.dept = this.$store.state.dept
+    console.log('this.items' + this.items)
   },
   methods: {
+    selectSolution () {
+      this.code = this.solution.codeId // 변경됐을 때 solution code
+    },
+    selectType () {
+      this.typeCode = this.user_type.code // 변경됐을 때 user_type code
+    },
     userType () {
-      const type = this.$store.state.usertype
-      this.usertype = userType(type)
+      this.typeCode = this.$store.state.usertype
+      this.user_type = userType(this.typeCode)
     },
     addBoard () {
       console.log('addBoard 실행')
       this.isAddBoard = true
       console.log(this.isAddBoard)
+    },
+    async submitForm () { // 회원 정보 수정
+      const userData = {
+        dept: this.dept,
+        solution: this.code,
+        user_type: this.typeCode,
+        user_id: this.user_id
+      }
+      console.log(userData)
+      await updateProfile(userData).then((res) => {
+        alert(res.data)
+        if (res.status === 200) {
+          console.log('status200 맞나요?' + res.status)
+
+          // 회원 정보 수정 됐을 때 vue에 있는 data도 변경되어야함..
+          this.$store.commit('SET_DEPT', userData.dept)
+          this.$store.commit('SET_SOLUTION', this.solution.codeId)
+          this.$store.commit('SET_USERTYPE', this.typeCode)
+        }
+      }
+      )
     }
   }
 }

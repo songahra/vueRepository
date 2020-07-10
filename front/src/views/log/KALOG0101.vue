@@ -55,6 +55,10 @@
                 >
                   로그인
                 </v-btn>
+                <v-checkbox
+                  v-model="idSaveCheck"
+                  label="아이디 저장"
+                />
               </div>
               <div class="text-center">
                 <a
@@ -76,8 +80,9 @@
 </template>
 
 <script>
-import { loginUser, expToken } from '@/api/login.js'
+import { loginUser } from '@/api/Login.js'
 import Modal3 from '@/views/log/KALOG0104MODAL.vue'
+
 export default {
   components: {
     Modal3
@@ -87,17 +92,29 @@ export default {
       user_id: '',
       user_pw: '',
       isAddBoard: false,
-      data: ''
+      data: '',
+      idSaveCheck: ''
     }
   },
-  mounted () {
-    console.log('mounted')
-    localStorage.getItem('token')
-    expToken(this.$store.state.exp)
+  created: function () {
+    // 1. 화면 진입 시 쿠키에 아이디가 저장되어 있는지 확인을 한다.
+    if (this.$cookie.get('idSave')) { // To get the value of a cookie use
+      this.user_id = this.$cookie.get('idSave') // 2. 저장 되어 있다면 화면에 저장된 아이디를 보여준다.
+      this.idSaveCheck = true
+    }
   },
   methods: {
     async submitForm () {
       try {
+        // 3. 로그인 버튼 클릭 시 아이디저장 체크박스가 체크되어 있다면 입력된 아이디를 쿠키에 Set한다.
+        if (this.idSaveCheck) {
+          console.log('idSaveCheck실행')
+          this.$cookie.set('idSave', this.user_id)
+        } else {
+          // 4. 로그인 버튼 클릭 시 아이디저장 체크박스가 체크가 해제되어 있다면 쿠키의 값을 Delete한다.
+          this.$cookie.delete('idSave') // To delete a cookie use
+        }
+
         // 비즈니스 로직
         const userData = {
           user_id: this.user_id,
@@ -123,6 +140,7 @@ export default {
           console.log(jwt.company)
           console.log(jwt.exp)
           console.log(jwt.solution)
+          console.log(jwt.dept)
 
           this.$store.commit('SET_TOKEN', data.token)
           this.$store.commit('SET_USERNAME', jwt.user_name)
@@ -130,6 +148,7 @@ export default {
           this.$store.commit('SET_USERTYPE', jwt.user_type)
           this.$store.commit('SET_COMPANY', jwt.company)
           this.$store.commit('SET_SOLUTION', jwt.solution)
+          this.$store.commit('SET_DEPT', jwt.dept)
           this.$store.commit('SET_EXP', jwt.exp)
 
           localStorage.setItem('token', data.token)
@@ -145,6 +164,7 @@ export default {
       console.log('addBoard 실행')
       this.isAddBoard = true
     }
+
   }//
 }
 </script>
