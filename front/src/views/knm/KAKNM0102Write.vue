@@ -1,3 +1,4 @@
+<!-- 기술문의 등록화면 -->
 <template>
   <KAKNM0102Form></KAKNM0102Form>
 </template>

@@ -1,22 +1,24 @@
-<!-- 질문하기 -->
+<!-- 질문하기 Form -->
 <template>
   <v-container fluid>
     <h3>기술문의</h3>
     <form id="KAKNM0102From" @submit.prevent="onSubmit" class="form">
+    <input type="hidden" id="flag"  name="flag" value="flag"/>
+    <input type="hidden" id="project_id"  name="project_id" v-model="project_id"/>
     <v-col class="text-center" cols="12" sm="4">
       <div class="my-2">
       <v-btn small color="primary">미리보기</v-btn>  |
       <v-btn small color="primary" type="submit">확인</v-btn>  |
-      <v-btn small color="primary">목록보기</v-btn>
+      <v-btn small color="primary" @click="() => this.$router.push({ name: 'KAKNM0101List' })" >목록보기</v-btn>
       </div>
     </v-col>
     <div>
-      <v-text-field label="제목" placeholder="제목" id="title" type="textarea" cols="30" rows="6" v-model="title" ></v-text-field>
-      <v-text-field label="프로젝트" placeholder="프로젝트" id="project_id" type="project_id" v-model="project_id" ></v-text-field>
+      <v-text-field label="제목" placeholder="제목은 필수 입력입니다" id="title" type="textarea" cols="30" rows="6" v-model="title" ></v-text-field>
+      <v-text-field label="프로젝트" placeholder="프로젝트" id="project_name" type="textarea" v-model="project_name" ></v-text-field>
       <v-btn small color="primary" @click.prevent="btnSearch" @close="isDialog=false">찾기</v-btn>
       <div class="form-group" style="resize: none;width: 526.66666px;">
         <label for="solution_id">솔루션명  :  </label>
-        <select name="solution_id" id="solution_id" v-model="soluation_id">
+        <select name="solution_id" id="solution_id" v-model="solution_id">
         <option selected>--선택--</option>
         <option value="SL010000">iGate</option>
         <option value="SL020000">eCross</option>
@@ -31,7 +33,6 @@
         </select>
       </div>
       <v-text-field label="태그#01" placeholder="태그 #01" id="tag_tag" type="tag_tag" v-model="tag_tag" ></v-text-field>
-      <v-text-field label="태그#02" placeholder="태그 #02" id="tag_tag_add" type="tag_tag_add" v-model="tag_tag_add" ></v-text-field>
       <v-text-field label="에러코드" placeholder="에러코드" id="tag_erc" type="tag_erc" v-model="tag_erc" ></v-text-field>
       <v-text-field label="예외종류" placeholder="예외종류" id="tag_ert" type="tag_ert" v-model="tag_ert" ></v-text-field>
     </div>
@@ -40,7 +41,7 @@
         <v-subheader>질문</v-subheader>
       </v-col>
       <v-col cols="10">
-        <v-text-field  type="textarea" id="content_q" v-model="content_q" ></v-text-field>
+        <v-text-field  placeholder="질문 내용 작성" type="textarea" id="content_q" v-model="content_q" ></v-text-field>
       </v-col>
     </v-row>
 
@@ -49,7 +50,7 @@
         <v-subheader>환경 및 상황</v-subheader>
       </v-col>
       <v-col cols="10">
-        <v-text-field type="textarea" id="content_s"  v-model="content_s" value=""></v-text-field>
+        <v-text-field placeholder="시스템 개발환경 및 상황 작성" type="textarea" id="content_s"  v-model="content_s" value=""></v-text-field>
       </v-col>
     </v-row>
 
@@ -58,17 +59,17 @@
         <v-subheader>오류 로그</v-subheader>
       </v-col>
       <v-col cols="10">
-        <v-text-field type="textarea" id="err_log" v-model="err_log"  value=""></v-text-field>
+        <v-text-field placeholder="오류로그작성" type="textarea" id="err_log" v-model="err_log"  value=""></v-text-field>
       </v-col>
     </v-row>
     </form>
-    <KAKNM0103P1 :dialog="isDialog" @close="close"></KAKNM0103P1>
+    <KAKNM0103P1 :dialog="isDialog" @close="close" @checkedbtn="checkedbtn"></KAKNM0103P1>
   </v-container>
 </template>
 
 <script>
 import KAKNM0103P1 from '@/views/knm/KAKNM0103P1.vue'
-const axios = require('axios').default
+import { modify } from '@/api/Question.js'
 
 export default {
   name: 'KAKNM0102From',
@@ -82,41 +83,44 @@ export default {
     return {
       question_id: '',
       project_id: '',
+      project_name: '',
       solution_id: '',
       tag_tag: '',
-      tag_tag_add: '',
       tag_erc: '',
       tag_ert: '',
       title: '',
       content_q: '',
       content_s: '',
       err_log: '',
-      userid: '',
+      flag: '',
       errors: [],
-      isDialog: false
-
+      isDialog: false,
+      userid: ''
     }
   },
   porps: [
     'project_id'
   ],
+  // computed: {
+  //   userid () {
+  //     return this.$store.state.userid
+  //   }
+  // },
   methods: {
     onSubmit: function () {
-      const url = 'http://localhost:8080/knm/writeForm'
-      const data = {
+      const FormData = {
         title: this.title,
         project_id: this.project_id,
+        project_name: this.project_name,
         solution_id: this.solution_id,
         tag_tag: this.tag_tag,
-        tag_tag_add: this.tag_tag_add,
         tag_erc: this.tag_erc,
         tag_ert: this.tag_ert,
         content_q: this.content_q,
         content_s: this.content_s,
         err_log: this.err_log,
-        userid: function () {
-          return this.$store.state.userid
-        }
+        usrid: this.$store.state.userid,
+        flag: 'W'
       }
 
       this.errors = []
@@ -124,11 +128,11 @@ export default {
         alert('제목 작성은 필수입니다.')
         return
       }
-      if (!this.project_id) {
+      if (!this.project_name) {
         alert('프로젝트명 입력은 필수입니다.')
         return
       }
-      if (!this.solution_code) {
+      if (!this.solution_id) {
         alert('솔루션명 선택은 필수입니다.')
         return
       }
@@ -143,14 +147,13 @@ export default {
       if (!this.content_s) {
         alert('환경 및 상황 작성은 필수입니다.')
       } else {
-        console.log('data : ' + this.$store.state.userid)
-        axios.post(url, data)
-        // .then((res) => {
-        //   this.lists = res.data
-        //   console.log('getList')
-        //   console.log(this.lists)
-        //   return res
-        // })
+        console.log('FormData : ', FormData)
+
+        // 서버요청
+        modify(FormData)
+          // .then((res) =>
+          //         let result = res.data.result
+          //       return  res)
           .then((res) => console.log(res))
           .catch(console.error())
       }
@@ -162,6 +165,14 @@ export default {
     close () {
       console.log('grand-parent-close')
       this.isDialog = !this.isDialog
+    },
+    checkedbtn (params) {
+      console.log('3 checkedbtn')
+      console.log('3 params', params)
+
+      this.project_id = params.project_id
+      this.project_name = params.project_name
+      this.close()
     }
   },
   mounted () {
