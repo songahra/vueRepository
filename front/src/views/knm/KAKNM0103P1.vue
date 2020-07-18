@@ -5,9 +5,11 @@
     persistent
     max-width="50%"
   >
+    <v-card>
     <!--   <KAKNM0103Form @close="() => {isDialog=false}"></KAKNM0103Form> -->
     <KAKNM0103Form @close="close" @checkedbtn="checkedbtn"></KAKNM0103Form>
     <!-- <v-btn @click.prevent="close">취소</v-btn> -->
+    </v-card>
   </v-dialog>
 </template>
 

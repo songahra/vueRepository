@@ -3,7 +3,6 @@
     <div style="width: 100%; height:100%">
         <div class="container" style="margin-top:100px">
             <form id="KAKNM0103From" @submit.prevent="onSubmit" class="form">
-            <input type="hidden" name="flag"  id="flag" value="param.flag"/><!-- ${view.flag} -->
             <div class="card shadow">
                 <div class="card-body">
                 <h4 class="card-title">프로젝트</h4>
@@ -27,9 +26,9 @@
                                  class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
                                 :columnDefs="columnDefs"
                                 :rowData="rowData"
-                                :gridReady="gridSizeFit"
                                 :gridOptions="gridOptions"
                                 @getRowStyle="getRowStyle"
+                                @gridReady="gridSizeFit"
                                 @gridSizeChanged="gridSizeFit"
                                 @cell-clicked="onCellClicked">
                     </ag-grid-vue>
@@ -113,11 +112,9 @@ export default {
       this.lists = []
       this.rowData = []
       const srchData = {
-        params: {
-          project_id: this.project_id,
-          project_name: this.project_name,
-          customer: this.customer
-        }
+        project_id: this.project_id,
+        project_name: this.project_name,
+        customer: this.customer
       }
       console.log('srchData', srchData)
 
@@ -150,7 +147,7 @@ export default {
       })
     },
 
-    // 팝업 종료
+    // 팝업 닫기
     close () {
       console.log('child-close')
       this.$emit('close')
@@ -167,6 +164,21 @@ export default {
       }
       console.log('1 params', params)
       this.$emit('checkedbtn', params)
+    },
+    gridSizeFit (params) {
+      console.log('gridSizeFit')
+      // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정
+      if (window.innerWidth > 800) { // 화면 가로가 800 px 이 넘을 경우
+        console.log('innerWidth')
+        params.api.sizeColumnsToFit() // 가로 스크롤바가 생기지 않도록 컬럼 사이즈를 그리드에 꼭 맞게 조정
+      } else {
+      // 컬럼의 데이터값이 잘리지 않도록 조정
+        const allColumnIds = []
+        this.gridOptions.columnApi.getAllColumns().forEach(function (column) {
+          allColumnIds.push(column.colId)
+        })
+        this.gridOptions.columnApi.autoSizeColumns(allColumnIds)
+      }
     },
     getRowStyle: function (param) {
       return { 'text-align': 'center' }

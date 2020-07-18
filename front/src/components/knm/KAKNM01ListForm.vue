@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mainList } from '@/api/Question.js'
+import { mainList, getDetail, getMyList } from '@/api/Question.js'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
@@ -28,6 +28,7 @@ export default {
   porps: ['srchList'],
   data () {
     return {
+      usrid: this.$store.state.userid,
       columnDefs: null,
       lists: [],
       rowData: [],
@@ -46,14 +47,16 @@ export default {
     }
     this.columnDefs = [
       { headerName: '글번호', colId: 0, valueGetter: (params) => { return params.node.rowIndex + 1 } },
-      { headerName: '솔루션', field: 'solution_id', sortable: true, filter: true },
+      { headerName: '솔루션', field: 'solution_name', sortable: true, filter: true },
       { headerName: '질문제목', field: 'title', sortable: true, filter: true },
-      { headerName: '질문자', field: 'reg_userid_tq', sortable: true, filter: true },
+      { headerName: '질문자', field: 'reg_userName_tq', sortable: true, filter: true },
       { headerName: '질문일시', field: 'reg_date_tq', sortable: true, filter: true },
-      { headerName: '답변자', field: 'reg_userid_ta', sortable: true, filter: true },
+      { headerName: '답변자', field: 'reg_userName_ta', sortable: true, filter: true },
       { headerName: '답변일시', field: 'reg_date_ta', sortable: true, filter: true },
       { headerName: '경과시간', field: 'term', sortable: true, filter: true },
-      { headerName: '처리상태', field: 'status', sortable: true, filter: true }
+      { headerName: '처리상태', field: 'status', sortable: true, filter: true },
+      { headerName: 'qusetion_id', field: 'question_id', sortable: true, filter: true, hide: true },
+      { headerName: '질문자 id', field: 'reg_userid', sortable: true, filter: true, hide: true }
     ]
   },
   created () {
@@ -61,7 +64,7 @@ export default {
     this.getAllList()
   },
   methods: {
-    // 초기 리스트
+    /* 초기 전체 리스트 */
     async getAllList () {
       console.log('makeData')
 
@@ -76,27 +79,8 @@ export default {
       // .catch(console.error())
       //     return this.rowData
     },
-    // rowData에 리스트 매핑
-    makeData () {
-      console.log('makeData')
-      console.log('makeData.this.lists', this.lists)
-      console.log('makeData.this.rowData', this.rowData)
-      this.lists.forEach(e => {
-        const value = {
-          solution_id: e.solution_id,
-          title: e.title,
-          reg_userid_tq: e.reg_userid_tq,
-          reg_date_tq: e.reg_date_tq,
-          reg_userid_ta: e.reg_userid_ta,
-          reg_date_ta: e.reg_date_ta,
-          term: e.term,
-          status: e.status
-        }
-        this.rowData.push(value)
-      })
-    },
-    // 조회된 리스트로 변환
-    dataChange (srchData) {
+    /* 지식관리 리스트 조회 */
+    allListChange (srchData) {
       // 리스트 비움
       this.rowData = []
 
@@ -105,9 +89,55 @@ export default {
 
       this.makeData()
     },
+    /* 내가 문의한 질문 리스트 */
+    myList () {
+      const formData = {
+        userid: this.$store.state.userid
+      }
+      // 서버요청
+      getMyList(formData) /* 에러처리 확인필요!! */
+        .then((res) => {
+          if (res.status === 200) {
+            console.log('res => ', res)
+            this.lists = res.data
+          } else {
+            alert('다시 시도해주세요.')
+            // this.$router.go(-1)
+          }
+        })
+      // .then((res) => console.log(res))
+        .catch(console.error())
+    },
+    /* 내가 문의한 질문 조회 리스트 */
+    srchMyList (srchData) {
+      this.rowData = []
+      this.lists = srchData
+      this.makeData()
+    },
     // getRowNode (id) {
     //   return id.rowIndex + 1
     // },
+    /* rowData에 리스트 매핑 */
+    makeData () {
+      console.log('makeData')
+      console.log('makeData.this.lists', this.lists)
+      console.log('makeData.this.rowData', this.rowData)
+      this.lists.forEach(e => {
+        const value = {
+          solution_name: e.solution_name,
+          title: e.title,
+          reg_userName_tq: e.reg_userName_tq,
+          reg_date_tq: e.reg_date_tq,
+          reg_userName_ta: e.reg_userName_ta,
+          reg_date_ta: e.reg_date_ta,
+          term: e.term,
+          status: e.status,
+          question_id: e.question_id,
+          reg_userid: e.reg_userid
+        }
+        this.rowData.push(value)
+      })
+    },
     gridSizeFit (params) {
       console.log('gridSizeFit')
       // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정
@@ -123,8 +153,35 @@ export default {
         this.gridOptions.columnApi.autoSizeColumns(allColumnIds)
       }
     },
-    onCellClicked (event) { // 그리드 셀 클릭시 이벤트
+    /* 그리드 클릭 이벤트 */
+    onCellClicked (event) {
+      console.log('ddd', event)
+      if (event.colDef.field === 'title') {
+        console.log('ddd2')
+        const formData = {
+          reg_userid: event.data.reg_userid,
+          question_id: event.data.question_id
+        }
+        console.log('formData  => ', formData)
 
+        // 서버요청
+        getDetail(formData) /* 에러처리 확인필요!! */
+          .then((res) => {
+            if (res.status === 200) {
+              console.log('res => ', res)
+              const params = res.data
+              console.log('params => ', params)
+              this.$router.push({ name: 'KAKNM0104Detail', params: params })
+            } else {
+              alert('다시 시도해주세요.')
+              // this.$router.go(-1)
+            }
+          })
+          // .then((res) => console.log(res))
+          .catch(console.error())
+      } else {
+        return event
+      }
     }
   }
 }
