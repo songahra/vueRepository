@@ -6,49 +6,53 @@
                 <div class="card-body">
                 <h4 class="card-title">지식포인트</h4>
                   <div class="form-group" style="resize: none;width: 600px;">
-                      <label for="customer">등록기간</label>
-                      <v-text-field slot="activator" label="시작일" id="reg_date_start" value="" v-model="reg_date_start"></v-text-field>~
-                      <!-- <v-date-picker locale="en-in" :max="maxDate" v-model="reg_date_start"></v-date-picker> -->
-                      <v-text-field slot="activator" label="종료일" id="reg_date_end" value="" v-model="reg_date_end"></v-text-field>
-                      <!-- <v-date-picker :max="maxDate" v-model="reg_date_end"></v-date-picker> -->
-                    </div>
-                    <div>
-                    <v-btn small color="primary" type="submit" >조회</v-btn>
-                    </div>
+                      <v-row>
+                        <v-subheader style="padding-left: 20px; padding-top: 5px;">
+                          기간선택
+                        </v-subheader>
+                        <date-picker
+                          v-model="range"
+                          style="padding-top: 10px;"
+                          :lang="lang"
+                          range
+                          type="date"
+                          format="YYYY-MM-DD"
+                          width="500"
+                          confirm
+                          @change="updateDate"
+                        />
+                        <V-btn
+                          color="indigo"
+                          dark
+                          tile
+                          class="ma-2"
+                          @click="onSubmit"
+                        >
+                          조회
+                        </V-btn>
+                      </v-row>
+                  </div>
+                </div>
+                <div>
+                  <ag-grid-vue style="width: 100%; height:550px;"
+                              class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                              :columnDefs="columnDefs"
+                              :rowData="rowData"
+                              :gridOptions="gridOptions"
+                              :get-row-style="getRowStyle"
+                              :tooltipShowDelay="tooltipShowDelay"
+                              @cell-clicked="onCellClicked"
+                              @gridReady="gridSizeFit"
+                              @gridSizeChanged="gridSizeFit">
+                  </ag-grid-vue>
                 </div>
 
-                <table class="table table-hover" id="list">
-                    <thead>
-                        <tr>
-                            <th>사용자</th>
-                            <th>사용자 아이디</th>
-                            <th>질문</th>
-                            <th>답변</th>
-                            <th>평가</th>
-                            <th>평점</th>
-                            <th>지식포인트</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr :key= "index" v-for= "(list, index ) in lists" >
-                            <td>{{list.userName }}</td>
-                            <td>{{list.user_id }}</td>
-                            <a href
-                            @click.prevent="searchPoint(list.user_id, 'q')"><td>{{list.question }}</td></a>
-                            <a href
-                            @click.prevent="searchPoint(list.user_id, 'a')"><td>{{list.answer }}</td></a>
-                            <a href
-                            @click.prevent="searchPoint(list.user_id, 'sc')"><td>{{list.scoreCount}}</td></a>
-                            <td>{{list.avgScore }}</td>
-                            <td>{{list.point }}</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
             </form>
             <Modal2
               :dialog="isDialog"
               :propsdata="params"
+              ref="popup"
               @close="isDialog=false"
             />
         </div>
@@ -57,79 +61,178 @@
 
 <script>
 import 'url-search-params-polyfill'
+import 'ag-grid-community/dist/styles/ag-grid.css'
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+import DatePicker from 'vue2-datepicker'
+import moment from 'moment'
+import 'vue2-datepicker/index.css'
 import Modal2 from '@/components/adm/KAADM0402POPForm'
 import { getUserList, getSearchUserList } from '@/api/adm/Point.js'
+import { AgGridVue } from 'ag-grid-vue'
 
 export default {
   components: {
-    Modal2
+    Modal2,
+    DatePicker,
+    AgGridVue
   },
   name: 'KAADM0402From',
   data: () => {
     return {
-      reg_date_start: '2020-06-01',
-      reg_date_end: '2020-07-01',
       lists: '',
+      userid: '',
+      // grid
+      columnDefs: null,
+      rowData: [],
+      gridOptions: null,
+      // pop up
       isDialog: false,
-      params: ''
+      maxDate: new Date(),
+      params: '',
+      // tooltip
+      tooltipShowDelay: null,
+      frameworkComponents: null,
+      // date picker
+      startDate: '',
+      endDate: '',
+      now: '',
+      range: '',
+      lang: {
+        days: ['일', '월', '화', '수', '목', '금', '토', '일'],
+        daysMin: ['일', '월', '화', '수', '목', '금', '토', '일'],
+        months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+      },
+      DatePickerFormat: 'YYYY-MM-DD hh:mm'
     }
+  },
+  beforeMount () {
+    this.gridOptions = {
+      enableColResize: true,
+      enableSorting: true,
+      enableFilter: true,
+      animateRows: false,
+      pagination: true,
+      paginationPageSize: 10
+    }
+    this.columnDefs = [
+      {
+        headerName: '사용자',
+        field: 'userName',
+        sortable: true,
+        filter: true,
+        tooltipField: 'userInfo'
+      },
+      { headerName: '질문', field: 'question', sortable: true, filter: true },
+      { headerName: '답변', field: 'answer', sortable: true, filter: true },
+      { headerName: '평가', field: 'scoreCount', sortable: true, filter: true },
+      { headerName: '평점(평균)', field: 'avgScore', sortable: true, filter: true },
+      { headerName: '지식포인트', field: 'point', sortable: true, filter: true }
+    ]
+    this.tooltipShowDelay = 0
+  },
+  created () {
+    console.log('main created!!')
+    this.time()
+    var moment = require('moment')
+    moment.locale('ko')
+    this.now = moment().format('YYYY-MM-DD HH:mm')
+    // const userId = {
+    //   user_id: this.$store.state.userid
+    // }
+    this.getList()
   },
   methods: {
-    onSubmit () {
-      const data = {
+    async onSubmit () {
+      const a = {
         params: {
-          reg_date_start: this.reg_date_start,
-          reg_date_end: this.reg_date_end
+          reg_date_start: this.startDate,
+          reg_date_end: this.endDate
         }
       }
-      getUserList(data)
-        .then((res) => {
-          this.lists = res.data
-          console.log('getUserList')
-          console.log(this.lists)
-          return res
-        })
-        .then((res) => console.log(res))
-        .catch(console.error())
+      const { data } = await getUserList(a)
+      this.lists = data
+      this.makeData()
     },
-    searchPoint (user, t) {
-      var u = user
-      var type = t
-      const data = {
+    async getList () {
+      const a = {
         params: {
-          reg_date_start: this.reg_date_start,
-          reg_date_end: this.reg_date_end,
-          user: u,
-          type: type
+          reg_date_start: this.startDate,
+          reg_date_end: this.endDate
         }
       }
-      getSearchUserList(data)
-        .then((res) => {
-          this.params = res.data
-          return res
-        })
-      console.log(this.isDialog)
-      console.log(this.params)
-      this.isDialog = true
-    }
-  },
-  mounted () {
-    console.log('mounted!!')
-    const data = {
-      params: {
-        reg_date_start: '',
-        reg_date_end: ''
-      }
-    }
-    getUserList(data)
-      .then((res) => {
-        this.lists = res.data
-        console.log('getUserList')
-        console.log(this.lists)
-        return res
+      const { data } = await getUserList(a)
+      this.lists = data
+      this.makeData()
+    },
+    makeData () {
+      this.rowData = []
+      this.lists.forEach(e => {
+        const value = {
+          userName: e.userName,
+          question: e.question,
+          answer: e.answer,
+          scoreCount: e.scoreCount,
+          avgScore: e.avgScore,
+          dueDate: e.dueDate,
+          point: e.point,
+          userid: e.user_id,
+          userDept: e.userDept,
+          userInfo: '아이디 : ' + e.user_id + ' / 부서 : ' + e.userDept
+        }
+        this.rowData.push(value)
       })
-      .then((res) => console.log(res))
-      .catch(console.error())
+    },
+    gridSizeFit (params) {
+      // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정
+      if (window.innerWidth > 800) { // 화면 가로가 800 px 이 넘을 경우
+        console.log('innerWidth')
+        params.api.sizeColumnsToFit() // 가로 스크롤바가 생기지 않도록 컬럼 사이즈를 그리드에 꼭 맞게 조정
+      } else {
+      // 컬럼의 데이터값이 잘리지 않도록 조정
+        const allColumnIds = []
+        this.gridOptions.columnApi.getAllColumns().forEach(function (column) {
+          allColumnIds.push(column.colId)
+        })
+        this.gridOptions.columnApi.autoSizeColumns(allColumnIds)
+      }
+    },
+    getRowStyle: function (param) {
+      return { 'text-align': 'center' }
+    },
+    async onCellClicked (event) {
+      if ((event.colDef.field === 'question') || (event.colDef.field === 'answer') || (event.colDef.field === 'scoreCount')) {
+        console.log('clicked info ! : ', event.colDef.field)
+        console.log('event : ', event)
+        const data = {
+          params: {
+            user: event.data.userid,
+            type: event.colDef.field,
+            reg_date_start: this.startDate,
+            reg_date_end: this.endDate
+          }
+        }
+        const popData = await getSearchUserList(data)
+        this.$refs.popup.popupData(popData)
+        this.isDialog = true
+      }
+    },
+    time () {
+      const date = new Date()
+      this.now = date.getDate
+      console.log(this.now)
+    },
+    updateDate () {
+      this.startDate = moment(this.range[0]).format('YYYY-MM-DD')
+      this.endDate = moment(this.range[1]).format('YYYY-MM-DD')
+    }
   }
 }
 </script>
+<style>
+.ag-header-cell-label{
+  justify-content: center
+}
+</style>

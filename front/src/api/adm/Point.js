@@ -9,6 +9,7 @@ function getSolList (Data) {
 }
 
 function getSearchSolList (Data) {
+  console.log('getSearchSolList.....')
   return instance.get('KAADM04/searchPointSol', Data)
 }
 

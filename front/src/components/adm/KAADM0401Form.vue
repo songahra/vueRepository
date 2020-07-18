@@ -6,25 +6,43 @@
                 <div class="card-body">
                 <h4 class="card-title">지식포인트</h4>
                     <div class="form-group" style="resize: none;width: 600px;">
-                      <label for="customer">등록기간</label>
-                      <v-text-field slot="activator" label="시작일" id="reg_date_start" value="" v-model="reg_date_start"></v-text-field>~
-
-                      <v-text-field slot="activator" label="종료일" id="reg_date_end" value="" v-model="reg_date_end"></v-text-field>
-
+                       <v-row>
+                        <v-subheader style="padding-left: 20px; padding-top: 5px;">
+                          기간선택
+                        </v-subheader>
+                        <date-picker
+                          v-model="range"
+                          style="padding-top: 10px;"
+                          :lang="lang"
+                          range
+                          type="date"
+                          format="YYYY-MM-DD"
+                          width="500"
+                          confirm
+                          @change="updateDate"
+                        />
+                        <V-btn
+                          color="indigo"
+                          dark
+                          tile
+                          class="ma-2"
+                          @click="onSubmit"
+                        >
+                          조회
+                        </V-btn>
+                      </v-row>
                     </div>
-                    <div>
-                    <v-btn small color="primary" type="submit" >조회</v-btn>
-                    </div>
+
                 </div>
                 <div>
                   <ag-grid-vue style="width: 100%; height:550px;"
                               class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
                               :columnDefs="columnDefs"
                               :rowData="rowData"
-                              :gridReady="gridSizeFit"
                               :gridOptions="gridOptions"
                               :get-row-style="getRowStyle"
                               @cell-clicked="onCellClicked"
+                              @gridReady="gridSizeFit"
                               @gridSizeChanged="gridSizeFit">
                   </ag-grid-vue>
                 </div>
@@ -33,6 +51,7 @@
             <Modal
              :dialog="isDialog"
              :propsdata="params"
+             ref="popup"
              @close="isDialog=false"
             />
         </div>
@@ -43,23 +62,25 @@
 import 'url-search-params-polyfill'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
+import moment from 'moment'
 
 import Modal from '@/components/adm/KAADM0401POPForm'
-// import { AgGridVue } from 'ag-grid-community'
 import { getSolList, getSearchSolList } from '@/api/adm/Point.js'
 import { AgGridVue } from 'ag-grid-vue'
 
 export default {
   components: {
     Modal,
+    DatePicker,
     AgGridVue
   },
   name: 'KAADM0401From',
   data: () => {
     return {
-      reg_date_start: '',
-      reg_date_end: '',
       lists: '',
+      userid: '',
       // grid
       columnDefs: null,
       rowData: [],
@@ -67,7 +88,21 @@ export default {
       // pop up
       isDialog: false,
       maxDate: new Date(),
-      params: ''
+      params: '',
+      // date picker
+      startDate: '',
+      endDate: '',
+      range: '',
+      now: '',
+      lang: {
+        days: ['일', '월', '화', '수', '목', '금', '토', '일'],
+        daysMin: ['일', '월', '화', '수', '목', '금', '토', '일'],
+        months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+      },
+      DatePickerFormat: 'YYYY-MM-DD hh:mm'
     }
   },
   beforeMount () {
@@ -91,43 +126,36 @@ export default {
       { headerName: '지식포인트', field: 'point', sortable: true, filter: true }
     ]
   },
+  created () {
+    console.log('main created!!')
+    this.time()
+    var moment = require('moment')
+    moment.locale('ko')
+    this.now = moment().format('YYYY-MM-DD HH:mm')
+    // const userId = {
+    //   user_id: this.$store.state.userid
+    // }
+    this.getList()
+  },
   methods: {
     async onSubmit () {
       const a = {
         params: {
-          reg_date_start: this.reg_date_start,
-          reg_date_end: this.reg_date_end
+          reg_date_start: this.startDate,
+          reg_date_end: this.endDate
         }
       }
       const { data } = await getSolList(a)
       this.lists = data
       this.makeData()
     },
-    searchPoint (solution, t) {
-      var s = solution
-      var type = t
-      const da = {
-        params: {
-          reg_date_start: this.reg_date_start,
-          reg_date_end: this.reg_date_end,
-          solution: s,
-          type: type
-        }
-      }
-      const data = getSearchSolList(da)
-      this.params = data.data
-      this.makeData()
-      console.log(this.isDialog)
-      console.log(this.params)
-      this.isDialog = true
-    },
     // Ag-Grid를 만들어보자
     async getList () {
       console.log('getList')
       const a = {
         params: {
-          reg_date_start: this.reg_date_start,
-          reg_date_end: this.reg_date_start
+          reg_date_start: this.startDate,
+          reg_date_end: this.endDate
         }
       }
 
@@ -168,16 +196,39 @@ export default {
         this.gridOptions.columnApi.autoSizeColumns(allColumnIds)
       }
     },
-    onCellClicked (event) { // 그리드 셀 클릭시 이벤트
-
+    updateDate () {
+      this.startDate = moment(this.range[0]).format('YYYY-MM-DD')
+      this.endDate = moment(this.range[1]).format('YYYY-MM-DD')
+    },
+    async onCellClicked (event) { // 그리드 셀 클릭시 이벤트
+      // 그리드 셀 클릭시 이벤트
+      if ((event.colDef.field === 'question') || (event.colDef.field === 'answer') || (event.colDef.field === 'notSuccess')) {
+        console.log('1 onCellClicked')
+        console.log('event', event)
+        console.log('제발', event.colDef.field)
+        const data = {
+          params: {
+            solution: event.data.solution,
+            type: event.colDef.field,
+            reg_date_start: this.startDate,
+            reg_date_end: this.endDate
+          }
+        }
+        console.log('main data : ', data)
+        const popData = await getSearchSolList(data)
+        console.log('main popData : ', popData)
+        this.$refs.popup.popupData(popData)
+        this.isDialog = true
+      }
     },
     getRowStyle: function (param) {
       return { 'text-align': 'center' }
+    },
+    time () {
+      const date = new Date()
+      this.now = date.getDate
+      console.log(this.now)
     }
-  },
-  created () {
-    console.log('main created!!')
-    this.getList()
   }
 }
 </script>
