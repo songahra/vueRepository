@@ -7,7 +7,9 @@
     >
       <v-tabs>
         <v-tab>프로필 관리</v-tab>
-        <v-tab>지식 포인트</v-tab>
+        <v-tab @click="() => {this.$router.push('/point')}">
+          지식 포인트
+        </v-tab>
       </v-tabs>
       <v-btn @click="updateProfile">
         <span>편집</span>
@@ -141,6 +143,7 @@ export default {
       return this.$store.state.username
     },
     user_id: function () {
+      console.log('컴퓨티드에 있는 user_id 함수가 실행된다')
       return this.$store.state.userid
     },
     company: function () {
@@ -205,6 +208,9 @@ export default {
 
     updateProfile () {
       this.$router.push('/profileUpdate') // 프로필 수정화면으로 이동
+    },
+    pointPage () {
+      this.$router.push('/point') // 포인트 화면으로 이동
     }
 
   }

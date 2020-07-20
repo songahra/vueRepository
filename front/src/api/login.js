@@ -85,4 +85,14 @@ function userSolution (code) {
       return '문서중앙화'
   }
 }
-export { loginUser, expToken, userType, userSolution, getSolution }
+// 아이디 중복 확인
+function idChk (userId) {
+  return instance.get('api/test/idCheck', { params: userId })
+}
+
+// 비밀번호 찾기
+function searchPassword (userId) {
+  return instance.get('api/test/searchPassword', { params: userId })
+}
+
+export { loginUser, expToken, userType, userSolution, getSolution, idChk, searchPassword }

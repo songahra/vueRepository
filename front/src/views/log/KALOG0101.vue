@@ -1,100 +1,108 @@
-<template>
-  <v-container
-    fill-height
-    style="max-width:450px;"
+<template lang="html">
+  <div
+    id="wrap"
+    class="login"
   >
-    <v-layout
-      align-center
-      row
-      wrap
-    >
-      <v-flex xs12>
-        <v-form
-          class="form"
-          @submit.prevent="submitForm"
+    <!-- header -->
+    <header id="hd">
+      <h1 class="logo text-hide">
+        <a href=""><img
+          src="@/assets/img/logo_wh.svg"
+          alt="INZENT"
+        >INZENT</a>
+      </h1>
+    </header>
+    <!-- //header -->
+    <div id="ct">
+      <form class="form-login">
+        <img
+          src="@/assets/img/product-name.svg"
+          alt="ESB"
         >
-          <v-card>
-            <v-toolbar
-              flat
-              height="50"
-              color="#FFFFF"
-            >
-              <v-spacer />
-              <v-toolbar-title><img src="@/assets/header_logo.png"></v-toolbar-title>
-              <v-spacer />
-            </v-toolbar>
-            <v-container pa-1>
-              <v-divider light />
-            </v-container>
-            <h3
-              class="text--secondary text-center"
-              style="padding-bottom: 20px; padding-top: 20px;"
-            >
-              솔루션 지식자산화 시스템
-            </h3>
-            <div class="pa-3">
-              <v-text-field
-                v-model="user_id"
-                solo
-                outlined
-                label="아이디 입력"
-              />
-              <v-text-field
-                v-model="user_pw"
-                solo
-                outlined
-                type="password"
-                label="비밀번호 입력"
-              />
-              <div class="text-center">
-                <v-btn
-                  block
-                  large
-                  depressed
-                  type="submit"
-                >
-                  로그인
-                </v-btn>
-                <v-checkbox
-                  v-model="idSaveCheck"
-                  label="아이디 저장"
-                />
-              </div>
-              <div class="text-center">
-                <a
-                  class="new-board-btn"
-                  href
-                  @click.prevent="addBoard"
-                >회원가입</a>
-              </div>
-            </div>
-          </v-card>
-        </v-form>
-        <Modal3
-          :dialog="isAddBoard"
-          @close="isAddBoard=false"
-        />
-      </v-flex>
-    </v-layout>
-  </v-container>
+        <div class="form-group">
+          <i class="icon-user" />
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            placeholder="아이디"
+          >
+        </div>
+        <div class="form-group">
+          <i class="icon-lock" />
+          <input
+            type="password"
+            class="form-control form-control-lg"
+            placeholder="비밀번호"
+          >
+        </div>
+        <label class="custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+          >
+          <span class="custom-control-label">아이디 저장</span>
+        </label>
+        <div class="alert alert-danger">
+          계정 정보가 맞는지 확인해 주세요.
+        </div>
+        <button
+          type="submit"
+          class="btn btn-block btn-danger btn-lg"
+        >
+          로그인
+        </button>
+        <div style="text-align: center; margin-top: 15px;">
+          <a
+            href="#modal_membership"
+            class="btn-login"
+            data-toggle="modal"
+          >회원가입</a>
+          <a>|</a>
+          <a class="btn-login">비밀번호 찾기</a>
+        </div>
+      </form>
+      <p class="copy">
+        &copy; 2020 IZENT. All rights reserved
+      </p>
+    </div>
+  </div>
 </template>
 
 <script>
 import { loginUser } from '@/api/Login.js'
-import Modal3 from '@/views/log/KALOG0104MODAL.vue'
+import '@/assets/css/common.css'
+// import '@/assets/css/dashboard.css'
+// import '@/assets/css/icon.min.css'
+// import '@/assets/css/theme.dark.css'
+import '@/assets/vendor/bootstrap/css/bootstrap.min.css'
+import '@/assets/vendor/bootstrap-select/bootstrap-select.min.css'
+// import '@/assets/vendor/summernote/summernote.min.css'
+import '@/assets/vendor/bootstrap/js/bootstrap.bundle.min.js'
 
+// import '@/assets/js/common.js'
+global.jQuery = require('jquery')
+var $ = global.jQuery
+window.$ = $
 export default {
   components: {
-    Modal3
   },
   data: () => {
     return {
       user_id: '',
       user_pw: '',
       isAddBoard: false,
+      isAddModal: false,
       data: '',
       idSaveCheck: ''
     }
+  },
+  mounted () {
+    $(document).on('click', '[data-toggle="toggle"]', function () {
+      var $t = $(this)
+      var txt = $t.data('class')
+      var target = $t.data('target') || $t.attr('href')
+      $(target).toggleClass(txt)
+    })
   },
   created: function () {
     // 1. 화면 진입 시 쿠키에 아이디가 저장되어 있는지 확인을 한다.
@@ -163,6 +171,10 @@ export default {
     addBoard () {
       console.log('addBoard 실행')
       this.isAddBoard = true
+    },
+    addModal () {
+      console.log('addModal 실행')
+      this.isAddModal = true
     }
 
   }//
@@ -176,4 +188,5 @@ export default {
 .v-divider{
  background-color: black;
 }
+
 </style>

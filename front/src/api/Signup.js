@@ -8,6 +8,7 @@ const instance = axios.create({
 function signupUser (userData) {
   return instance.post('api/test/signUp', userData)
 }
+
 function formData (userData) {
   return instance.post('api/prm/upload', userData)
 }

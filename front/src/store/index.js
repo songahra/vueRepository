@@ -13,6 +13,7 @@ export default new Vuex.Store({
     company: '',
     solution: '',
     exp: '',
+    dept: '',
     // 나중에 분리
     isDisabled: ''
   },
@@ -39,6 +40,10 @@ export default new Vuex.Store({
     SET_SOLUTION (state, solution) {
       state.solution = solution
       console.log(state.solution)
+    },
+    SET_DEPT (state, dept) {
+      state.dept = dept
+      console.log(state.dept)
     },
     //
     SET_ISDIS (state, data) {

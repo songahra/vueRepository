@@ -1,103 +1,114 @@
 <template>
-  <v-app id="inspire">
-    <!-- navigation  -->
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-    >
-      <v-list dense>
-        <v-list-item router-link to="/">
-          <v-list-item-action>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item router-link to="/#">
-          <v-list-item-action>
-            <v-icon>mdi-file-multiple-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>기술문의</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-           <v-list-item router-link to="/#">
-          <v-list-item-action>
-            <v-icon>mdi-file-multiple-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>지식관리</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-           <v-list-item router-link to="/#">
-          <v-list-item-action>
-            <v-icon>mdi-file-multiple-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>지식자료실</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item router-link to="/#">
-          <v-list-item-action>
-            <v-icon>mdi-file-multiple-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>지식자산 통계</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item router-link to="/#">
-          <v-list-item-action>
-            <v-icon>mdi-file-multiple-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>공지사항</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          <v-list-item router-link to="/#">
-          <v-list-item-action>
-            <v-icon>mdi-file-multiple-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>설정</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          <v-list-item router-link to="/#">
-          <v-list-item-action>
-            <v-icon>mdi-account</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>프로필 관리</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <!-- Header -->
-    <v-app-bar
-      app
-      color="indigo"
-      dark
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>솔루션지식자산화시스템</v-toolbar-title>
-    </v-app-bar>
-
-    <!-- Main -->
-    <v-main>
-      <router-view></router-view>
-    </v-main>
-
-  </v-app>
+  <div id="wrap">
+    <Header v-if="isLoginPage()" />
+    <Navigator v-if="isLoginPage()" />
+    <div id="ct">
+      <section class="card">
+        <router-view />
+      </section>
+    </div>
+  </div>
 </template>
 
 <script>
+import Header from '@/components/common/Header.vue'
+import Navigator from '@/components/common/Navigator.vue'
+import '@/assets/vendor/bootstrap/css/bootstrap.min.css'
+import '@/assets/css/common.css'
+import { common } from '@/assets/js/commoncopy.js'
+
+global.jQuery = require('jquery')
+var $ = global.jQuery
+window.$ = $
+
 export default {
-  props: {
-    source: String
+
+  components: {
+    Header,
+    Navigator
   },
-  data: () => ({
-    drawer: null
-  })
+  created () {
+    console.dir(location.pathname)
+    // console.dir(this.router.name)
+    // this.$router.options.routes.forEach(route => {
+    // if (route.name === 'Login') { console.log('test', route.name) }
+    // })
+  },
+  mounted () {
+    var $body = $('body')
+    var $tooltip = $('[data-toggle="tooltip"]')
+
+    // 메뉴토글
+    $('.menu-toggler').click(function () {
+      console.log('zzz')
+      $(this).hasClass('d-lg-none') ? common.panelOpen('sidebar') : $body.toggleClass('sidebar-toggled')
+    })
+
+    $(document).on('click', function (e) {
+      var tg = '.panel-content'
+      if (!$body.is($("[class*='panel-open']")) || $('[data-backdrop="false"]').is(':visible')) {
+        return
+      }
+      if (!$(e.target).closest(tg).length && !$(e.target).is(tg)) {
+        common.panelClose($(tg + ':visible').parents('.panel').attr('id'))
+      }
+    })
+
+    $(document).on('click', '[data-toggle="toggle"]', function () {
+      var $t = $(this)
+      var txt = $t.data('class')
+      var target = $t.data('target') || $t.attr('href')
+      $(target).toggleClass(txt)
+    })
+
+    // tooltip
+    $tooltip.length && $tooltip.tooltip()
+
+    // select
+    var select = $('.selectpicker')
+    select.length && select.selectpicker()
+    select.on({
+      'show.bs.select': function (e) {
+        var label = $(e.target).parents('.form-control-label')
+        label.length && label.addClass('active')
+      },
+      'hide.bs.select': function (e) {
+        var label = $(e.target).parents('.form-control-label')
+        label.length && label.removeClass('active')
+      }
+    })
+    $('.form-control-label:not(.label-select)').on({
+      click: function () {
+        $(this).addClass('active')
+      },
+      focusout: function () {
+        $(this).removeClass('active')
+      }
+    })
+
+    // input
+    $('th .custom-control-input').prop('indeterminate', true)
+    $('button.custom-switch').click(function () {
+      $(this).toggleClass('checked')
+    })
+
+    // tab
+    $('[data-tab="multi"]').click(function () {
+      $('[data-tab-target]').removeClass('active')
+      $('[data-tab-target="' + $(this).attr('href') + '"]').addClass('active')
+    })
+  },
+
+  methods: {
+    /* 로그인 페이지에서는 Header, Navigator 숨기기 */
+    isLoginPage () {
+      return location.pathname !== '/login'
+    }
+  }
+
 }
 </script>
+
+<style scoped>
+
+</style>

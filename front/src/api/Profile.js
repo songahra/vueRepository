@@ -28,10 +28,14 @@ function selectMonthPoint (Data) {
 
 // 사용자 총 누적 지식포인트 조회
 function selectTotalPoint (userData) {
-  console.log('selectMonthPoint함수 실행')
+  console.log('selectTotalPoint 실행')
   return instance.get('/api/prm/selectTotalPoint', { params: userData })
 }
 
 // 이 달 누적 지식 포인트
+function selectMonthTotalPoint (userData) {
+  console.log('selectMonthTotalPoint 함수 실행')
+  return instance.get('/api/prm/selectMonthTotalPoint', { params: userData })
+}
 
-export { updatePassword, updateProfile, selectProfile, selectMonthPoint, selectTotalPoint }
+export { updatePassword, updateProfile, selectProfile, selectMonthPoint, selectTotalPoint, selectMonthTotalPoint }

@@ -7,7 +7,9 @@
     >
       <v-tabs>
         <v-tab>프로필 관리</v-tab>
-        <v-tab>지식 포인트</v-tab>
+        <v-tab @click="() => {this.$router.push('/point')}">
+          지식 포인트
+        </v-tab>
       </v-tabs>
       <v-btn
         @click="() => {this.$router.go(-1)}"

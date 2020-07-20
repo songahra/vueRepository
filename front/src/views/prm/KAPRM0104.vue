@@ -10,7 +10,7 @@
       style="
         padding-left: 10px;"
     >
-      이 달 누적 지식 포인트 :
+      이 달 누적 지식 포인트 : {{ month_total_point }}
 
       총 누적 지식 포인트 : {{ total_point }}
     </v-row>
@@ -57,7 +57,6 @@
       :grid-size-changed="gridSizeFit"
       :grid-options="gridOptions"
       :get-row-style="getRowStyle"
-      @cell-clicked="onCellClicked"
       @gridSizeChanged="gridSizeFit"
     />
   </div>
@@ -90,10 +89,12 @@ export default {
       gridOptions: null,
 
       total_point: '',
+      month_total_point: '',
       range: '',
       endDate: '',
       startDate: '',
       now: '',
+      month: '',
       // custom :lang="lang"
       lang: {
         days: ['일', '월', '화', '수', '목', '금', '토', '일'],
@@ -131,15 +132,19 @@ export default {
     moment.locale('ko') // 언어팩 변경
     console.log(moment().format('YYYY-MM-DD HH:mm'))
     this.now = moment().format('YYYY-MM-DD HH:mm')
-    console.log(moment().format('MM'))
+    console.log('이번달은?', moment().format('MM'))
+    this.month = moment().format('MM')
+
     // "1 시간 전"
     const userId = {
-      user_id: this.$store.state.userid
+      user_id: this.$store.state.userid,
+      month: this.month
     }
-
+    console.log(userId)
     const { data } = await selectTotalPoint(userId)
-    console.log(data)
-    this.total_point = data
+    console.log('data', data)
+    this.total_point = data.total_point
+    this.month_total_point = data.month_total_point
   },
   methods: {
     gridSizeFit (params) {
@@ -177,6 +182,7 @@ export default {
         start_date: this.startDate,
         end_date: this.endDate
       }
+
       console.log(userData)
 
       const { data } = await selectMonthPoint(userData)
@@ -193,6 +199,7 @@ export default {
         this.rowData.push(value)
       })
     },
+
     // 가운데정렬
     getRowStyle: function (param) {
       return { 'text-align': 'center' }
