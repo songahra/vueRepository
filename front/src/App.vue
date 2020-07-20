@@ -2,11 +2,7 @@
   <div id="wrap">
     <Header v-if="isLoginPage()" />
     <Navigator v-if="isLoginPage()" />
-    <div id="ct">
-      <section class="card">
-        <router-view />
-      </section>
-    </div>
+    <router-view />
   </div>
 </template>
 
@@ -29,10 +25,6 @@ export default {
   },
   created () {
     console.dir(location.pathname)
-    // console.dir(this.router.name)
-    // this.$router.options.routes.forEach(route => {
-    // if (route.name === 'Login') { console.log('test', route.name) }
-    // })
   },
   mounted () {
     var $body = $('body')
