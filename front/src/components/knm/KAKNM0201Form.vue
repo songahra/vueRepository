@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import 'url-search-params-polyfill'
 
 import { postAnswer } from '@/api/knm/Answer.js'
 
