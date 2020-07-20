@@ -1,117 +1,127 @@
 <template>
-  <v-card class="mx-auto">
-    <v-toolbar
-
-      height="50"
-      color="#FFFFF"
-    >
-      <v-tabs>
-        <v-tab>프로필 관리</v-tab>
-        <v-tab @click="() => {this.$router.push('/point')}">
-          지식 포인트
-        </v-tab>
-      </v-tabs>
-      <v-btn @click="updateProfile">
-        <span>편집</span>
-      </v-btn>
-    </v-toolbar>
-
-    <v-container fluid>
-      <v-row>
-        <v-col
-          cols="auto"
+  <div
+    id="ct"
+    style="
+    padding-left: 0px;
+"
+  >
+    <section class="card">
+      <v-card>
+        <v-toolbar
+          flat="false"
+          md-elevation="0"
+          height="50"
+          color="#FFFFF"
         >
-          <v-img
-            height="300"
-            width="300"
-            :src="get_img_src"
-          >
-            <template v-slot:placeholder>
-              <v-row
-                class="fill-height ma-0"
-                align="center"
-                justify="center"
+          <v-tabs>
+            <v-tab>프로필 관리</v-tab>
+            <v-tab @click="() => {this.$router.push('/point')}">
+              지식 포인트
+            </v-tab>
+          </v-tabs>
+          <v-btn @click="updateProfile">
+            <span>편집</span>
+          </v-btn>
+        </v-toolbar>
+
+        <v-container fluid>
+          <v-row>
+            <v-col
+              cols="auto"
+            >
+              <v-img
+                height="300"
+                width="300"
+                :src="get_img_src"
               >
-                <v-progress-circular
-                  indeterminate
-                  color="grey lighten-5"
-                />
+                <template v-slot:placeholder>
+                  <v-row
+                    class="fill-height ma-0"
+                    align="center"
+                    justify="center"
+                  >
+                    <v-progress-circular
+                      indeterminate
+                      color="grey lighten-5"
+                    />
+                  </v-row>
+                </template>
+              </v-img>
+            </v-col>
+
+            <v-col
+              class="pl-0"
+            >
+              <v-row
+                class="flex-column ma-0 fill-height"
+              >
+                <v-col>
+                  <v-card-text class="text--primary">
+                    <div>이름 {{ user_name }}</div>
+                  </v-card-text>
+                </v-col>
+
+                <v-col>
+                  <v-card-text class="text--primary">
+                    <div>이메일 {{ user_id }}</div>
+                  </v-card-text>
+                </v-col>
+
+                <v-col>
+                  <v-card-text class="text--primary">
+                    <div> {{ user_id }}</div>
+                  </v-card-text>
+                </v-col>
+
+                <v-col>
+                  <v-card-text class="text--primary">
+                    <div>소속회사 {{ company }}</div>
+                  </v-card-text>
+                </v-col>
+
+                <v-col>
+                  <v-card-text class="text--primary">
+                    <div>담당 솔루션 {{ solution }} </div>
+                  </v-card-text>
+                </v-col>
+
+                <v-col>
+                  <v-card-text class="text--primary">
+                    <div>권한 {{ usertype }}</div>
+                  </v-card-text>
+                </v-col>
               </v-row>
-            </template>
-          </v-img>
-        </v-col>
-
-        <v-col
-          class="pl-0"
-        >
-          <v-row
-            class="flex-column ma-0 fill-height"
-          >
-            <v-col>
-              <v-card-text class="text--primary">
-                <div>이름 {{ user_name }}</div>
-              </v-card-text>
-            </v-col>
-
-            <v-col>
-              <v-card-text class="text--primary">
-                <div>이메일 {{ user_id }}</div>
-              </v-card-text>
-            </v-col>
-
-            <v-col>
-              <v-card-text class="text--primary">
-                <div> {{ user_id }}</div>
-              </v-card-text>
-            </v-col>
-
-            <v-col>
-              <v-card-text class="text--primary">
-                <div>소속회사 {{ company }}</div>
-              </v-card-text>
-            </v-col>
-
-            <v-col>
-              <v-card-text class="text--primary">
-                <div>담당 솔루션 {{ solution }} </div>
-              </v-card-text>
-            </v-col>
-
-            <v-col>
-              <v-card-text class="text--primary">
-                <div>권한 {{ usertype }}</div>
-              </v-card-text>
             </v-col>
           </v-row>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-card-actions xs10>
-      <!-- <input
+        </v-container>
+        <v-card-actions xs10>
+          <!-- <input
         type="file"
         @change="onFileSelected"
       > -->
-      <!-- accept 클릭했을 때 이미지 파일만 뜨게해주는 역할 -->
-      <v-card-text class="d-inline pa-2">
-        <v-file-input
-          v-model="image"
-          :rules="rules"
-          accept="image/*"
-          placeholder="Pick an avatar"
-          prepend-icon="mdi-camera"
-          label="Avatar"
-          @change="onUpload"
-        />
-      </v-card-text>
-      <v-alert
-        v-model="alert"
-        dense
-        type="error"
-      >
-        이미지 파일만 업로드 하세요
-      </v-alert>
-    </v-card-actions>
-  </v-card>
+          <!-- accept 클릭했을 때 이미지 파일만 뜨게해주는 역할 -->
+          <v-card-text class="d-inline pa-2">
+            <v-file-input
+              v-model="image"
+              :rules="rules"
+              accept="image/*"
+              placeholder="Pick an avatar"
+              prepend-icon="mdi-camera"
+              label="Avatar"
+              @change="onUpload"
+            />
+          </v-card-text>
+          <v-alert
+            v-model="alert"
+            dense
+            type="error"
+          >
+            이미지 파일만 업로드 하세요
+          </v-alert>
+        </v-card-actions>
+      </v-card>
+    </section>
+  </div>
 </template>
 
 <script>

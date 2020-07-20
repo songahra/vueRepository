@@ -1,47 +1,164 @@
 <template>
-  <div>
-    <v-checkbox
-      v-model="selected"
-      :label="`아래 모든 항목에 동의합니다`"
-      @click.native.stop="selectAll()"
-    />
-    <!-- <v-checkbox v-model="isCheckAll" :label="`아래 모든 항목에 동의합니다 ${isCheckAll.toString()}`"></v-checkbox> -->
-    <slot
-      class="text-center"
-      name="body"
-    >
-      <p>이용약관 (필수)</p>
-      <v-checkbox
-        v-model="checkbox[0]"
-        class="checkbox"
-        :label="'동의합니다'"
-        @click.native.stop
-      />
-      <p>개인정보 수집 및 이용 (필수)</p>
-      <v-checkbox
-        v-model="checkbox[1]"
-        class="checkbox"
-        :label="'동의합니다'"
-        @click.native.stop
-      />
-      <p>이벤트 및 정보 수신 안내 (선택)</p>
-      <v-checkbox
-        v-model="checkbox[2]"
-        class="checkbox"
-        :label="'동의합니다'"
-        @click.native.stop
-      />
-      <v-textarea
-        solo
-        name="input-7-1"
-        filled
-        disabled
-        label="이용약관 (필수) "
-        auto-grow
-        value="약관동의"
-      />
-    </slot>
-  </div>
+  <!-- 회원가입 -->
+  <v-app id="app">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          회원가입 시 약관동의
+        </h2>
+        <!-- <button
+          type="button"
+          class="btn-icon"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="icon-close" />
+        </button> -->
+      </div>
+      <div class="modal-body modal-body-ct">
+        <div
+          class="sub-bar"
+          style="border-bottom: 1px solid #f0f1f6"
+        >
+          <label class="custom-control custom-checkbox">
+            <input
+              v-model="selected"
+              type="checkbox"
+              class="custom-control-input"
+              @click="selectAll"
+            >
+            <span class="custom-control-label" />
+          </label>
+          <p class="font-weight-bold">
+            전체약관의 동의합니다.
+          </p>
+        </div>
+        <div
+          class="sub-bar"
+          style="border-bottom: 1px solid #f0f1f6"
+        >
+          <label class="custom-control custom-checkbox">
+            <input
+              v-model="checkbox[0]"
+              type="checkbox"
+              class="custom-control-input"
+            >
+            <span class="custom-control-label" />
+          </label>
+          <p class="font-weight-bold">
+            이용약관(필수)
+          </p>
+        </div>
+        <div
+          class="form-group"
+          style="margin-bottom: 20px;"
+        >
+          <textarea
+            class="form-control"
+            rows="3"
+            style="height: 150px;"
+            disabled
+          >
+                                제 1조 개인정보의 처리목적
+                                ① 회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보보호법 제 18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.
+
+                                1. 채용:입사전형 진행, 입사 지원서 수정, 합격 여부 확인, 입사 지원자와의 원활한 의사소통, 자격증빙 확인
+                                2. 고객 상담 및 기술지원
+                                3. 윤리 상담 및 제보: 윤리상담 및 제보 접수 및 처리결과 회신
+
+                                ② 회사는 홈페이지(http://.co.kr)의 사용자 입력 방법으로 일부 개인정보를 수집하며, 경우에 따라 출력한 종이문서 혹은 이메일로 일부의 정보를 수집할 수도 있습니다.
+                                제 2조 개인정보의 처리 및 보유기
+                            </textarea>
+        </div>
+        <div
+          class="sub-bar"
+          style="border-top: 1px solid #f0f1f6"
+        >
+          <label class="custom-control custom-checkbox">
+            <input
+              v-model="checkbox[1]"
+              type="checkbox"
+              class="custom-control-input"
+            >
+            <span class="custom-control-label" />
+          </label>
+          <p class="font-weight-bold">
+            개인정보 수집 및 이용(필수)
+          </p>
+        </div>
+        <div
+          class="form-group"
+          style="margin-bottom: 20px;"
+        >
+          <textarea
+            class="form-control"
+            rows="3"
+            style="height: 150px;"
+            disabled
+          >
+                                제 1조 개인정보의 처리목적
+                                ① 회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보보호법 제 18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.
+
+                                1. 채용:입사전형 진행, 입사 지원서 수정, 합격 여부 확인, 입사 지원자와의 원활한 의사소통, 자격증빙 확인
+                                2. 고객 상담 및 기술지원
+                                3. 윤리 상담 및 제보: 윤리상담 및 제보 접수 및 처리결과 회신
+
+                                ② 회사는 홈페이지(http://.co.kr)의 사용자 입력 방법으로 일부 개인정보를 수집하며, 경우에 따라 출력한 종이문서 혹은 이메일로 일부의 정보를 수집할 수도 있습니다.
+                                제 2조 개인정보의 처리 및 보유기
+                            </textarea>
+        </div>
+        <div
+          class="sub-bar"
+          style="border-top: 1px solid #f0f1f6"
+        >
+          <label class="custom-control custom-checkbox">
+            <input
+              v-model="checkbox[2]"
+              type="checkbox"
+              class="custom-control-input"
+            >
+            <span class="custom-control-label" />
+          </label>
+          <p class="font-weight-bold">
+            이벤트 및 광고 수신 안내(선택)
+          </p>
+        </div>
+        <div class="form-group">
+          <textarea
+            class="form-control"
+            rows="3"
+            style="height: 150px;"
+            disabled
+          >
+                                제 1조 개인정보의 처리목적
+                                ① 회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보보호법 제 18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.
+
+                                1. 채용:입사전형 진행, 입사 지원서 수정, 합격 여부 확인, 입사 지원자와의 원활한 의사소통, 자격증빙 확인
+                                2. 고객 상담 및 기술지원
+                                3. 윤리 상담 및 제보: 윤리상담 및 제보 접수 및 처리결과 회신
+
+                                ② 회사는 홈페이지(http://.co.kr)의 사용자 입력 방법으로 일부 개인정보를 수집하며, 경우에 따라 출력한 종이문서 혹은 이메일로 일부의 정보를 수집할 수도 있습니다.
+                                제 2조 개인정보의 처리 및 보유기
+                            </textarea>
+        </div>
+      </div>
+    <!-- <div class="modal-footer">
+      <button
+        type="button"
+        class="btn"
+        data-dismiss="modal"
+      >
+        취소
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+      >
+        다음
+      </button>
+    </div> -->
+    </div>
+  </v-app>
 </template>
 
 <script>
@@ -76,6 +193,7 @@ export default {
   },
   methods: {
     selectAll () {
+      this.selected = !this.selected
       for (const i in this.checkbox) {
         this.checkbox[i] = this.selected
       }

@@ -3,128 +3,121 @@
     fill-height
     style="max-width:450px;"
   >
-    <v-layout
-      align-center
-      row
-      wrap
-    >
-      <v-flex xs12>
-        <v-form
-          v-model="isFormValid"
-          class="form"
-          @submit.prevent="submitForm"
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          회원정보 입력
+        </h2>
+        <!-- <button
+          type="button"
+          class="btn-icon"
+          data-dismiss="modal"
+          aria-label="Close"
         >
-          <div class="pa-3">
-            <v-text-field
-              v-model="user_id"
-              solo
-              outline
-              :rules="emailRules"
-              :append-icon="show1 ? 'mdi-eye' : 'mdi-checkbox-blank-circle-outline'"
-              label="이메일 입력"
-              required
-            />
-
-            <v-text-field
-              v-model="user_pw"
-              solo
-              outline
-              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="[rules.required, rules.chk1, rules.chk2, rules.chk3, rules.min]"
-              :min-rules="minRules.min"
-              :type="show1 ? 'text' : 'password'"
-              label="비밀번호 입력"
-              counter
-              @click:append="show1 = !show1"
-            />
-            <v-text-field
-              v-model="user_pw2"
-              solo
-              outline
-              :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-              label="비밀번호 확인"
-              :rules="pwdConfirm"
-              :type="show2 ? 'text' : 'password'"
-              @click:append="show2 = !show2"
-            />
-            <v-text-field
-              v-model="user_name"
-              solo
-              outline
-              :rules="nameRules"
-              label="이름 입력"
-              required
-            />
-            <v-text-field
-              v-model="company"
-              solo
-              outline
-              label="소속회사 입력"
-              required
-            />
-            <v-text-field
-              v-model="dept"
-              solo
-              outline
-              label="부서 입력"
-            />
-            <v-container fluid>
-              <v-row>
-                <v-col cols="20">
-                  <v-combobox
-                    v-model="solution"
-                    :items="items"
-                    :rules="[v => !!v || 'Item is required']"
-                    placeholder="솔루션 선택"
-                    clearable
-                    outlined
-                    dense
-                    required
-                    item-text="codeContent"
-                    item-value="codeId"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-            <v-container fluid>
-              <v-row>
-                <v-col cols="12">
-                  <v-combobox
-                    v-model="user_type"
-                    :items="items2"
-                    :rules="[v => !!v || '담당을 선택하세요']"
-                    placeholder="담당 선택"
-                    clearable
-                    outlined
-                    dense
-                    required
-                    item-text="name"
-                    item-value="code"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-
-            <div class="text-center">
-              <v-btn
-                :disabled="!isFormValid"
-                large
-                depressed
-                type="submit"
-              >
-                회원가입
-              </v-btn>
+          <i class="icon-close" />
+        </button> -->
+      </div>
+      <div class="modal-body modal-body-ct">
+        <div
+          id="base-info"
+          class="tab-pane active"
+        >
+          <div class="row frm-row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="control-label">이메일<span class="text-notice-1">*이메일 형식이 올바르지 않습니다.</span></label>
+                <div style="position: relative">
+                  <input
+                    type="text"
+                    class="form-control form-input"
+                    placeholder="아이디로 사용할 이메일 입력"
+                  >
+                  <img
+                    src="@/assets/img/danger.svg"
+                    alt=""
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label">소속회사</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="소속회사명"
+                >
+              </div>
+              <div class="form-group">
+                <label class="control-label">솔루션명</label>
+                <select class="form-control">
+                  <option value="">
+                    iGate
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label">비밀번호<span class="text-notice-2">영문대문자 포함 | 영문소문자 포함 | 숫자포함 | 10자 이상</span>
+                </label>
+                <div style="position: relative">
+                  <img
+                    src="@/assets/img/complete.svg"
+                    alt=""
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="**********"
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="control-label">이름</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="가입자 이름"
+                >
+              </div>
+              <div class="form-group">
+                <label class="control-label">부서</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="부서명"
+                >
+              </div>
+              <div class="form-group">
+                <label class="control-label">담당</label>
+                <select class="form-control">
+                  <option value="">
+                    기획자
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label">비밀번호 확인 <span class="text-notice-1">*비밀번호가 서로 일치하지 않습니다.</span>
+                </label>
+                <div style="position: relative">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="**********"
+                  >
+                  <i class="icon-lock" />
+                </div>
+              </div>
             </div>
           </div>
-        </v-form>
-      </v-flex>
-    </v-layout>
+        </div>
+      </div>
+    </div>
   </v-container>
 </template>
 
 <script>
 import { signupUser } from '@/api/Signup.js'
-import { getSolution } from '@/api/Login.js'
+import { getSolution, idChk } from '@/api/Login.js'
 
 export default {
   components: {
@@ -132,7 +125,10 @@ export default {
   },
   data () {
     return {
-      isFormValid: false, // :rules 가 모두 ture여야 버튼 활성화
+      emailRulestext: [],
+      errorAlert: false, // alert창은 처음에 안보이게 설정
+      successAlert: false,
+      isFormValid: false, // :rules 가 모두 ture여야 버튼 활성화v
       name: '',
       nameRules: [
         v => !!v || '이름을 입력하세요!',
@@ -140,10 +136,10 @@ export default {
       ],
       user_id: '',
       emailRules: [
-        v => !!v || '이메일을 입력하세요!',
+        v => !!v || '이메일을 입력하세요!.',
         v => /.+@.+\..+/.test(v) || '이메일 형식이 올바르지 않습니다.'
       ],
-      pwdConfirm: [v => !!v || 'Confirm password', v => v === this.user_pw || '비밀번호가 서로 일치하지 않습니다.'],
+      pwdConfirm: [v => !!v || '비밀번호를 확인해 주세요.', v => v === this.user_pw || '비밀번호가 서로 일치하지 않습니다.'],
       user_pw2: '',
       show1: false,
       show2: false,
@@ -180,8 +176,9 @@ export default {
   async created () {
     const { data } = await getSolution()
 
-    console.log('data::::: ', data)
+    console.log('data뭐있지?', data)
     this.items = data
+    console.log('emailRules', this.emailRules)
   },
   methods: {
     // 회원가입
@@ -212,6 +209,20 @@ export default {
 
       } finally {
 
+      }
+    },
+    async chkBtn () {
+      const id = { user_id: this.user_id }
+      console.log(id)
+      const { data } = await idChk(id)
+      console.log(data)
+      if (data === 1) {
+        // 1 : 아이디가 중복되는 문구 보여주기
+        this.errorAlert = true
+        this.successAlert = false
+      } else {
+        this.successAlert = true
+        this.errorAlert = false
       }
     }
 

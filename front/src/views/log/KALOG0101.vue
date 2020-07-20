@@ -1,84 +1,98 @@
 <template lang="html">
-  <div
-    id="wrap"
-    class="login"
-  >
-    <!-- header -->
-    <header id="hd">
-      <h1 class="logo text-hide">
-        <a href=""><img
-          src="@/assets/img/logo_wh.svg"
-          alt="INZENT"
-        >INZENT</a>
-      </h1>
-    </header>
-    <!-- //header -->
-    <div id="ct">
-      <form
-        class="form-login"
-        @submit.prevent="submitForm"
-      >
-        <img
-          src="@/assets/img/product-name.svg"
-          alt="ESB"
+  <v-app id="app">
+    <div
+      id="wrap"
+      class="login"
+    >
+      <!-- header -->
+      <header id="hd">
+        <h1 class="logo text-hide">
+          <a href=""><img
+            src="@/assets/img/logo_wh.svg"
+            alt="INZENT"
+          >INZENT</a>
+        </h1>
+      </header>
+      <!-- //header -->
+      <div id="ct">
+        <form
+          class="form-login"
+          @submit.prevent="submitForm"
         >
-        <div class="form-group">
-          <i class="icon-user" />
-          <input
-            v-model="user_id"
-            type="text"
-            class="form-control form-control-lg"
-            placeholder="아이디"
+          <img
+            src="@/assets/img/product-name.svg"
+            alt="ESB"
           >
-        </div>
-        <div class="form-group">
-          <i class="icon-lock" />
-          <input
-            v-model="user_pw"
-            type="password"
-            class="form-control form-control-lg"
-            placeholder="비밀번호"
+          <div class="form-group">
+            <i class="icon-user" />
+            <input
+              v-model="user_id"
+              type="text"
+              class="form-control form-control-lg"
+              placeholder="아이디"
+            >
+          </div>
+          <div class="form-group">
+            <i class="icon-lock" />
+            <input
+              v-model="user_pw"
+              type="password"
+              class="form-control form-control-lg"
+              placeholder="비밀번호"
+            >
+          </div>
+          <label class="custom-control custom-checkbox">
+            <input
+              v-model="idSaveCheck"
+              type="checkbox"
+              class="custom-control-input"
+            >
+            <span class="custom-control-label">아이디 저장</span>
+          </label>
+          <div
+            v-if="alert"
+            class="alert alert-danger"
           >
-        </div>
-        <label class="custom-control custom-checkbox">
-          <input
-            v-model="idSaveCheck"
-            type="checkbox"
-            class="custom-control-input"
+            계정 정보가 맞는지 확인해 주세요.
+          </div>
+          <button
+            type="submit"
+            class="btn btn-block btn-danger btn-lg"
           >
-          <span class="custom-control-label">아이디 저장</span>
-        </label>
-        <div
-          v-if="alert"
-          class="alert alert-danger"
-        >
-          계정 정보가 맞는지 확인해 주세요.
-        </div>
-        <button
-          type="submit"
-          class="btn btn-block btn-danger btn-lg"
-        >
-          로그인
-        </button>
-        <div style="text-align: center; margin-top: 15px;">
-          <a
-            href="#modal_membership"
-            class="btn-login"
-            data-toggle="modal"
-          >회원가입</a>
-          <a>|</a>
-          <a class="btn-login">비밀번호 찾기</a>
-        </div>
-      </form>
-      <p class="copy">
-        &copy; 2020 IZENT. All rights reserved
-      </p>
+            로그인
+          </button>
+          <div style="text-align: center; margin-top: 15px;">
+            <a
+              href="#modal_membership"
+              class="btn-login"
+              @click.prevent="addBoard"
+            >회원가입</a>
+            <a>|</a>
+            <a class="btn-login">비밀번호 찾기</a>
+          </div>
+        </form>
+
+        <p class="copy">
+          &copy; 2020 IZENT. All rights reserved
+        </p>
+      </div>
     </div>
-  </div>
+    <Modal3
+      :dialog="isAddBoard"
+      @close="isAddBoard=false"
+    />
+    <Modal
+      :dialog="isAddModal"
+      @close="isAddModal=false"
+    />
+  </v-app>
 </template>
 
 <script>
 import { loginUser } from '@/api/Login.js'
+import Modal3 from '@/views/log/KALOG0104MODAL.vue'
+import Modal from '@/components/log/KALOGPOP2.vue'
+
 import '@/assets/css/common.css'
 import '@/assets/vendor/bootstrap/css/bootstrap.min.css'
 import '@/assets/vendor/bootstrap-select/bootstrap-select.min.css'
@@ -92,6 +106,8 @@ window.$ = $
 
 export default {
   components: {
+    Modal3,
+    Modal
   },
   data: () => {
     return {
