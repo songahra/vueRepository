@@ -14,7 +14,10 @@
     </header>
     <!-- //header -->
     <div id="ct">
-      <form class="form-login">
+      <form
+        class="form-login"
+        @submit.prevent="submitForm"
+      >
         <img
           src="@/assets/img/product-name.svg"
           alt="ESB"
@@ -22,6 +25,7 @@
         <div class="form-group">
           <i class="icon-user" />
           <input
+            v-model="user_id"
             type="text"
             class="form-control form-control-lg"
             placeholder="아이디"
@@ -30,6 +34,7 @@
         <div class="form-group">
           <i class="icon-lock" />
           <input
+            v-model="user_pw"
             type="password"
             class="form-control form-control-lg"
             placeholder="비밀번호"
@@ -37,12 +42,16 @@
         </div>
         <label class="custom-control custom-checkbox">
           <input
+            v-model="idSaveCheck"
             type="checkbox"
             class="custom-control-input"
           >
           <span class="custom-control-label">아이디 저장</span>
         </label>
-        <div class="alert alert-danger">
+        <div
+          v-if="alert"
+          class="alert alert-danger"
+        >
           계정 정보가 맞는지 확인해 주세요.
         </div>
         <button
@@ -71,9 +80,6 @@
 <script>
 import { loginUser } from '@/api/Login.js'
 import '@/assets/css/common.css'
-// import '@/assets/css/dashboard.css'
-// import '@/assets/css/icon.min.css'
-// import '@/assets/css/theme.dark.css'
 import '@/assets/vendor/bootstrap/css/bootstrap.min.css'
 import '@/assets/vendor/bootstrap-select/bootstrap-select.min.css'
 // import '@/assets/vendor/summernote/summernote.min.css'
@@ -83,6 +89,7 @@ import '@/assets/vendor/bootstrap/js/bootstrap.bundle.min.js'
 global.jQuery = require('jquery')
 var $ = global.jQuery
 window.$ = $
+
 export default {
   components: {
   },
@@ -93,7 +100,8 @@ export default {
       isAddBoard: false,
       isAddModal: false,
       data: '',
-      idSaveCheck: ''
+      idSaveCheck: '',
+      alert: false
     }
   },
   mounted () {
@@ -103,6 +111,7 @@ export default {
       var target = $t.data('target') || $t.attr('href')
       $(target).toggleClass(txt)
     })
+    console.log(this.user_id)
   },
   created: function () {
     // 1. 화면 진입 시 쿠키에 아이디가 저장되어 있는지 확인을 한다.
@@ -130,7 +139,8 @@ export default {
         }
         const { data } = await loginUser(userData)
         if (data.msg) {
-          alert(data.msg)
+          // alert(data.msg)
+          this.alert = true
         } else {
           console.log(data.token)
 
@@ -161,6 +171,7 @@ export default {
 
           localStorage.setItem('token', data.token)
           console.log(this.$store.state.token)
+          this.$router.push('/home')
         }
       } catch (error) {
         // 에러 핸들링할 코드
