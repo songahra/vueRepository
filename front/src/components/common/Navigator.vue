@@ -25,19 +25,19 @@
             style="margin-right: 0px;"
           /></a>
           <a
-            href="#menu-cmmn"
+            href="/knm/mainList"
             class="menu-collapse-link collapsed small text-dark"
             data-toggle="collapse"
             style="margin-left: 20px"
           >- 지식 관리</a>
           <a
-            href="#menu-cmmn"
+            href="/knm/myList"
             class="menu-collapse-link collapsed small text-dark"
             data-toggle="collapse"
             style="margin-left: 20px"
           >- 내가 문의한 질문</a>
           <a
-            href="#menu-cmmn"
+            href="/knm/anList"
             class="menu-collapse-link collapsed small text-dark"
             data-toggle="collapse"
             style="margin-left: 20px"
@@ -66,7 +66,7 @@
             style="margin-right: 0px;"
           /></a>
           <a
-            href="#menu-cmmn"
+            href="/adm/PJList"
             class="menu-collapse-link collapsed small text-dark"
             data-toggle="collapse"
             style="margin-left: 20px"
@@ -84,14 +84,14 @@
             style="margin-left: 20px"
           >- 시스템 코드</a>
           <a
-            href="#menu-cmmn"
+            href="/adm/solList"
             class="menu-collapse-link collapsed small text-dark"
             data-toggle="collapse"
             style="margin-left: 20px"
           >- 지식포인트</a>
 
           <a
-            href=""
+            href="/profile"
             class="menu-link"
           ><i class="icon-user text-dark" />프로필 관리</a>
         </li>
