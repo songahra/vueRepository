@@ -1,28 +1,37 @@
 <template>
-    <v-container fluid>
-        <div class="aDetail-top">
-            <v-text-field v-model="ansName"/>
-            <v-btn @click.prevent="btnDelete">삭제</v-btn>
-            <v-btn @click.prevent="btnModify">수정</v-btn>
+<div id="ct">
+    <section class="card">
+      <div class="ct-content">
+        <div class="sub-bar">
+          <i class="icon-right text-danger"></i><p class="font-weight-bold">{{ this.ansName }}</p>
+          <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
+          <a href="" class="btn btn-primary"><span class="hide">수정</span></a>
         </div>
-        <div class="aDtail-content">
-            <v-text-field v-model="ansContent"/>
-        </div>
+        <textarea class="textarea-basic" v-model="ansContent"></textarea>
 
-    </v-container>
+      </div>
+      <KAKNM0203DelPopup :dialog="isDialog" :sendData="paramData" ref="popup" @Close="close"></KAKNM0203DelPopup>
+    </section>
+</div>
 </template>
 
 <script>
-import { getAnswer } from '@/api/knm/Answer.js'
+import { getAnswer, delAnswer } from '@/api/knm/Answer.js'
+import KAKNM0203DelPopup from '@/components/knm/KAKNM0203Form.vue'
 
 export default {
   name: 'KAKNM0205Form',
+  components: {
+    KAKNM0203DelPopup
+  },
   data: () => {
     return {
       ansName: '',
       ansContent: '',
       ansId: 'AN20200619203215980',
-      lists: ''
+      lists: '',
+      paramData: '',
+      isDialog: false
     }
   },
   created () {
@@ -45,6 +54,24 @@ export default {
       this.ansContent = data[0].content_a
       console.log(this.ansName)
       console.log(this.ansContent)
+    },
+    clickDelete () {
+      console.log('click Delete 실행!')
+      this.isDialog = true
+      console.log('this.isDialog!', this.isDialog)
+    },
+    close () {
+      this.isDialog = !this.isDialog
+    },
+    ansDelete () {
+      console.log('ansDelete 호출')
+      const params = {
+        params: {
+          ansId: this.ansId
+        }
+      }
+      const { data } = delAnswer(params)
+      console.log(data)
     }
   }
 }
