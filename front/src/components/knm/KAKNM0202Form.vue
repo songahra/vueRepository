@@ -1,5 +1,5 @@
 <template>
- <v-container fluid>
+<v-container fluid>
      <h3>답변 작성</h3>
      <form id="KAKNM0201Form" @submit.prevent="onSubmit" class="form">
          <v-col class="text-center" cols="12" sm="4">
@@ -20,14 +20,12 @@
 </template>
 
 <script>
-import 'url-search-params-polyfill'
-
 import { postAnswer } from '@/api/knm/Answer.js'
-
 export default {
-  name: 'KAKNM0201Form',
+  name: 'KAKNM0202Form',
   data: () => {
     return {
+      answer_id: '',
       userid: 'Auser4@inzent.com',
       title: '',
       content_a: '',
@@ -44,31 +42,30 @@ export default {
       link: 'http://localhost:8081/knm/anList'
     }
   },
-  created () {
-    // this.userid = this.$store.state.userid
-  },
   methods: {
     async onSubmit () {
       console.log('onSubmit')
       const data = {
-        // 질문 정보
-        question_id: this.question_id,
-        project_id: this.project_id,
-        solution_id: this.solution_id,
         // 답변 정보
+        answer_id: this.answer_id,
         title: this.title,
         content_a: this.content_a,
         content_b: this.content_b,
         content_t: this.content_t,
         reg_userid: this.userid,
-        do_type: 'W'
+        do_type: 'M'
         // reg_userid: this.$store.state.userid
 
       }
       console.log('POST DATA : ', data)
       const response = await postAnswer(data)
-      alert('1개의 답변과 ' + response.data + '개의 태그가 등록되었습니다.')
+      alert(response + '개의 답변이 수정되었습니다.')
     }
   }
+
 }
 </script>
+
+<style>
+
+</style>

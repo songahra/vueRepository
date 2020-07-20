@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import 'url-search-params-polyfill'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import DatePicker from 'vue2-datepicker'
