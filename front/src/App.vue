@@ -15,7 +15,7 @@ import Header from '@/components/common/Header.vue'
 import Navigator from '@/components/common/Navigator.vue'
 import '@/assets/vendor/bootstrap/css/bootstrap.min.css'
 import '@/assets/css/common.css'
-import { common } from '@/assets/js/commoncopy.js'
+import { common } from '@/assets/js/common.js'
 
 global.jQuery = require('jquery')
 var $ = global.jQuery
