@@ -2,10 +2,11 @@
   <header id="hd">
     <div class="hd-brand">
       <h1 class="logo text-hide">
-        <a href=""><img
-          src="@/assets/img/logo.svg"
-          alt="INZENT"
-        ></a>
+        <a href="/">
+          <img
+            src="@/assets/img/logo.svg"
+            alt="INZENT"
+          ></a>
       </h1>
       <!-- <button type="button" class="menu-toggler d-none d-lg-block"><i class="icon-hamburger-back"></i></button> -->
       <button
@@ -41,22 +42,30 @@
       <span class="text-dark small">마일리지 10점</span>
 
       <a
-        href=""
+        href="/profile"
         class="icon-profile"
         title="마이페이지"
       />
-      <span class="text-dark small"><i
+      <span
+        class="text-dark small"
+      ><i
         style="margin-left: 5px;"
         class="icon-down"
-      /></span>
+      /> {{ this.$store.state.username }}</span>
+      <Modal />
     </div>
   </header>
 </template>
 
 <script>
+import Modal from '@/components/log/KALOGPOP1.vue' // 1. 비밀번호 변경 모달
+
 export default {
-  name: 'Header',
+  components: {
+    Modal
+  },
   mounted () {
 
   }
 }
+</script>
