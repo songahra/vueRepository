@@ -1,45 +1,49 @@
 <template>
-    <div>
-        <div class="container" style="margin-top:100px">
-            <form id="KAKNM0204Form" @submit.prevent="onSubmit" class="form">
-            <div class="card shadow">
-                <div class="card-body">
-                <h4 class="card-title">내가 답변한 질문</h4>
-                </div>
-                <div class="text-left">
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <label for="title">질문 제목</label>
-                      <input type="text" id="title" value="" v-model="title" class="form-control" rows="10" style="resize:none">
-
+  <div id="ct">
+    <section class="card">
+    <header class="card-header" style="padding: 1.6rem 1rem;">
+      <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-msg-text"></i></span>내가 답변한 질문</h2>
+    </header>
+    <div class="ct-header">
+                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+                <div id="collapse-filter" class="collapse collapse-filter">
+                    <div class="filter no-gutters">
+                        <div class="col" style="min-width: 70%;">
+                            <label class="form-control-label">
+                                <b class="control-label">질문제목</b>
+                                <input type="text" class="form-control" v-model="title" placeholder="제목을 입력하세요">
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label label-select">
+                                <b class="control-label">처리상태</b>
+                                <select class="form-control selectpicker" v-model="status" title="선택하세요">
+                                    <option value="">선택안함</option>
+                                    <option value="SS">완료</option>
+                                    <option value="NN">미완료</option>
+                                    <option value="RQ">재질문</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary" @click.prevent="onSubmit()"><i class="icon-srch"></i>조회</button>
+                        </div>
                     </div>
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <label for="status">처리상태  :  </label>
-                      <select name="status" id="status" v-model="status">
-                          <option selected value="">처리상태</option>
-                          <option value="SS">완료</option>
-                          <option value="NN">미완료</option>
-                          <option value="RQ">재질문</option>
-                      </select>
-                    </div>
-                    <div>
-                      <v-btn small color="primary" type="submit" >조회</v-btn>
-                    </div>
-                </div>
-                <div>
-                  <ag-grid-vue style="width: 100%; height:550px;"
-                              class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                              :columnDefs="columnDefs"
-                              :rowData="rowData"
-                              :gridOptions="gridOptions"
-                              :get-row-style="getRowStyle"
-                              @gridReady="gridSizeFit"
-                              @gridSizeChanged="gridSizeFit">
-                  </ag-grid-vue>
                 </div>
             </div>
-            </form>
-        </div>
-    </div>
+      <div class="ct-content">
+        <ag-grid-vue style="width: 100%; height:550px;"
+                    class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                    :columnDefs="columnDefs"
+                    :rowData="rowData"
+                    :gridOptions="gridOptions"
+                    :get-row-style="getRowStyle"
+                    @gridReady="gridSizeFit"
+                    @gridSizeChanged="gridSizeFit">
+        </ag-grid-vue>
+      </div>
+    </section>
+  </div>
 </template>
 <script>
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -84,14 +88,18 @@ export default {
       { headerName: '처리상태', field: 'status', sortable: true, filter: true }
     ]
   },
+  computed: {
+    user_id () {
+      return this.$store.state.userid
+    }
+  },
   methods: {
     async onSubmit () {
       const da = {
         params: {
           title: this.title,
           status: this.status,
-          // user: this.$store.state.state.userid
-          user: 'Auser4@inzent.com'
+          user: this.$store.state.userid
         }
       }
       const { data } = await getAnsList(da)
@@ -99,12 +107,14 @@ export default {
       this.makeData()
     },
     async getList () {
+      console.log('get Answer List')
+      console.log('store ', this.$store)
+      console.log('user : ', this.$store.state.userid)
       const da = {
         params: {
           title: this.title,
           status: this.status,
-          // user: this.$store.state.state.userid
-          user: 'Auser4@inzent.com'
+          user: this.$store.state.userid
         }
       }
       const { data } = await getAnsList(da)

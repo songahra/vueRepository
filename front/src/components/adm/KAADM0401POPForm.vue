@@ -1,4 +1,6 @@
 <template>
+<div id="ct">
+    <section class="card">
  <v-dialog
     v-model="dialog"
     persistent
@@ -22,12 +24,13 @@
         </ag-grid-vue>
     </v-card>
  </v-dialog>
+    </section>
+</div>
 </template>
 <script>
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AgGridVue } from 'ag-grid-vue'
-// import { getSearchSolList } from '@/api/adm/Point.js'
 
 export default {
   name: 'KAADM0401POPForm',

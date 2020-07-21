@@ -1,8 +1,9 @@
 <template>
+<div id="ct">
+  <section class="card">
     <div>
-        <div class="container" style="margin-top:100px">
+        <!-- <div class="container" style="margin-top:100px"> -->
             <form id="KAADM0402Form" @submit.prevent="onSubmit" class="form">
-            <div class="card shadow">
                 <div class="card-body">
                 <h4 class="card-title">지식포인트</h4>
                   <div class="form-group" style="resize: none;width: 600px;">
@@ -34,6 +35,7 @@
                   </div>
                 </div>
                 <div>
+                  <v-app id="app">
                   <ag-grid-vue style="width: 100%; height:550px;"
                               class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
                               :columnDefs="columnDefs"
@@ -45,9 +47,8 @@
                               @gridReady="gridSizeFit"
                               @gridSizeChanged="gridSizeFit">
                   </ag-grid-vue>
+                </v-app>
                 </div>
-
-            </div>
             </form>
             <Modal2
               :dialog="isDialog"
@@ -55,8 +56,11 @@
               ref="popup"
               @close="isDialog=false"
             />
-        </div>
+        <!-- </div> -->
     </div>
+  </section>
+</div>
+
 </template>
 
 <script>

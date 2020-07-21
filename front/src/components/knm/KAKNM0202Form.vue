@@ -1,22 +1,79 @@
 <template>
-<v-container fluid>
-     <h3>답변 작성</h3>
-     <form id="KAKNM0201Form" @submit.prevent="onSubmit" class="form">
-         <v-col class="text-center" cols="12" sm="4">
-             <div class="aaa">
-                 <v-btn>미리보기</v-btn>
-                  <v-btn type="submit" v-bind:href="link">확인</v-btn>
-                 <v-btn v-bind:href="link">목록</v-btn>
-             </div>
-         </v-col>
-         <div>
-             <v-text-field label="제목" placeholder="제목" id="title" type="textarea" cols="30" rows="6" v-model="title" ></v-text-field>
-             <v-text-field label="답변 내용" placeholder="답변 내용" type="textarea" id="content_a" v-model="content_a" ></v-text-field>
-             <v-text-field label="답변 근거" placeholder="답변 근거" type="textarea" id="content_b" v-model="content_b" ></v-text-field>
-             <v-text-field label="답변 태그" placeholder="답변 태그" type="textarea" id="content_t" v-model="content_t" ></v-text-field>
-         </div>
-     </form>
- </v-container>
+  <div id="ct">
+    <section class="card">
+      <header class="card-header" style="padding: 1.6rem 1rem;">
+        <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-text"></i></span>답변수정</h2>
+        <div class="btn-container">
+            <a href="" class="btn btn-m"><span class="hide">미리보기</span></a>
+            <a href="" @click.prevent="onSubmit()" class="btn btn-primary"><span class="hide">확인</span></a>
+            <a href="anList" class="btn btn-primary"><span class="hide">닫기</span></a>
+        </div>
+      </header>
+      <div class="ct-header">
+        <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+        <div id="collapse-filter" class="collapse collapse-filter">
+            <div class="filter no-gutters no-btn">
+                <div class="col" style="min-width: 75%;">
+                    <label class="form-control-label" data-toggle="modal" data-target="#">
+                        <b class="control-label">질문제목</b>
+                        <input type="text" class="form-control" v-model="question_title" readonly>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-control-label" data-toggle="modal" data-target="#">
+                        <b class="control-label">프로젝트</b>
+                        <input type="text" class="form-control" v-model="project_name" readonly>
+                    </label>
+                </div>
+            </div>
+            <div class="filter no-gutters no-btn">
+                <div class="col">
+                    <label class="form-control-label" data-toggle="modal" data-target="#">
+                        <b class="control-label">솔루션명</b>
+                        <input type="text" class="form-control" v-model="solution_name" readonly>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-control-label" data-toggle="modal" data-target="#">
+                        <b class="control-label">태그</b>
+                        <input type="text" class="form-control" v-model="tag" placeholder="#02" readonly>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-control-label" data-toggle="modal" data-target="#">
+                        <b class="control-label">에러코드</b>
+                        <input type="text" class="form-control" v-model="err_c" placeholder="코드명" readonly>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-control-label" data-toggle="modal" data-target="#">
+                        <b class="control-label">예외종류</b>
+                        <input type="text" class="form-control" v-model="err_t" placeholder="예외1" readonly>
+                    </label>
+                </div>
+            </div>
+        </div>
+      </div>
+          <div class="ct-content">
+              <div class="sub-bar">
+                  <i class="icon-right text-danger"></i><p class="font-weight-bold">질문</p>
+              </div>
+              <textarea class="textarea-basic-md"  v-model="question_content" readonly></textarea>
+              <div class="sub-bar">
+                  <i class="icon-right text-danger"></i><p class="font-weight-bold">답변 내용</p>
+              </div>
+              <textarea class="textarea-basic-md" v-model="content_a"></textarea>
+              <div class="sub-bar">
+                  <i class="icon-right text-danger"></i><p class="font-weight-bold">답변 근거</p>
+              </div>
+              <textarea class="textarea-basic-md" v-model="content_b"></textarea>
+              <div class="sub-bar">
+                  <i class="icon-right text-danger"></i><p class="font-weight-bold">답변자 태그</p>
+              </div>
+              <textarea class="textarea-basic" v-model="content_t"></textarea>
+          </div>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -26,20 +83,30 @@ export default {
   data: () => {
     return {
       answer_id: '',
-      userid: 'Auser4@inzent.com',
+      userid: '',
       title: '',
       content_a: '',
       content_b: '',
       content_t: '',
       // 질문 정보
+      solution_name: '질문 솔루션 이름',
+      question_title: '질문 제목',
+      project_name: '질문 프로젝트 이름',
+      tag: '질문 태그',
+      err_c: '질문 에러코드',
+      err_t: '질문 예외종류',
+      question_content: '질문 내용 어쩌고 저쩌고',
+
       question_id: 'QU20200716101300555',
       project_id: 'PR20200619203046279',
       solution_id: 'SL020000',
-      tag: '',
-      err_c: '',
-      err_t: '',
       // 다음 화면 (리스트)
       link: 'http://localhost:8081/knm/anList'
+    }
+  },
+  computed: {
+    user_id () {
+      return this.$store.state.userid
     }
   },
   methods: {
@@ -52,9 +119,8 @@ export default {
         content_a: this.content_a,
         content_b: this.content_b,
         content_t: this.content_t,
-        reg_userid: this.userid,
+        reg_userid: this.$store.state.userid,
         do_type: 'M'
-        // reg_userid: this.$store.state.userid
 
       }
       console.log('POST DATA : ', data)

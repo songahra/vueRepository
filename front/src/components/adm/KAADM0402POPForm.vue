@@ -1,27 +1,31 @@
 <template>
- <v-dialog
-    v-model="dialog"
-    persistent
-    max-width="70%"
-  >
-    <v-card>
-      <v-card-title>
-        <v-spacer></v-spacer>
-      <a @click.prevent="onClose"
-        class="modal-default-button"
-        >&times;</a>
-      </v-card-title>
+<div id="ct">
+  <section class="card">
+    <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="70%"
+      >
+      <v-card>
+        <v-card-title>
+          <v-spacer></v-spacer>
+          <a @click.prevent="onClose"
+            class="modal-default-button"
+            >&times;</a>
+        </v-card-title>
         <ag-grid-vue style="width: 100%; height:550px;"
-                              class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                              :columnDefs="columnDefs"
-                              :rowData="rowData"
-                              :gridOptions="gridOptions"
-                              :get-row-style="getRowStyle"
-                              @gridReady="gridSizeFit"
-                              @gridSizeChanged="gridSizeFit">
+                     class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                    :columnDefs="columnDefs"
+                    :rowData="rowData"
+                    :gridOptions="gridOptions"
+                    :get-row-style="getRowStyle"
+                    @gridReady="gridSizeFit"
+                    @gridSizeChanged="gridSizeFit">
         </ag-grid-vue>
-  </v-card>
- </v-dialog>
+      </v-card>
+    </v-dialog>
+  </section>
+</div>
 </template>
 <script>
 import 'ag-grid-community/dist/styles/ag-grid.css'

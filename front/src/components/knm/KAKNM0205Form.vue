@@ -10,7 +10,9 @@
         <textarea class="textarea-basic" v-model="ansContent"></textarea>
 
       </div>
-      <KAKNM0203DelPopup :dialog="isDialog" :sendData="paramData" ref="popup" @Close="close"></KAKNM0203DelPopup>
+      <v-app>
+        <KAKNM0203DelPopup :dialog="isDialog" :sendData="paramData" ref="popup" @close="close" @ansDelete="ansDelete"></KAKNM0203DelPopup>
+      </v-app>
     </section>
 </div>
 </template>
@@ -61,17 +63,18 @@ export default {
       console.log('this.isDialog!', this.isDialog)
     },
     close () {
-      this.isDialog = !this.isDialog
+      this.isDialog = false
     },
     ansDelete () {
       console.log('ansDelete 호출')
+      this.close()
       const params = {
         params: {
           ansId: this.ansId
         }
       }
       const { data } = delAnswer(params)
-      console.log(data)
+      alert(data, ' 개의 답변이 삭제되었습니다.')
     }
   }
 }
