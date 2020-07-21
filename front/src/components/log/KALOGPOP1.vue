@@ -7,7 +7,9 @@
           icon
           v-on="on"
         >
-          <v-icon>mdi-chevron-down</v-icon>
+          <i
+            class="icon-down"
+          />
         </v-btn>
       </template>
       <div class="modal-content">
