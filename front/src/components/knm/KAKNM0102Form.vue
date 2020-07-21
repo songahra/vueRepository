@@ -87,7 +87,7 @@
 import KAKNM0102P1 from '@/views/knm/KAKNM0102P1.vue'
 import KAKNM0103P1 from '@/views/knm/KAKNM0103P1.vue'
 import { modify } from '@/api/knm/Question.js'
-import { getSolution } from '@/api/Login.js'
+import { getSolution } from '@/api/log/Login.js'
 
 export default {
   name: 'KAKNM0102From',

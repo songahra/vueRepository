@@ -13,7 +13,7 @@
         <li>
           <!-- [D] 활성화 : collapsed 클래스 삭제-->
           <a
-            href=""
+            href="/knm/quWrite"
             class="menu-link "
           ><i class="icon-std-code text-dark" />기술 문의</a>
 
