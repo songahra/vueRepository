@@ -1,65 +1,91 @@
 <template>
   <div id="ct">
     <section class="card">
-      <v-row
-        style="
-        padding-left: 10px;"
+      <header
+        class="card-header"
+        style="padding: 1.6rem 1rem;"
       >
-        <h3>{{ this.$store.state.username }}</h3> 님께서 {{ now }} 까지 누적한 지식 포인트 입니다.
-      </v-row>
-      <v-row
-        style="
-        padding-left: 10px;"
-      >
-        이 달 누적 지식 포인트 : {{ month_total_point }}
-
-        총 누적 지식 포인트 : {{ total_point }}
-      </v-row>
-      <v-spacer /><v-spacer />
-      <h4>월별 지식 포인트</h4>
-      <v-row>
-        <v-subheader
+        <h2 class="card-title">
+          <span class="i-rounded bg-danger"><i class="icon-user" /></span>My page
+        </h2>
+      </header>
+      <div class="card-body">
+        <v-toolbar
+          flat="false"
+          md-elevation="0"
+          height="50"
+          color="#FFFFF"
+        >
+          <v-tabs>
+            <v-tab>프로필 관리</v-tab>
+            <v-tab @click="() => {this.$router.push('/point')}">
+              지식 포인트
+            </v-tab>
+          </v-tabs>
+          <v-btn @click="updateProfile">
+            <span>편집</span>
+          </v-btn>
+        </v-toolbar>
+        <v-row
           style="
+        padding-left: 10px;"
+        >
+          <h3>{{ this.$store.state.username }}</h3> 님께서 {{ now }} 까지 누적한 지식 포인트 입니다.
+        </v-row>
+        <v-row
+          style="
+        padding-left: 10px;"
+        >
+          이 달 누적 지식 포인트 : {{ month_total_point }}
+
+          총 누적 지식 포인트 : {{ total_point }}
+        </v-row>
+        <v-spacer /><v-spacer />
+        <h4>월별 지식 포인트</h4>
+        <v-row>
+          <v-subheader
+            style="
     padding-left: 20px;
     padding-top: 5px;"
-        >
-          기간선택
-        </v-subheader>
-        <date-picker
-          v-model="range"
-          style="
+          >
+            기간선택
+          </v-subheader>
+          <date-picker
+            v-model="range"
+            style="
     padding-top: 10px;
 "
-          :lang="lang"
-          range
-          type="date"
-          format="YYYY-MM-DD"
-          width="500"
-          confirm
-          @change="updateDate"
-        />
-        <V-btn
-          color="indigo"
-          dark
-          tile
-          class="ma-2"
-          @click="formSubmit"
-        >
-          조회
-        </V-btn>
-      </v-row>
+            :lang="lang"
+            range
+            type="date"
+            format="YYYY-MM-DD"
+            width="500"
+            confirm
+            @change="updateDate"
+          />
+          <v-btn
+            color="indigo"
+            dark
+            tile
+            class="ma-2"
+            @click="formSubmit"
+          >
+            조회
+          </v-btn>
+        </v-row>
 
-      <ag-grid-vue
-        style="width: 100%; height: 550px;"
-        class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-        :column-defs="columnDefs"
-        :row-data="rowData"
-        :grid-ready="gridSizeFit"
-        :grid-size-changed="gridSizeFit"
-        :grid-options="gridOptions"
-        :get-row-style="getRowStyle"
-        @gridSizeChanged="gridSizeFit"
-      />
+        <ag-grid-vue
+          style="width: 100%; height: 550px;"
+          class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+          :column-defs="columnDefs"
+          :row-data="rowData"
+          :grid-ready="gridSizeFit"
+          :grid-size-changed="gridSizeFit"
+          :grid-options="gridOptions"
+          :get-row-style="getRowStyle"
+          @gridSizeChanged="gridSizeFit"
+        />
+      </div>
     </section>
   </div>
 </template>

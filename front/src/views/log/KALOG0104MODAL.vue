@@ -12,8 +12,8 @@
           color=""
         >
           <v-spacer />
-          <v-toolbar-title class="text">
-            회원가입
+          <v-toolbar-title class="modal-title">
+            <h2>회원가입</h2>
           </v-toolbar-title>
           <v-spacer />
         </v-toolbar>
@@ -22,7 +22,7 @@
             :complete="e1 > 1"
             step="1"
           >
-            약관동의
+            회원가입 시 약관동의
           </v-stepper-step>
 
           <v-divider />
@@ -31,50 +31,37 @@
             :complete="e1 > 2"
             step="2"
           >
-            정보입력
+            회원정보 입력
           </v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items>
           <v-stepper-content step="1">
             <step1 /> <!-- 약관동의 step1 -->
-            <v-btn
-              color="primary"
-              :disabled="isDisabled"
-              @click="e1 = 2"
-            >
-              Continue
-            </v-btn>
-            <v-btn
-              text
-              @click.prevent="onClose"
-            >
-              Cancel
-            </v-btn>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn"
+                data-dismiss="modal"
+                @click="onClose()"
+              >
+                취소
+              </button>
+              <v-btn
+                text
+                color="white"
+                class="btn btn-primary"
+                :disabled="isDisabled"
+                @click="e1 = 2"
+              >
+                다음
+              </v-btn>
+            </div>
           </v-stepper-content>
-
           <v-stepper-content step="2">
-            <step2 /> <!-- 회원 정보 입력 step2 -->
+            <step2 @child-close="onClose" /> <!-- 회원 정보 입력 step2 -->
           </v-stepper-content>
         </v-stepper-items>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn"
-            data-dismiss="modal"
-            @click.prevent="onClose"
-          >
-            취소
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="isDisabled"
-            @click="e1 = 2"
-          >
-            다음
-          </button>
-        </div>
       </v-stepper>
     </v-dialog>
   </v-app>
@@ -101,7 +88,6 @@ export default {
     }
   },
   created () {
-    console.log('ㅎㅎ')
   },
   methods: {
     onClose () {

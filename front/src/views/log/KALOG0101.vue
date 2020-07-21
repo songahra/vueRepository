@@ -7,10 +7,11 @@
       <!-- header -->
       <header id="hd">
         <h1 class="logo text-hide">
-          <a href=""><img
-            src="@/assets/img/logo_wh.svg"
-            alt="INZENT"
-          >INZENT</a>
+          <a href="">
+            <img
+              src="@/assets/img/logo_wh.svg"
+              alt="INZENT"
+            >INZENT</a>
         </h1>
       </header>
       <!-- //header -->
@@ -68,7 +69,10 @@
               @click.prevent="addBoard"
             >회원가입</a>
             <a>|</a>
-            <a class="btn-login">비밀번호 찾기</a>
+            <a
+              class="btn-login"
+              @click.prevent="addModal"
+            >비밀번호 찾기</a>
           </div>
         </form>
 
@@ -89,7 +93,7 @@
 </template>
 
 <script>
-import { loginUser } from '@/api/Login.js'
+import { loginUser } from '@/api/log/Login.js'
 import Modal3 from '@/views/log/KALOG0104MODAL.vue'
 import Modal from '@/components/log/KALOGPOP2.vue'
 

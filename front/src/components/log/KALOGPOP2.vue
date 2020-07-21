@@ -1,76 +1,62 @@
 <template>
-  <v-container
-    fill-height
-    style="max-width:450px;"
+  <v-dialog
+    v-model="dialog"
+    persistent
+    max-width="35%"
   >
-    <v-layout
-      align-center
-      row
-      wrap
-    >
-      <v-dialog
-        v-model="dialog"
-        hide-overlay
-        persistent
-        max-width="35%"
-      >
-        <v-card>
-          <a
-            href=""
-            class="modal-default-button"
-            @close="onClose"
-          >&times;</a> <!-- @수정해야함@  -->
-          <v-toolbar
-            flat
-            height="50"
-            color="#FFFFF"
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          비밀번호 찾기
+        </h2>
+        <button
+          type="button"
+          class="btn-icon"
+          data-dismiss="modal"
+          aria-label="Close"
+          @click.prevent="onClose"
+        >
+          <i class="icon-close" />
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="control-label">이메일(아이디)</label>
+          <input
+            v-model="user_id"
+            type="text"
+            class="form-control"
+            placeholder="이메일(아이디)을 입력해 주세요."
+            required
           >
-            <v-spacer />
-            <v-toolbar-title>
-              <h3
-                class="text--secondary text-center"
-                style="padding-bottom: 20px; padding-top: 20px;"
-              >
-                비밀번호 찾기
-              </h3>
-            </v-toolbar-title>
-            <v-spacer />
-          </v-toolbar>
-
-          <h4>이메일(아이디)</h4>
-          <div class="pa-3">
-            <v-text-field
-              v-model="user_id"
-              solo
-              outlined
-              :rules="emailRules"
-              required
-              label="아이디 입력"
-            />
-          </div>
-          <div class="text-center">
-            <v-btn
-              block
-              large
-              depressed
-              type="submit"
-              @click="clickBtn"
-            >
-              전송
-            </v-btn>
-          </div>
-        </v-card>
-      </v-dialog>
-    </v-layout>
-  </v-container>
+        </div>
+        <div
+          v-if="alert"
+          class="alert alert-danger"
+        >
+          계정 정보가 맞는지 확인해 주세요.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="clickBtn"
+        >
+          확인
+        </button>
+      </div>
+    </div>
+  </v-dialog>
 </template>
 
 <script>
-import { searchPassword } from '@/api/Login.js'
+import { searchPassword } from '@/api/log/Login.js'
 export default {
   props: ['dialog'],
   data () {
     return {
+      alert: false,
       emailRules: [
         v => /.+@.+\..+/.test(v) || '이메일 형식이 올바르지 않습니다.'
       ],
@@ -91,6 +77,9 @@ export default {
 
       const { data } = await searchPassword(userData)
       console.log('data', data)
+      if (data === '존재하지 않는 이메일 입니다.') {
+        this.alert = true
+      }
     }
   }
 }

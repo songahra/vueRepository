@@ -3,9 +3,9 @@
   <v-app id="app">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">
+        <!-- <h2 class="modal-title">
           회원가입 시 약관동의
-        </h2>
+        </h2> -->
         <!-- <button
           type="button"
           class="btn-icon"
@@ -142,21 +142,6 @@
                             </textarea>
         </div>
       </div>
-    <!-- <div class="modal-footer">
-      <button
-        type="button"
-        class="btn"
-        data-dismiss="modal"
-      >
-        취소
-      </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-      >
-        다음
-      </button>
-    </div> -->
     </div>
   </v-app>
 </template>

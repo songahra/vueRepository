@@ -4,13 +4,14 @@ const instance = axios.create({
   baseURL: process.env.VUE_APP_API_URL
 })
 
-// 솔루션 목록 가져오는 api 구현
+// 1.솔루션 목록 가져오는 api 구현
 function getSolution () {
   return instance.get('api/test/getSolution')
 }
 
 // 로그인 api 구현
 function loginUser (userData) {
+  console.log('로그인')
   return instance.post('api/test/login', userData)
 }
 

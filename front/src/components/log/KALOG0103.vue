@@ -1,123 +1,184 @@
-<template>
-  <v-container
-    fill-height
-    style="max-width:450px;"
-  >
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">
-          회원정보 입력
-        </h2>
-        <!-- <button
-          type="button"
-          class="btn-icon"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <i class="icon-close" />
-        </button> -->
-      </div>
-      <div class="modal-body modal-body-ct">
-        <div
-          id="base-info"
-          class="tab-pane active"
-        >
-          <div class="row frm-row">
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label class="control-label">이메일<span class="text-notice-1">*이메일 형식이 올바르지 않습니다.</span></label>
-                <div style="position: relative">
-                  <input
-                    type="text"
-                    class="form-control form-input"
-                    placeholder="아이디로 사용할 이메일 입력"
-                  >
-                  <img
-                    src="@/assets/img/danger.svg"
-                    alt=""
-                  >
+<template lang="html">
+  <v-app id="app">
+    <form
+      @submit.prevent="submitForm"
+    >
+      <div class="modal-content">
+        <div class="modal-body modal-body-ct">
+          <div
+            id="base-info"
+            class="tab-pane active"
+          >
+            <div class="row frm-row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label
+                    class="control-label"
+                  >이메일
+                    <!-- <span class="text-notice-1">*이메일 형식이 올바르지 않습니다.</span> -->
+                  </label>
+                  <div style="position: relative">
+                    <v-text-field
+                      v-model="user_id"
+                      :rules="emailRules"
+                      class="form-control compact-form"
+                      dense
+                      solo
+                    />
+
+                    <!-- <img
+                  src="@/assets/img/danger.svg"
+                  alt=""
+                > -->
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label
+                    class="control-label"
+                    style="
+    padding-top: 30px;
+"
+                  >소속회사</label>
+                  <v-text-field
+                    class="form-control compact-form"
+                    dense
+                    solo
+                  />
+                </div>
+                <div>
+                  <label
+                    class="control-label"
+                    style="
+    padding-top: 30px;
+"
+                  >솔루션명</label>
+                  <v-combobox
+                    v-model="solution"
+                    class="form-control compact-form"
+                    :items="items"
+                    :rules="[v => !!v || '솔루션을 선택하세요']"
+                    clearable
+                    dense
+                    solo
+                    required
+                    item-text="codeContent"
+                    item-value="codeId"
+                  />
+                </div>
+                <div class="form-group">
+                  <label
+                    class="control-label"
+                    style="
+    padding-top: 30px;
+"
+                  >비밀번호
+                    <!-- <span class="text-notice-2">영문대문자 포함 | 영문소문자 포함 | 숫자포함 | 10자 이상</span> -->
+                  </label>
+                  <div style="position: relative">
+                    <!-- <img
+                  src="@/assets/img/complete.svg"
+                  alt=""
+                > -->
+                    <v-text-field
+                      class="form-control compact-form"
+                      dense
+                      solo
+                    />
+                  </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="control-label">소속회사</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="소속회사명"
-                >
-              </div>
-              <div class="form-group">
-                <label class="control-label">솔루션명</label>
-                <select class="form-control">
-                  <option value="">
-                    iGate
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="control-label">비밀번호<span class="text-notice-2">영문대문자 포함 | 영문소문자 포함 | 숫자포함 | 10자 이상</span>
-                </label>
-                <div style="position: relative">
-                  <img
-                    src="@/assets/img/complete.svg"
-                    alt=""
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="**********"
-                  >
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label
+                    class="control-label"
+                  >이름</label>
+                  <v-text-field
+                    class="form-control compact-form"
+                    dense
+                    solo
+                  />
                 </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label class="control-label">이름</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="가입자 이름"
-                >
-              </div>
-              <div class="form-group">
-                <label class="control-label">부서</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="부서명"
-                >
-              </div>
-              <div class="form-group">
-                <label class="control-label">담당</label>
-                <select class="form-control">
-                  <option value="">
-                    기획자
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="control-label">비밀번호 확인 <span class="text-notice-1">*비밀번호가 서로 일치하지 않습니다.</span>
-                </label>
-                <div style="position: relative">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="**********"
-                  >
-                  <i class="icon-lock" />
+                <div class="form-group">
+                  <label
+                    class="control-label"
+                    style="
+    padding-top: 30px;
+"
+                  >부서</label>
+                  <v-text-field
+                    class="form-control compact-form"
+                    dense
+                    solo
+                  />
+                </div>
+                <div>
+                  <label
+                    class="control-label"
+                    style="
+    padding-top: 30px;
+"
+                  >담당</label>
+                  <v-combobox
+                    v-model="user_type"
+                    class="form-control compact-form"
+                    :items="items2"
+                    :rules="[v => !!v || '담당을 선택하세요']"
+                    clearable
+                    dense
+                    solo
+                    required
+                    item-text="name"
+                    item-value="code"
+                  />
+                </div>
+                <div class="form-group">
+                  <label
+                    class="control-label"
+                    style="
+    padding-top: 30px;
+"
+                  >비밀번호 확인
+                  <!-- <span class="text-notice-1">*비밀번호가 서로 일치하지 않습니다.</span> -->
+                  </label>
+                  <div style="position: relative">
+                    <v-text-field
+                      class="form-control compact-form"
+                      dense
+                      solo
+                    />
+                    <i class="icon-lock" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </v-container>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn"
+          data-dismiss="modal"
+          @click.prevent="onClose"
+        >
+          취소
+        </button>
+        <button
+          text
+          color="white"
+          class="btn btn-primary"
+          type="submit"
+        >
+          회원가입
+        </button>
+      </div>
+    </form>
+  </v-app>
 </template>
 
 <script>
 import { signupUser } from '@/api/Signup.js'
-import { getSolution, idChk } from '@/api/Login.js'
+import { getSolution, idChk } from '@/api/log/Login.js'
 
 export default {
   components: {
@@ -178,6 +239,7 @@ export default {
 
     console.log('data뭐있지?', data)
     this.items = data
+    console.log('emailRules', this.emailRules[0].value)
     console.log('emailRules', this.emailRules)
   },
   methods: {
@@ -224,6 +286,10 @@ export default {
         this.successAlert = true
         this.errorAlert = false
       }
+    },
+    onClose () {
+      console.log('test1')
+      this.$emit('child-close')
     }
 
   }
@@ -231,5 +297,7 @@ export default {
 </script>
 
 <style>
-
+.v-input__control{
+  min-height: 30px !important;
+}
 </style>

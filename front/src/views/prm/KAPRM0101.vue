@@ -1,14 +1,18 @@
 <template>
-  <div
-    id="ct"
-    style="
-    padding-left: 0px;
-"
-  >
+  <div id="ct">
     <section class="card">
-      <v-card>
+      <header
+        class="card-header"
+        style="padding: 1.6rem 1rem;"
+      >
+        <h2 class="card-title">
+          <span class="i-rounded bg-danger"><i class="icon-user" /></span>My page
+        </h2>
+      </header>
+      <div class="card-body">
+        <!--  flat="false" -> 그림자 없애줌 -->
         <v-toolbar
-          flat="false"
+          flat
           md-elevation="0"
           height="50"
           color="#FFFFF"
@@ -19,13 +23,16 @@
               지식 포인트
             </v-tab>
           </v-tabs>
-          <v-btn @click="updateProfile">
+          <v-btn
+            class="btn"
+            @click="updateProfile"
+          >
             <span>편집</span>
           </v-btn>
         </v-toolbar>
 
-        <v-container fluid>
-          <v-row>
+        <div class="modal-content">
+          <v-row justify="space-between">
             <v-col
               cols="auto"
             >
@@ -33,99 +40,146 @@
                 height="300"
                 width="300"
                 :src="get_img_src"
-              >
-                <template v-slot:placeholder>
-                  <v-row
-                    class="fill-height ma-0"
-                    align="center"
-                    justify="center"
-                  >
-                    <v-progress-circular
-                      indeterminate
-                      color="grey lighten-5"
-                    />
-                  </v-row>
-                </template>
-              </v-img>
+              />
             </v-col>
 
             <v-col
-              class="pl-0"
+              cols="auto"
+              class="text-center pl-0"
+              style="
+    margin-left: 20px;
+"
             >
               <v-row
                 class="flex-column ma-0 fill-height"
+                justify="center"
               >
-                <v-col>
-                  <v-card-text class="text--primary">
-                    <div>이름 {{ user_name }}</div>
-                  </v-card-text>
-                </v-col>
+                <div
+                  class="form-group"
+                  style="
+    width: 222px;
+"
+                >
+                  <label class="control-label">이름</label>
+                  <input
+                    v-model="user_name"
+                    type="text"
+                    dense
+                    solo
+                    readonly
+                    class="form-control compact-form"
+                  >
+                </div>
 
-                <v-col>
-                  <v-card-text class="text--primary">
-                    <div>이메일 {{ user_id }}</div>
-                  </v-card-text>
-                </v-col>
+                <div class="form-group">
+                  <label class="control-label">이메일</label>
+                  <input
+                    v-model="user_id"
+                    type="text"
+                    dense
+                    solo
+                    readonly
+                    class="form-control compact-form"
+                  >
+                </div>
 
-                <v-col>
-                  <v-card-text class="text--primary">
-                    <div> {{ user_id }}</div>
-                  </v-card-text>
-                </v-col>
+                <div class="form-group">
+                  <label class="control-label">소속회사</label>
+                  <input
+                    v-model="company"
+                    type="text"
+                    dense
+                    solo
+                    readonly
+                    class="form-control compact-form"
+                  >
+                </div>
 
-                <v-col>
-                  <v-card-text class="text--primary">
-                    <div>소속회사 {{ company }}</div>
-                  </v-card-text>
-                </v-col>
+                <div class="form-group">
+                  <label class="control-label">부서</label>
+                  <input
+                    v-model="dept"
+                    type="text"
+                    dense
+                    solo
+                    class="form-control compact-form"
+                    readonly
+                  >
+                </div>
 
-                <v-col>
-                  <v-card-text class="text--primary">
-                    <div>담당 솔루션 {{ solution }} </div>
-                  </v-card-text>
-                </v-col>
+                <div class="form-group">
+                  <label class="control-label">솔루션명</label>
+                  <input
+                    v-model="solution"
+                    type="text"
+                    dense
+                    solo
+                    class="form-control compact-form"
+                    readonly
+                  >
+                </div>
 
-                <v-col>
-                  <v-card-text class="text--primary">
-                    <div>권한 {{ usertype }}</div>
-                  </v-card-text>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-card-actions xs10>
-          <!-- <input
+                <div class="form-group">
+                  <label class="control-label">권한</label>
+                  <input
+                    v-model="usertype"
+                    type="text"
+                    dense
+                    solo
+                    class="form-control compact-form"
+                    readonly
+                  >
+                </div>
+
+                <v-card-actions
+                  xs10
+                  style="
+    padding-left: 0px;
+"
+                >
+                  <!-- <input
         type="file"
         @change="onFileSelected"
       > -->
-          <!-- accept 클릭했을 때 이미지 파일만 뜨게해주는 역할 -->
-          <v-card-text class="d-inline pa-2">
-            <v-file-input
-              v-model="image"
-              :rules="rules"
-              accept="image/*"
-              placeholder="Pick an avatar"
-              prepend-icon="mdi-camera"
-              label="Avatar"
-              @change="onUpload"
-            />
-          </v-card-text>
-          <v-alert
-            v-model="alert"
-            dense
-            type="error"
-          >
-            이미지 파일만 업로드 하세요
-          </v-alert>
-        </v-card-actions>
-      </v-card>
+                  <!-- accept 클릭했을 때 이미지 파일만 뜨게해주는 역할 -->
+                  <div
+                    class="form-group"
+                    style="
+    margin-top: 5px;
+"
+                  >
+                    <v-file-input
+                      v-model="image"
+                      style="margin-left: 0px;"
+                      outlined
+
+                      dense
+                      :rules="rules"
+                      accept="image/*"
+                      placeholder="사진업로드"
+                      prepend-icon="mdi-camera"
+                      @change="onUpload"
+                    />
+                  </div>
+                  <v-alert
+                    v-model="alert"
+                    dense
+                    type="error"
+                  >
+                    이미지 파일만 업로드 하세요
+                  </v-alert>
+                </v-card-actions>
+              </v-row>
+            </v-col>
+          </v-row>
+        </div>
+      </div>
     </section>
   </div>
 </template>
 
 <script>
-import { userType, userSolution } from '@/api/Login.js'
+import { userType, userSolution } from '@/api/log/Login.js'
 import { formData } from '@/api/Signup.js'
 import { selectProfile } from '@/api/Profile.js'
 
@@ -174,19 +228,11 @@ export default {
     }
     console.log(userdata)
     const { data } = await selectProfile(userdata)
+    console.log(data === '')
     this.imgSrc = data
     console.log(this.imgSrc)
   },
   methods: {
-    // onFileSelected (event) {
-    //   console.log(event)
-    //   // this.selectedFile = event.target.files[0]
-    //   this.selectedFile = this.event.target.files[0]
-    //   console.log(this.selectedFile)
-    //   console.log(this.selectedFile.size)
-    //   console.log(this.selectedFile.type)
-    //   console.log(this.selectedFile.type === 'image/*')
-    // },
     async onUpload () {
       try {
         var fd = new FormData()
@@ -213,7 +259,9 @@ export default {
     },
     userSolution () {
       const code = this.$store.state.solution
+      console.log('code뭐가 있지?', code)
       this.solution = userSolution(code)
+      console.log('solution뭐가 있지?', this.solution)
     },
 
     updateProfile () {

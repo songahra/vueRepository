@@ -13,7 +13,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">
-            비밀번호 변경
+            {{ this.$store.state.userid }}
           </h2>
           <button
             type="button"
@@ -24,77 +24,16 @@
             <i class="icon-close" />
           </button>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="control-label">비밀번호</label>
-            <input
-              type="password"
-              class="form-control"
-              placeholder="비밀번호를 입력해 주세요."
-              required
-            >
-          </div>
-          <div class="form-group">
-            <label class="control-label">비밀번호 확인</label>
-            <input
-              type="password"
-              class="form-control"
-              placeholder="동일한 비밀번호를 입력해 주세요."
-              required
-            >
-          </div>
-        </div>
         <div class="modal-footer">
           <button
             type="button"
-            class="btn"
-            data-dismiss="modal"
-          >
-            취소
-          </button>
-          <button
-            type="button"
             class="btn btn-primary"
+            @click="logout"
           >
-            확인
+            로그아웃
           </button>
         </div>
       </div>
-      <!-- <v-card
-        tile
-        class="modal-content"
-        style="max-width: 400px;padding-left: 30px;padding-right: 30px;"
-        outlined
-      >
-        <v-card-title>
-          <v-spacer />
-          <a
-            class="modal-default-button"
-            @click.prevent="onClose"
-          >&times;</a>
-
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>
-                Single-line item
-              </v-list-item-title>
-
-              {{ this.$store.state.userid }}
-            </v-list-item-content>
-          </v-list-item>
-          <div class="text-center">
-            <v-btn
-              block
-              text
-              large
-              depressed
-              type="submit"
-            >
-              로그아웃
-            </v-btn>
-          </div>
-        </v-card-title>
-      </v-card> -->
     </v-menu>
   </div>
 </template>
@@ -105,6 +44,19 @@ export default {
   methods: {
     onClose () {
       this.$emit('close')
+    },
+    logout () {
+      // 로컬스토리지 token 삭제, store 초기화
+      localStorage.removeItem('token')
+      this.$store.commit('SET_TOKEN', '')
+      this.$store.commit('SET_USERNAME', '')
+      this.$store.commit('SET_USERID', '')
+      this.$store.commit('SET_USERTYPE', '')
+      this.$store.commit('SET_COMPANY', '')
+      this.$store.commit('SET_SOLUTION', '')
+      this.$store.commit('SET_DEPT', '')
+      this.$store.commit('SET_EXP', '')
+      this.$router.push('/login')
     }
   }
 }
