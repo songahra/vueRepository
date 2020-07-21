@@ -1,20 +1,22 @@
 <!-- 기술문의 메인리스트 Form-->
 <template>
-    <div style="width: 70%; height:100%">
-      <ag-grid-vue style="width: 100%; height: 550px;"
-                   class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                   :columnDefs="columnDefs"
-                   :rowData="rowData"
-                   :gridOptions="gridOptions"
-                   @gridReady="gridSizeFit"
-                   @gridSizeChanged="gridSizeFit"
-                   @cell-clicked="onCellClicked">
-      </ag-grid-vue>
-     </div>
+    <div class="ct-content">
+        <div style="width: 100%; height:100%">
+            <ag-grid-vue style="width: 100%; height: 550px;"
+                         class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                         :columnDefs="columnDefs"
+                         :rowData="rowData"
+                         :gridOptions="gridOptions"
+                         @gridReady="gridSizeFit"
+                         @gridSizeChanged="gridSizeFit"
+                         @cell-clicked="onCellClicked">
+            </ag-grid-vue>
+         </div>
+    </div>
 </template>
 
 <script>
-import { mainList, getDetail, getMyList } from '@/api/Question.js'
+import { mainList, getDetail, getMyList } from '@/api/knm/Question.js'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
@@ -56,7 +58,8 @@ export default {
       { headerName: '경과시간', field: 'term', sortable: true, filter: true },
       { headerName: '처리상태', field: 'status', sortable: true, filter: true },
       { headerName: 'qusetion_id', field: 'question_id', sortable: true, filter: true, hide: true },
-      { headerName: '질문자 id', field: 'reg_userid', sortable: true, filter: true, hide: true }
+      { headerName: '질문자 id', field: 'reg_userid', sortable: true, filter: true, hide: true },
+      { headerName: '답변 id', field: 'answer_id', sortable: true, filter: true, hide: true }
     ]
   },
   created () {
@@ -160,7 +163,8 @@ export default {
         console.log('ddd2')
         const formData = {
           reg_userid: event.data.reg_userid,
-          question_id: event.data.question_id
+          question_id: event.data.question_id,
+          answer_id: event.data.answer_id
         }
         console.log('formData  => ', formData)
 
@@ -172,13 +176,20 @@ export default {
               const params = res.data
               console.log('params => ', params)
               this.$router.push({ name: 'KAKNM0104Detail', params: params })
-            } else {
-              alert('다시 시도해주세요.')
-              // this.$router.go(-1)
             }
+            return res
           })
           // .then((res) => console.log(res))
-          .catch(console.error())
+          .catch(function (e) {
+            const result = e.message
+            if (e.message.indexOf('500')) {
+              this.$router.push({ name: '500Error' })
+            } else if (result.indexOf('404')) {
+              this.$router.push({ name: '404Error' })
+            } else {
+              this.$router.push({ name: 'Exception' })
+            }
+          })
       } else {
         return event
       }

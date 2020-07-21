@@ -1,19 +1,19 @@
 <template>
-<div id="ct">
-    <section class="card">
+<div>
       <div class="ct-content">
         <div class="sub-bar">
-          <i class="icon-right text-danger"></i><p class="font-weight-bold">{{ this.ansName }}</p>
-          <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
-          <a href="" class="btn btn-primary"><span class="hide">수정</span></a>
+          <p class="font-weight-bold">{{ this.ansName }}</p>
+          <div class="ml-auto form-inline m-full">
+            <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
+            <a href="" class="btn btn-primary"><span class="hide">수정</span></a>
+          </div>
         </div>
-        <textarea class="textarea-basic" v-model="ansContent"></textarea>
+        <textarea class="textarea-basic-md" v-model="ansContent"></textarea>
 
       </div>
       <v-app>
         <KAKNM0203DelPopup :dialog="isDialog" :sendData="paramData" ref="popup" @close="close" @ansDelete="ansDelete"></KAKNM0203DelPopup>
       </v-app>
-    </section>
 </div>
 </template>
 
@@ -30,14 +30,16 @@ export default {
     return {
       ansName: '',
       ansContent: '',
-      ansId: 'AN20200619203215980',
+      ansId: '',
       lists: '',
       paramData: '',
       isDialog: false
     }
   },
+  props: ['sendData'],
   created () {
     console.log('created!!')
+    this.ansId = this.sendData
     this.getAnswerDetail()
   },
   methods: {
@@ -65,7 +67,7 @@ export default {
     close () {
       this.isDialog = false
     },
-    ansDelete () {
+    async ansDelete () {
       console.log('ansDelete 호출')
       this.close()
       const params = {
@@ -73,8 +75,9 @@ export default {
           ansId: this.ansId
         }
       }
-      const { data } = delAnswer(params)
-      alert(data, ' 개의 답변이 삭제되었습니다.')
+      const { data } = await delAnswer(params)
+      alert(data + ' 개의 답변이 삭제되었습니다.')
+      this.$router.push({ name: 'KAKNM0101List' })
     }
   }
 }

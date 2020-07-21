@@ -72,7 +72,7 @@
 <script>
 import KAKNM0102P1 from '@/views/knm/KAKNM0102P1.vue'
 import KAKNM0103P1 from '@/views/knm/KAKNM0103P1.vue'
-import { modify } from '@/api/Question.js'
+import { modify } from '@/api/knm/Question.js'
 
 export default {
   name: 'KAKNM0105From',
@@ -102,8 +102,8 @@ export default {
       reg_date_tq: '',
       status: '',
       tag_tag: '',
-      tag_erc: 'undefined',
-      tag_ert: 'undefined',
+      tag_erc: '',
+      tag_ert: '',
       flag: '',
       errors: [],
       isDialog: false,

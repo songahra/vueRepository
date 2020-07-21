@@ -1,5 +1,7 @@
 <!-- 질문하기 미리보기 -->
 <template>
+ <div id="ct">
+    <section class="card">
   <v-dialog
     v-model="dialog"
     persistent
@@ -64,6 +66,8 @@
   </v-container>
   </v-card>
   </v-dialog>
+    </section>
+</div>
 </template>
 
 <script>

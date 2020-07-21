@@ -39,7 +39,7 @@
 </template>
 <!-- Bootstrap CDN -->
 <script>
-import { getPrList, srchPrList } from '@/api/Question.js'
+import { getPrList, srchPrList } from '@/api/knm/Question.js'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'

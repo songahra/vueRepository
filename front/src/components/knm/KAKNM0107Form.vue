@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { srchMyList } from '@/api/Question.js'
+import { srchMyList } from '@/api/knm/Question.js'
 
 export default {
   data: () => {

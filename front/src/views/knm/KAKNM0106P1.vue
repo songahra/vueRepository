@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { modify } from '@/api/Question.js'
+import { modify } from '@/api/knm/Question.js'
 
 export default {
   name: 'KAKNM0103From',

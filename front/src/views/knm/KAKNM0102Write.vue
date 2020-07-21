@@ -1,6 +1,10 @@
 <!-- 기술문의 등록화면 -->
 <template>
-  <KAKNM0102Form></KAKNM0102Form>
+  <div id="ct">
+      <section class="card">
+          <KAKNM0102Form></KAKNM0102Form>
+      </section>
+  </div>
 </template>
 
 <script>

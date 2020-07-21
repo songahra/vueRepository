@@ -6,7 +6,7 @@
         <div class="btn-container">
             <a href="" class="btn btn-m"><span class="hide">미리보기</span></a>
             <a href="" @click.prevent="onSubmit()" class="btn btn-primary"><span class="hide">확인</span></a>
-            <a href="anList" class="btn btn-primary"><span class="hide">닫기</span></a>
+            <a href="mainList" class="btn btn-primary"><span class="hide">닫기</span></a>
         </div>
       </header>
       <div class="ct-header">

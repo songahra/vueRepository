@@ -1,69 +1,104 @@
 <!-- 질문 상세보기 -->
 <template>
-  <v-container fluid>
-    <h3>{{param.title}}</h3>
-    <form id="KAKNM0104Form" @submit.prevent="onSubmit" class="form">
-    <input type="hidden" name="question_id"  id="question_id" value="question_id"/>
-    <v-col class="text-center" cols="12" sm="4">
-      <div class="my-2">
-      <!-- 수정필요 -->
-      <v-btn v-if = "userid === 'reg_userid_ta'" small color="primary" @click="() => this.$router.push({ name: 'KAKNM0101List' })">답변하기</v-btn>
-      <v-btn small color="primary" type="submit" @click.prevent="btnDelete">삭제</v-btn>
-      <v-btn small color="primary" type="submit" @click.prevent="btnModify">수정</v-btn>  |
-      <v-btn small color="primary" @click="() => this.$router.push({ name: '/knm/mainList' })">목록보기</v-btn>
-      </div>
-    </v-col>
-    <div>
-      <v-text-field label="제목" id="title" readonly cols="30" rows="6" v-model="param.title" ></v-text-field>
-      <v-text-field label="작성자" id="reg_userName_tq" readonly cols="30" rows="6" v-model="param.reg_userName_tq" ></v-text-field>
-      <v-text-field label="작성일시" id="reg_date_tq" readonly  v-model="param.reg_date_tq"></v-text-field>
-      <v-text-field label="답변여부" id="status" readonly v-model="param.status"></v-text-field>
-      <v-text-field label="score" id="score" readonly v-model="param.score"></v-text-field>
-      <v-text-field label="프로젝트" id="project_name" readonly v-model="param.project_name"> </v-text-field>
-      <v-text-field label="솔루션" id="solution_name" readonly v-model="param.solution_name" ></v-text-field>
-      <v-text-field label="태그"  id="tag_tag" readonly v-model="param.tag_tag"></v-text-field>
-      <v-text-field label="에러코드" id="tag_erc" readonly v-model="param.tag_erc"></v-text-field>
-      <v-text-field label="예외종류" id="tag_ert" readonly v-model="param.tag_ert"></v-text-field>
+  <div>
+        <form id="KAKNM0104Form" @submit.prevent="onSubmit" class="form">
+            <header class="card-header" style="padding: 1.6rem 1rem;">
+                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-check"></i></span>{{title}}</h2>
+                <div class="btn-container">
+                    <div v-if = "chkUserType">
+                       <a class="btn btn-m" @click="movePage('btnAnswer')"><span class="hide">답변하기</span></a>
+                    </div>
+                    <div v-else-if = "writerChk">
+                       <a href="" class="btn btn-m" type="submit" @click.prevent="btnDelete"><span class="hide">삭제</span></a>
+                       <a href="" class="btn btn-primary" type="submit" @click.prevent="movePage('btnModify')"><span class="hide">수정</span></a>
+                    </div>
+                    <a href="" class="btn btn-primary" @click="() => this.$router.push({ name: 'KAKNM0101List' })"><span class="hide">목록보기</span></a>
+                </div>
+            </header>
+            <div class="ct-header">
+                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+                <div id="collapse-filter" class="collapse collapse-filter">
+                    <div class="filter no-gutters no-btn">
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">질문자</b>
+                                <input type="text" class="form-control" v-model="reg_userName_tq" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">작성일시</b>
+                                <input type="text" class="form-control" v-model="reg_date_tq" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">답변여부</b>
+                                <input type="text" class="form-control" v-model="status" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">Score</b>
+                                <input type="text" class="form-control" v-model="score" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">프로젝트</b>
+                                <input type="text" class="form-control"  v-model="project_name" readonly>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter no-gutters no-btn">
+                        <div class="col" style="min-width: 40%;">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">솔루션</b>
+                                <input type="text" class="form-control" v-model="solution_name" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">태그</b>
+                                <input type="text" class="form-control" v-model="tag_tag" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">에러코드</b>
+                                <input type="text" class="form-control" v-model="tag_erc" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">예외종류</b>
+                                <input type="text" class="form-control" v-model="tag_ert" readonly>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <textarea class="textarea-basic-md" v-model="content_q" readonly></textarea>
+           <div v-if = "chkAnswerId()">
+             <KAKNM0205Form :sendData="answer_id"></KAKNM0205Form>
+           </div>
+        </form>
+        <v-app id="app">
+            <KAKNM0106P1 :dialog="isDialog" :sendData="paramData" @close="close" ></KAKNM0106P1>
+        </v-app>
+
     </div>
-    <v-row>
-      <v-col cols="2">
-        <v-subheader>질문</v-subheader>
-      </v-col>
-      <v-col cols="10">
-        <v-text-field  type="textarea" id="content_q" readonly v-model="param.content_q"></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="2">
-        <v-subheader>환경 및 상황</v-subheader>
-      </v-col>
-      <v-col cols="10">
-        <v-text-field type="textarea" id="content_s" readonly v-model="param.content_s"></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="2">
-        <v-subheader>오류 로그</v-subheader>
-      </v-col>
-      <v-col cols="10">
-        <v-text-field type="textarea" id="err_log" readonly v-model="param.err_log" ></v-text-field>
-      </v-col>
-    </v-row>
-    </form>
-    <KAKNM0106P1 :dialog="isDialog" :sendData="paramData" @close="close" ></KAKNM0106P1>
-  </v-container>
-
 </template>
 
 <script>
 import KAKNM0106P1 from '@/views/knm/KAKNM0106P1.vue'
+import KAKNM0205Form from '@/components/knm/KAKNM0205Form.vue'
 
 export default {
   name: 'KAKNM0104Form',
   components: {
-    KAKNM0106P1
+    KAKNM0106P1,
+    KAKNM0205Form
   },
   icons: {
     iconfont: 'faSvg'
@@ -72,6 +107,7 @@ export default {
     return {
       param: [],
       userid: '',
+      userType: '',
       reg_uerid: '',
       question_id: '',
       project_id: '',
@@ -96,12 +132,36 @@ export default {
   // porps: [
   //   'paramData'
   // ],
+  created () {
+    console.log('상세보기화면 created', this.$route.params)
+    this.param = this.$route.params
+    this.answer_id = this.param.answer_id
+    console.log('상세보기화면 엔서아이디', this.answer_id)
+  },
   mounted () {
     // 추후 삭제
     console.log('KAKNM0104Form mounted!!', this.$route.params)
-    this.param = this.paramData
+    this.param = this.$route.params
     console.log('mounted!!this.param', this.param)
-
+    this.userid = this.param.userid
+    this.reg_uerid = this.param.reg_uerid
+    this.title = this.param.title
+    this.question_id = this.param.question_id
+    this.project_id = this.param.project_id
+    this.project_name = this.param.project_name
+    this.solution_id = this.param.solution_id
+    this.solution_name = this.param.solution_name
+    this.score = this.param.score
+    this.answer_id = this.param.answer_id
+    this.content_q = this.param.content_q
+    this.content_s = this.param.content_s
+    this.err_log = this.param.err_log
+    this.reg_userName_tq = this.param.reg_userName_tq
+    this.reg_date_tq = this.param.reg_date_tq
+    this.status = this.param.status
+    this.tag_tag = this.param.tag_tag
+    this.tag_erc = this.param.tag_erc
+    this.tag_ert = this.param.tag_ert
     this.userid = this.user_id
     this.param = this.param_ch
 
@@ -114,10 +174,15 @@ export default {
       console.log(' computed userid components ', this.$store.state.userid)
       return this.$store.state.userid
     },
+    user_type () {
+      console.log(' computed param components ', this.$store.state.usertype)
+      return this.$store.state.usertype
+    },
     param_ch () {
       console.log(' computed param components ', this.$route.params)
       return this.$route.params
     }
+
   },
   watch: {
     userid () {
@@ -125,22 +190,19 @@ export default {
       console.log(this.$store.state.userid)
     }
   },
-  created () {
-
-  },
   methods: {
-    // 수정 페이지 이동
-    btnModify () {
+    // 수정/답변 페이지 이동
+    movePage (action) {
       console.log('userid ', this.userid)
       console.log('params ', this.param)
+
       const params = {
         userid: this.userid,
-        reg_uerid: this.param.reg_uerid,
+        reg_userid: this.param.reg_userid,
         question_id: this.param.question_id,
         project_id: this.param.project_id,
         project_name: this.param.project_name,
         score: this.param.score,
-        answer_id: this.param.answer_id,
         solution_name: this.param.solution_name,
         title: this.param.title,
         content_q: this.param.content_q,
@@ -154,8 +216,33 @@ export default {
         tag_ert: this.param.tag_ert
       }
 
-      console.log('넘길 값 KAKNM0105Modify parmas', params)
-      this.$router.push({ name: 'KAKNM0105Modify', params: params })
+      if (action === 'btnModify') {
+        console.log('넘길 값 KAKNM0105Modify parmas', params)
+        this.$router.push({ name: 'KAKNM0105Modify', params: params })
+      } else if (action === 'btnAnswer') {
+        console.log('들어오니??')
+        this.$router.push({ name: 'KAKNM02Write', params: params })
+      }
+    },
+    // 유저 권한 체크
+    chkUserType () {
+      if (this.userType === 'A' || this.userType === 'O') {
+        return true
+      }
+    },
+    // 질문자 id 체크
+    writerChk () {
+      if (this.userid === this.reg_userid) {
+        return true
+      }
+    },
+    // 답변자 id 체크
+    chkAnswerId () {
+      console.log('testetset')
+      if (this.answer_id) {
+        console.log('this.answerId=>>>', this.answer_id)
+        return true
+      }
     },
     // 삭제 팝업 호출
     btnDelete () {

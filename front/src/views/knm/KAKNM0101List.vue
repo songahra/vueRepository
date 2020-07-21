@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <KAKNM0101Form @srchList="srchList"></KAKNM0101Form>
-    <KAKNM01ListForm ref="list"></KAKNM01ListForm>
-    <!-- <KAKNM01ListForm ></KAKNM01ListForm> -->
-  </div>
+    <div id="ct">
+        <section class="card">
+            <KAKNM0101Form @srchList="srchList"></KAKNM0101Form>
+            <KAKNM01ListForm ref="list"></KAKNM01ListForm>
+            <!-- <KAKNM01ListForm ></KAKNM01ListForm> -->
+        </section>
+    </div>
 </template>
 
 <script>
