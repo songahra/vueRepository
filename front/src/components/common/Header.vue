@@ -22,7 +22,7 @@
         <i class="icon-hamburger-back" />
       </button>
     </div>
-    <ul class="breadcrumb">
+    <!-- <ul class="breadcrumb">
       <li class="breadcrumb-item">
         홈
       </li>
@@ -32,7 +32,7 @@
       >
         MY page
       </li>
-    </ul>
+    </ul> -->
     <div class="hd-side">
       <a
         href=""

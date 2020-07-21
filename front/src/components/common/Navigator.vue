@@ -13,7 +13,7 @@
         <li>
           <!-- [D] 활성화 : collapsed 클래스 삭제-->
           <a
-            href="/knm/quWrite"
+            href=""
             class="menu-link "
           ><i class="icon-std-code text-dark" />기술 문의</a>
 
@@ -88,7 +88,13 @@
             class="menu-collapse-link collapsed small text-dark"
             data-toggle="collapse"
             style="margin-left: 20px"
-          >- 지식포인트</a>
+          >- 지식포인트(솔루션)</a>
+          <a
+            href="/adm/userList"
+            class="menu-collapse-link collapsed small text-dark"
+            data-toggle="collapse"
+            style="margin-left: 20px"
+          >- 지식포인트(사용자)</a>
 
           <a
             href="/profile"

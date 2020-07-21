@@ -188,8 +188,8 @@ export default {
       // 서버요청
       const formData = {
         reg_userid: this.reg_userid,
-        question_id: this.data.question_id,
-        answer_id: this.data.answer_id
+        question_id: this.question_id,
+        answer_id: this.answer_id
       }
 
       getDetail(formData) /* 에러처리 확인필요!! */

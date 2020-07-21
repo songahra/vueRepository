@@ -11,6 +11,7 @@
                           <v-subheader style="padding-left: 20px; padding-top: 5px;">
                             기간선택
                           </v-subheader>
+
                           <date-picker
                             v-model="range"
                             style="padding-top: 10px;"
@@ -28,6 +29,9 @@
                             tile
                             class="ma-2"
                             @click="onSubmit"
+                            style="border-top-width: 10px;
+                                    margin-top: 9px;
+                                    margin-left: 5px;"
                           >
                             조회
                           </V-btn>

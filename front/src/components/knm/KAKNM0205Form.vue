@@ -31,6 +31,7 @@ export default {
       ansName: '',
       ansContent: '',
       ansId: '',
+      question_id: '',
       lists: '',
       paramData: '',
       answerData: '',

@@ -28,6 +28,9 @@
                           tile
                           class="ma-2"
                           @click="onSubmit"
+                          style="border-top-width: 10px;
+                                    margin-top: 9px;
+                                    margin-left: 5px;"
                         >
                           조회
                         </V-btn>
