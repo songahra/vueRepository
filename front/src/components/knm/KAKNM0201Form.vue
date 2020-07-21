@@ -110,7 +110,7 @@ export default {
     }
   },
   mounted () {
-    console.log('params => ' + this.$route.params)
+    console.log('params => ' + this.$route.params.solution_id)
     this.param = this.$route.params
     this.question_id = this.param.question_id
     this.solution_name = this.param.solution_name
@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     async onSubmit () {
-      console.log('onSubmit')
+      console.log('onSubmit', this.solution_id)
       const data = {
         // 질문 정보
         question_id: this.question_id,

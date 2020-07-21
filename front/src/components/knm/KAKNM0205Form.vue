@@ -5,7 +5,7 @@
           <p class="font-weight-bold">{{ this.ansName }}</p>
           <div class="ml-auto form-inline m-full">
             <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
-            <a href="" class="btn btn-primary"><span class="hide">수정</span></a>
+            <a href="" @click.prevent="clickModify" class="btn btn-primary"><span class="hide">수정</span></a>
           </div>
         </div>
         <textarea class="textarea-basic-md" v-model="ansContent"></textarea>
@@ -33,13 +33,16 @@ export default {
       ansId: '',
       lists: '',
       paramData: '',
+      answerData: '',
       isDialog: false
     }
   },
   props: ['sendData'],
   created () {
     console.log('created!!')
-    this.ansId = this.sendData
+    this.answerData = this.sendData
+    this.ansId = this.answerData.answer_id
+    console.log('답변하기 ans Id : ', this.ansId)
     this.getAnswerDetail()
   },
   methods: {
@@ -59,6 +62,22 @@ export default {
       console.log(this.ansName)
       console.log(this.ansContent)
     },
+    clickModify () {
+      const params = {
+        params: {
+          project_name: this.answerData.project_name,
+          answer_id: this.answerData.answer_id,
+          solution_name: this.answerData.solution_name,
+          content_q: this.answerData.content_q,
+          title: this.answerData.title,
+          tag_tag: this.answerData.tag_tag,
+          tag_erc: this.answerData.tag_erc,
+          tag_ert: this.answerData.tag_ert
+        }
+      }
+      console.log('modify!!', params)
+      this.$router.push({ name: 'KAKNM02Modify', params: params })
+    },
     clickDelete () {
       console.log('click Delete 실행!')
       this.isDialog = true
@@ -69,7 +88,6 @@ export default {
     },
     async ansDelete () {
       console.log('ansDelete 호출')
-      this.close()
       const params = {
         params: {
           ansId: this.ansId
@@ -77,6 +95,7 @@ export default {
       }
       const { data } = await delAnswer(params)
       alert(data + ' 개의 답변이 삭제되었습니다.')
+      this.close()
       this.$router.push({ name: 'KAKNM0101List' })
     }
   }

@@ -89,20 +89,31 @@ export default {
       content_b: '',
       content_t: '',
       // 질문 정보
-      solution_name: '질문 솔루션 이름',
-      question_title: '질문 제목',
-      project_name: '질문 프로젝트 이름',
-      tag: '질문 태그',
-      err_c: '질문 에러코드',
-      err_t: '질문 예외종류',
-      question_content: '질문 내용 어쩌고 저쩌고',
-
-      question_id: 'QU20200716101300555',
-      project_id: 'PR20200619203046279',
-      solution_id: 'SL020000',
-      // 다음 화면 (리스트)
-      link: 'http://localhost:8081/knm/anList'
+      solution_name: '',
+      question_title: '',
+      project_name: '',
+      tag: '',
+      err_c: '',
+      err_t: '',
+      question_content: '',
+      // 답변 insert 할때 보내줘야할 질문 정보
+      // question_id: '',
+      // project_id: '',
+      // solution_id: '',
+      param: ''
     }
+  },
+  mounted () {
+    console.log('params => ' + this.$route.params.params.solution_name)
+    this.param = this.$route.params.params
+    this.answer_id = this.param.answer_id
+    this.solution_name = this.param.solution_name
+    this.question_title = this.param.title
+    this.project_name = this.param.project_name
+    this.tag = this.param.tag_tag
+    this.err_c = this.param.tag_erc
+    this.err_t = this.param.tag_ert
+    this.question_content = this.param.content_q
   },
   computed: {
     user_id () {
@@ -124,8 +135,9 @@ export default {
 
       }
       console.log('POST DATA : ', data)
-      const response = await postAnswer(data)
-      alert(response + '개의 답변이 수정되었습니다.')
+      /* const response = */await postAnswer(data)
+      alert('1 개의 답변이 수정되었습니다.')
+      this.$router.push({ name: 'KAKNM0101List' })
     }
   }
 
