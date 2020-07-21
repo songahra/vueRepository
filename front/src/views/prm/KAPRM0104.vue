@@ -10,8 +10,8 @@
         </h2>
       </header>
       <div class="card-body">
-        <v-toolbar
-          flat="false"
+        <!-- <v-toolbar
+          flat
           md-elevation="0"
           height="50"
           color="#FFFFF"
@@ -22,15 +22,15 @@
               지식 포인트
             </v-tab>
           </v-tabs>
-          <v-btn @click="updateProfile">
+           <v-btn @click="updateProfile">
             <span>편집</span>
           </v-btn>
-        </v-toolbar>
+        </v-toolbar> -->
         <v-row
           style="
         padding-left: 10px;"
         >
-          <h3>{{ this.$store.state.username }}</h3> 님께서 {{ now }} 까지 누적한 지식 포인트 입니다.
+          <h6>{{ this.$store.state.username }}</h6> 님께서 <h6> {{ now }} </h6>  까지 누적한 지식 포인트 입니다.
         </v-row>
         <v-row
           style="
@@ -41,7 +41,7 @@
           총 누적 지식 포인트 : {{ total_point }}
         </v-row>
         <v-spacer /><v-spacer />
-        <h4>월별 지식 포인트</h4>
+        <h5>월별 지식 포인트</h5>
         <v-row>
           <v-subheader
             style="
@@ -64,12 +64,16 @@
             @change="updateDate"
           />
           <v-btn
-            color="indigo"
             dark
             tile
-            class="ma-2"
+            class=" btn btn-primary ma-2"
+            style="
+    margin-top: 8px;
+    margin-left: 5px;
+"
             @click="formSubmit"
           >
+            <i class="icon-srch" />
             조회
           </v-btn>
         </v-row>
