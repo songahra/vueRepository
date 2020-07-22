@@ -227,6 +227,7 @@ export default {
         project_name: this.param.project_name,
         score: this.param.score,
         solution_name: this.param.solution_name,
+        solution_id: this.param.solution_id,
         title: this.param.title,
         content_q: this.param.content_q,
         content_s: this.param.content_s,
