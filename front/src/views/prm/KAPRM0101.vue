@@ -152,7 +152,6 @@
                       v-model="image"
                       style="margin-left: 0px;"
                       outlined
-
                       dense
                       :rules="rules"
                       accept="image/*"

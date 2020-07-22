@@ -160,11 +160,8 @@ export default {
   async created () {
     this.time()
     var moment = require('moment')
-    console.log(moment().add('hours', 1).fromNow())
     moment.locale('ko') // 언어팩 변경
-    console.log(moment().format('YYYY-MM-DD HH:mm'))
     this.now = moment().format('YYYY-MM-DD HH:mm')
-    console.log('이번달은?', moment().format('MM'))
     this.month = moment().format('MM')
 
     // "1 시간 전"
