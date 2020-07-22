@@ -5,8 +5,18 @@
         class="card-header"
         style="padding: 1.6rem 1rem;"
       >
-        <h2 class="card-title">
-          <span class="i-rounded bg-danger"><i class="icon-user" /></span>지식 포인트
+        <h2
+          class="card-title"
+          style="color : lightgrey"
+        >
+          <span class="i-rounded bg-danger"><i class="icon-user" /></span>    <a
+            href="/profile"
+          >프로필관리 |</a>
+        </h2>
+        <h2
+          class="card-title"
+        >
+          지식 포인트
         </h2>
       </header>
       <div class="card-body">

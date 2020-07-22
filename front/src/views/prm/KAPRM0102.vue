@@ -6,8 +6,18 @@
         style="padding: 1.6rem 1rem;"
       >
         <h2 class="card-title">
-          <span class="i-rounded bg-danger"><i class="icon-user" /></span>My page
+          <span class="i-rounded bg-danger"><i class="icon-user" /></span>프로필 편집|
         </h2>
+        <a
+          href="/point"
+        >
+          <h2
+            class="card-title"
+            style="color : lightgrey"
+          >
+            지식 포인트
+          </h2>
+        </a>
       </header>
       <div class="card-body">
         <!--  flat="false" -> 그림자 없애줌 -->
@@ -17,12 +27,13 @@
           height="50"
           color="#FFFFF"
         >
-          <v-tabs>
+          <!-- <v-tabs>
             <v-tab>프로필 관리</v-tab>
             <v-tab @click="() => {this.$router.push('/point')}">
               지식 포인트
             </v-tab>
-          </v-tabs>
+          </v-tabs> -->
+          <v-spacer />
           <v-btn
             style="
     margin-right: 5px;
