@@ -25,7 +25,12 @@
             alt="ESB"
           >
           <div class="form-group">
-            <i class="icon-user" />
+            <i
+              class="icon-user"
+              style="
+    height: 0px;
+"
+            />
             <input
               v-model="user_id"
               type="text"
@@ -34,7 +39,12 @@
             >
           </div>
           <div class="form-group">
-            <i class="icon-lock" />
+            <i
+              class="icon-lock"
+              style="
+    height: 0px;
+"
+            />
             <input
               v-model="user_pw"
               type="password"
