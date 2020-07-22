@@ -6,26 +6,10 @@
         style="padding: 1.6rem 1rem;"
       >
         <h2 class="card-title">
-          <span class="i-rounded bg-danger"><i class="icon-user" /></span>My page
+          <span class="i-rounded bg-danger"><i class="icon-user" /></span>지식 포인트
         </h2>
       </header>
       <div class="card-body">
-        <!-- <v-toolbar
-          flat
-          md-elevation="0"
-          height="50"
-          color="#FFFFF"
-        >
-          <v-tabs>
-            <v-tab>프로필 관리</v-tab>
-            <v-tab @click="() => {this.$router.push('/point')}">
-              지식 포인트
-            </v-tab>
-          </v-tabs>
-           <v-btn @click="updateProfile">
-            <span>편집</span>
-          </v-btn>
-        </v-toolbar> -->
         <v-row
           style="
         padding-left: 10px;"

@@ -39,7 +39,7 @@
         class="icon-info"
         title="수신함"
       />
-      <span class="text-dark small">마일리지 10점</span>
+      <span class="text-dark small">포인트 {{ this.total_point }}</span>
 
       <a
         href="/profile"
@@ -48,10 +48,7 @@
       />
       <span
         class="text-dark small"
-      ><i
-        style="margin-left: 5px;"
-        class="icon-down"
-      /> {{ this.$store.state.username }}</span>
+      > {{ this.$store.state.username }}</span>
       <Modal />
     </div>
   </header>
@@ -59,13 +56,30 @@
 
 <script>
 import Modal from '@/components/log/KALOGPOP1.vue' // 1. 비밀번호 변경 모달
+import { selectTotalPoint } from '@/api/Profile.js'
 
 export default {
   components: {
     Modal
   },
-  mounted () {
-
+  data: () => {
+    return { total_point: '' }
+  },
+  // 회원 total 포인트 조회
+  async created () {
+    const userId = {
+      user_id: this.$store.state.userid,
+      month: '' // ##나중에 수정해주어야함##
+    }
+    console.log(userId)
+    const { data } = await selectTotalPoint(userId)
+    console.log('data', data)
+    this.total_point = data.total_point
+    console.log('this.total_point', this.total_point)
   }
 }
 </script>
+
+<style>
+
+</style>
