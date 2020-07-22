@@ -1,9 +1,11 @@
 <!-- 지식관리 내가문의한 질문 -->
 <template>
-  <div>
+    <div id="ct">
+    <section class="card">
     <KAKNM0107Form @srchList="srchList"></KAKNM0107Form>
     <KAKNM01ListForm ref="list"></KAKNM01ListForm>
-  </div>
+    </section>
+    </div>
 </template>
 
 <script>

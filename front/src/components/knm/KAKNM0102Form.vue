@@ -17,8 +17,8 @@
                         <div class="col" style="min-width: 75%;">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
                                 <b class="control-label">질문제목</b>
+                              <input type="text" class="form-control" placeholder="제목은 필수입력사항입니다." v-model="title">
                             </label>
-                            <input type="text" class="form-control" placeholder="제목은 필수입력사항입니다."  v-model="title">
                         </div>
                         <div class="col">
                             <label class="form-control-label" data-toggle="modal" data-target="#">

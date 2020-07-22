@@ -1,31 +1,39 @@
 <template>
-    <div>
-        <div class="container" style="margin-top:100px">
-            <form id="KAKNM0101From" @submit.prevent="onSubmit" class="form">
-            <div class="card shadow">
-                <div class="card-body">
-                <h4 class="card-title">내가 문의한 질문</h4>
-                    <button type="submit" @onClick="onSubmit">조회</button> |
-                </div>
-                <div class="text-left">
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <label for="title">질문 제목</label>
-                      <input type="text" id="title" value="" v-model="title" class="form-control" rows="10" style="resize:none">
-                    </div>
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <label for="status">처리상태  :  </label>
-                      <select name="status" id="status" v-model="status">
-                          <option selected value="">선택하세요</option>
+
+    <section class="card">
+    <header class="card-header" style="padding: 1.6rem 1rem;">
+      <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-msg-text"></i></span>내가 문의한 질문</h2>
+    </header>
+    <div class="ct-header">
+      <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+      <div id="collapse-filter" class="collapse collapse-filter">
+          <div class="filter no-gutters">
+              <div class="col" style="min-width: 70%;">
+                  <label class="form-control-label">
+                      <b class="control-label">질문제목</b>
+                      <input type="text" class="form-control" v-model="title" placeholder="제목을 입력하세요">
+                  </label>
+              </div>
+              <div class="col">
+                  <label class="form-control-label label-select">
+                      <b class="control-label">처리상태</b>
+                      <select class="form-control selectpicker" v-model="status" title="선택하세요">
+                          <option value="">선택안함</option>
                           <option value="SS">완료</option>
                           <option value="NN">미완료</option>
                           <option value="RQ">재질문</option>
                       </select>
-                    </div>
-                </div>
-            </div>
-            </form>
+                  </label>
+              </div>
+              <div class="col-auto">
+                  <button type="button" class="btn btn-primary" style="margin-left: 10px" @click.prevent="onSubmit()">
+                    <i class="icon-srch"></i>조회</button>
+              </div>
+          </div>
         </div>
-    </div>
+      </div>
+    </section>
+
 </template>
 
 <script>

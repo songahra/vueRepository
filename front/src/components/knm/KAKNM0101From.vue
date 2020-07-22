@@ -1,7 +1,7 @@
 <template>
 <div>
             <header class="card-header" style="padding: 1.6rem 1rem;">
-                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-result"></i></span>지식 관리 (iGate)</h2>
+                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-result"></i></span>지식 관리</h2>
                 <div class="btn-container"><a href="/knm/quWrite" class="btn btn-m"><span class="hide">기술문의</span></a></div>
             </header>
             <div class="ct-header">
@@ -28,7 +28,9 @@
                             </label>
                         </div>
                         <div class="col-auto">
-                            <button type="submit" @onClick="onSubmit" class="btn btn-primary"><i class="icon-srch"></i>조회</button>
+                            <button type="submit" @onClick="onSubmit" style="
+    margin-left: 10px;
+" class="btn btn-primary"><i class="icon-srch"></i>조회</button>
                         </div>
                     </div>
                     <div class="filter no-gutters">
