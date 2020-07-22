@@ -34,8 +34,8 @@
                           조회
                         </V-btn>
                       </v-row>
-                </div>
-                <div>
+                <!-- </div>
+                <div> -->
                   <v-app id="app">
                   <ag-grid-vue style="width: 100%; height:550px;"
                               class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
@@ -48,15 +48,15 @@
                               @gridReady="gridSizeFit"
                               @gridSizeChanged="gridSizeFit">
                   </ag-grid-vue>
+                  <Modal2
+                    :dialog="isDialog"
+                    :propsdata="params"
+                    ref="popup"
+                    @close="isDialog=false"
+                  />
                 </v-app>
                 </div>
             </form>
-            <Modal2
-              :dialog="isDialog"
-              :propsdata="params"
-              ref="popup"
-              @close="isDialog=false"
-            />
         <!-- </div> -->
     </div>
   </section>
