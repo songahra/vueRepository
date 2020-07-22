@@ -20,7 +20,7 @@
                                 <select class="form-control selectpicker" v-model="status" title="선택하세요">
                                     <option value="">선택안함</option>
                                     <option value="SS">완료</option>
-                                    <option value="NN">미완료</option>
+                                    <!-- <option value="NN">미완료</option> -->
                                     <option value="RQ">재질문</option>
                                 </select>
                             </label>

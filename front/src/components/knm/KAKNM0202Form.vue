@@ -4,7 +4,7 @@
       <header class="card-header" style="padding: 1.6rem 1rem;">
         <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-text"></i></span>답변수정</h2>
         <div class="btn-container">
-            <a href="" class="btn btn-m"><span class="hide">미리보기</span></a>
+            <!-- <a href="" class="btn btn-m"><span class="hide">미리보기</span></a> -->
             <a href="" @click.prevent="onSubmit()" class="btn btn-primary"><span class="hide">확인</span></a>
             <a href="mainList" class="btn btn-primary"><span class="hide">닫기</span></a>
         </div>
