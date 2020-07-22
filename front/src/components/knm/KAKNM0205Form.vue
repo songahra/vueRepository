@@ -4,11 +4,13 @@
         <div class="sub-bar">
           <p class="font-weight-bold">{{ this.ansName }}</p>
           <div class="ml-auto form-inline m-full">
-            <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
-            <a href="" @click.prevent="clickModify" class="btn btn-primary"><span class="hide">수정</span></a>
+            <div v-if = "chkUserType()">
+              <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
+              <a href="" @click.prevent="clickModify" class="btn btn-primary"><span class="hide">수정</span></a>
+            </div>
           </div>
         </div>
-        <textarea class="textarea-basic-md" v-model="ansContent"></textarea>
+        <textarea class="textarea-basic-md" v-model="ansContent" readonly></textarea>
 
       </div>
       <v-app>
@@ -29,6 +31,7 @@ export default {
   data: () => {
     return {
       ansName: '',
+      userType: '',
       ansContent: '',
       ansId: '',
       question_id: '',
@@ -46,6 +49,11 @@ export default {
     console.log('답변하기 ans Id : ', this.ansId)
     this.getAnswerDetail()
   },
+  computed: {
+    user_id () {
+      return this.$store.state.userid
+    }
+  },
   methods: {
     async getAnswerDetail () {
       console.log('getAnswer function')
@@ -62,6 +70,12 @@ export default {
       this.ansContent = data[0].content_a
       console.log(this.ansName)
       console.log(this.ansContent)
+    },
+    chkUserType () {
+      this.userType = this.$store.state.usertype
+      if (this.userType === 'A' || this.userType === 'O') {
+        return true
+      }
     },
     clickModify () {
       const params = {

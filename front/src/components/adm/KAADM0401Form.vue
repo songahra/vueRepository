@@ -6,7 +6,7 @@
               <form id="KAADM0401Form" @submit.prevent="onSubmit" class="form">
                 <div class="card-body">
                   <h4 class="card-title">지식포인트</h4>
-                      <div class="form-group" style="resize: none;width: 600px;">
+                      <!-- <div class="form-group" style="resize: none;width: 600px;"> -->
                         <v-row>
                           <v-subheader style="padding-left: 20px; padding-top: 5px;">
                             기간선택
@@ -36,7 +36,7 @@
                             조회
                           </V-btn>
                         </v-row>
-                      </div>
+                      <!-- </div> -->
                   </div>
                   <div>
                     <v-app id="app">
