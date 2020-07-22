@@ -1,28 +1,41 @@
 <!-- 프로젝트 조회 Form -->
 <template>
-    <div style="width: 100%; height:100%">
-        <div class="container" style="margin-top:100px">
-            <form id="KAKNM0103From" @submit.prevent="onSubmit" class="form">
-            <div class="card shadow">
-                <div class="card-body">
-                <h4 class="card-title">프로젝트</h4>
-                </div>
-                <div class="text-left">
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <v-text-field label="프로젝트ID" id="project_id" value="" v-model="project_id"></v-text-field>
-                    </div>
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <v-text-field label="프로젝트명" id="project_name" value="" v-model="project_name"></v-text-field>
-                    </div>
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <v-text-field label="최종고객" id="customer" value="" v-model="customer"></v-text-field>
-                    </div>
-                    <div>
-                    <v-btn small color="primary" type="submit">조회</v-btn>
-                    </div>
-                </div>
+<div id="modal5" class="modal fade show" tabindex="-1"  style="display: block;" aria-modal="true" role="dialog">
+  <form id="KAKNM0103From" @submit.prevent="onSubmit" class="form">
+    <input type="hidden" id="project_id"  name="project_id" v-model="project_id"/>
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+   <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">기술문의</h2>
+        <button type="button" class="btn-icon" data-dismiss="modal" aria-label="Close" @click="close"><i class="icon-close"></i></button>
+      </div>
+      <div class="modal-body modal-body-ct">
+        <div class="ct-header">
+          <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter-service">검색 필터<i class="icon-down"></i></button>
+          <div id="collapse-filter-service" class="collapse collapse-filter">
+            <div class="filter no-gutters">
+              <div class="col">
+                <label class="form-control-label">
+                  <b class="control-label">프로젝트명</b>
+                  <input type="text" class="form-control" v-model="project_name" placeholder="프로젝트명을 입력하세요.">
+              </label>
+              </div>
+              <div class="col">
+                <label class="form-control-label">
+                  <b class="control-label">최종고객</b>
+                  <input type="text" class="form-control" v-model="customer" placeholder="최종고객을 입력하세요.">
+                </label>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary" ><i class="icon-srch"></i>조회</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ct-content">
+          <div class="table-responsive">
                 <div style="width: 100%; height:100%">
-                    <ag-grid-vue style="width: 80%; height: 650px;"
+                    <ag-grid-vue style="width: 100%; height: 650px;"
                                  class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
                                 :columnDefs="columnDefs"
                                 :rowData="rowData"
@@ -33,13 +46,17 @@
                                 @cell-clicked="onCellClicked">
                     </ag-grid-vue>
                  </div>
-            </div>
-            <div class="row col-md-6">
-            <input class="btn btn-default col-md-3" @click="close" type="button" value="취소">
-            </div>
-            </form>
+          </div>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" @click="close" data-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" @click="close">확인</button>
+      </div>
     </div>
+  </div>
+  </form>
+</div>
 </template>
 <!-- Bootstrap CDN -->
 <script>
