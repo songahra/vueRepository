@@ -1,112 +1,115 @@
 <template>
   <div id="ct">
     <section class="card">
-      <header
-        class="card-header"
-        style="padding: 1.6rem 1rem;"
-      >
-        <h2
-          class="card-title"
-          style="color : lightgrey"
-        >
-          <span class="i-rounded bg-danger"><i class="icon-user" /></span>    <a
-            href="/profile"
-          >프로필관리 |</a>
+      <header class="card-header">
+        <a href="/profile">
+          <h2 class="card-title text-tertiary">
+            <span class="i-rounded bg-danger"><i class="icon-user" /></span>프로필관리
+          </h2>
+        </a>
+        <h2 class="card-title text-tertiary text-pad">
+          |
         </h2>
-        <h2
-          class="card-title"
-        >
-          지식 포인트
+        <h2 class="card-title">
+          지식포인트
         </h2>
       </header>
-      <div class="card-body">
-        <v-row
-          style="
-        padding-left: 10px;"
+      <div class="card-info">
+        <span><span class="alert-text"> {{ this.$store.state.username }} </span> 님께서 {{ now }} 까지 누적한 포인트입니다.</span>
+        <div class="card-title">
+          <span>이달의 누적 지식포인트 <span class="text-danger alert-text">{{ month_total_point }}</span></span>
+          <span class="text-pad alert-text">|</span>
+          <span>총 누적 지식포인트 <span class="text-danger alert-text">{{ total_point }}</span></span>
+        </div>
+      </div>
+      <div class="ct-header">
+        <button
+          type="button"
+          class="btn-filter collapsed d-xl-none"
+          data-toggle="collapse"
+          data-target="#collapse-filter"
         >
-          <h6>{{ this.$store.state.username }}</h6> 님께서 <h6> {{ now }} </h6>  까지 누적한 지식 포인트 입니다.
-        </v-row>
-        <v-row
-          style="
-        padding-left: 10px;"
+          검색 필터<i class="icon-down" />
+        </button>
+        <div
+          id="collapse-filter"
+          class="collapse collapse-filter"
         >
-          이 달 누적 지식 포인트 : {{ month_total_point }}
+          <div class="filter no-gutters">
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">등록기간</b>
+                <input
+                  id="datePicker"
 
-          총 누적 지식 포인트 : {{ total_point }}
-        </v-row>
-        <v-spacer /><v-spacer />
-        <h5>월별 지식 포인트</h5>
-        <v-row>
-          <v-subheader
-            style="
-    padding-left: 20px;
-    padding-top: 5px;"
-          >
-            기간선택
-          </v-subheader>
-          <date-picker
-            v-model="range"
-            style="
-    padding-top: 10px;
-"
-            :lang="lang"
-            range
-            type="date"
-            format="YYYY-MM-DD"
-            width="500"
-            confirm
-            @change="updateDate"
-          />
-          <v-btn
-            dark
-            tile
-            class=" btn btn-primary ma-2"
-            style="
-    margin-top: 8px;
-    margin-left: 5px;
-"
-            @click="formSubmit"
-          >
-            <i class="icon-srch" />
-            조회
-          </v-btn>
-        </v-row>
-
-        <ag-grid-vue
-          style="width: 100%; height: 550px;"
-          class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-          :column-defs="columnDefs"
-          :row-data="rowData"
-          :grid-ready="gridSizeFit"
-          :grid-size-changed="gridSizeFit"
-          :grid-options="gridOptions"
-          :get-row-style="getRowStyle"
-          @gridSizeChanged="gridSizeFit"
-        />
+                  type="text"
+                  class="form-control input-daterange"
+                >
+              </label>
+            </div>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="formSubmit"
+              >
+                <i class="icon-srch" />조회
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ct-content">
+        <div class="table-responsive">
+          <table class="table">
+            <ag-grid-vue
+              style="width: 100%; height: 550px;"
+              class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+              :column-defs="columnDefs"
+              :row-data="rowData"
+              :grid-ready="gridSizeFit"
+              :grid-size-changed="gridSizeFit"
+              :grid-options="gridOptions"
+              :get-row-style="getRowStyle"
+              @gridSizeChanged="gridSizeFit"
+            />
+          </table>
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-import DatePicker from 'vue2-datepicker'
-import moment from 'moment'
-import 'vue2-datepicker/index.css'
-import { selectMonthPoint, selectTotalPoint } from '@/api/prm/Profile.js'
+import { selectMonthPoint, selectTotalPoint } from '@/api/prm/Profile.js' // 사용자 총 누적 지식포인트 조회
+
 /* ag-grid */
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { AgGridVue } from 'ag-grid-vue'
 
+/* daterangepicker */
+import '@/assets/vendor/daterangepicker/daterangepicker.min.js'
+import '@/assets/vendor/daterangepicker/daterangepicker.min.css'
+import '@/assets/vendor/daterangepicker/moment.min.js'
+
+/* jQuery 사용 */
+global.jQuery = require('jquery')
+var $ = global.jQuery
+window.$ = $
+
 // confirm 있어야 ok버튼
 export default {
   components: {
-    DatePicker,
     AgGridVue
   },
   data: () => {
     return {
+      // DatePicker
+      startDate: '',
+      endDate: '',
+
       // ag-grid
       modules: AllCommunityModules,
       lists: [],
@@ -116,21 +119,8 @@ export default {
 
       total_point: '',
       month_total_point: '',
-      range: '',
-      endDate: '',
-      startDate: '',
       now: '',
-      month: '',
-      // custom :lang="lang"
-      lang: {
-        days: ['일', '월', '화', '수', '목', '금', '토', '일'],
-        daysMin: ['일', '월', '화', '수', '목', '금', '토', '일'],
-        months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
-      },
-      DatePickerFormat: 'YYYY-MM-DD hh:mm'
+      month: ''
     }
   },
   beforeMount () {
@@ -155,19 +145,79 @@ export default {
     this.time()
     var moment = require('moment')
     moment.locale('ko') // 언어팩 변경
-    this.now = moment().format('YYYY-MM-DD HH:mm')
-    this.month = moment().format('MM')
+    this.now = moment().format('YYYY-MM-DD HH:mm') // 현재 시간
+    this.month = moment().format('MM') // 현재 월
 
-    // "1 시간 전"
+    //
     const userId = {
       user_id: this.$store.state.userid,
       month: this.month
     }
-    console.log(userId)
-    const { data } = await selectTotalPoint(userId)
-    console.log('data', data)
-    this.total_point = data.total_point
-    this.month_total_point = data.month_total_point
+    const { data } = await selectTotalPoint(userId) // // 사용자 총 누적 지식포인트 조회 함수
+    this.total_point = data.total_point // 총 누적 지식포인트
+    this.month_total_point = data.month_total_point // 이달의 누적 지식포인트
+  },
+
+  // ** daterangepicker jquery **
+  mounted () {
+    $('#demo').daterangepicker({
+      locale: {
+        format: 'MM/DD/YYYY',
+        separator: ' - ',
+        applyLabel: 'Apply',
+        cancelLabel: 'Cancel',
+        fromLabel: 'From',
+        toLabel: 'To',
+        customRangeLabel: 'Custom',
+        weekLabel: 'W',
+        daysOfWeek: [
+          'Su',
+          'Mo',
+          'Tu',
+          'We',
+          'Th',
+          'Fr',
+          'Sa'
+        ],
+        monthNames: [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December'
+        ],
+        firstDay: 1
+      },
+      startDate: '12/01/2016',
+      endDate: '12/07/2016'
+    }, function (start, end, label) {
+    })
+    $(() => {
+      $('#datePicker').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        autoApply: true,
+        locale: {
+          format: 'YYYY.MM.DD HH:mm:ss',
+          separator: ' ~ ',
+          daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+          monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+        }
+      }, (start, end) => {
+        this.startDate = start.format('YYYY-MM-DD')
+        this.endDate = end.format('YYYY-MM-DD')
+        console.log('this.startDate', this.startDate) // datePicker시작 날짜
+        console.log('this.endDate', this.endDate) //  datePicker끝 날짜
+      })
+    })
   },
   methods: {
     gridSizeFit (params) {
@@ -185,18 +235,7 @@ export default {
         this.gridOptions.columnApi.autoSizeColumns(allColumnIds)
       }
     },
-
-    updateDate () {
-      console.log('updateDate함수실행')
-      console.log(moment(new Date(this.date)).format('YYYY-MM-DD'))
-
-      console.log(this.startDate = moment(this.range[0]).format('YYYY-MM-DD'))
-      this.startDate = moment(this.range[0]).format('YYYY-MM-DD')
-      console.log(typeof (this.startDate = moment(this.range[0]).format('YYYY-MM-DD'))) // string
-      this.endDate = moment(this.range[1]).format('YYYY-MM-DD')
-      console.log('this.endDate' + this.endDate)
-      console.log(this.endDate = moment(this.range[1]).format('YYYY-MM-DD'))
-    },
+    // 지식 포인트 조회 클릭 했을 때 실행되는 함수
     async formSubmit () {
       this.rowData = []
       console.log('formSubmit함수 실행')
@@ -205,13 +244,8 @@ export default {
         start_date: this.startDate,
         end_date: this.endDate
       }
-
-      console.log(userData)
-
       const { data } = await selectMonthPoint(userData)
-      console.log(data)
       this.lists = data
-      console.log(this.lists)
       this.lists.forEach(e => {
         const value = {
           reg_date: e.reg_date,
@@ -227,12 +261,10 @@ export default {
     getRowStyle: function (param) {
       return { 'text-align': 'center' }
     },
-    time () {
+    time () { // 현재 시각 구하는 함수
       const date = new Date()
       this.now = date.getDate
-      console.log(this.now)
     }
-
   }
 }
 </script>

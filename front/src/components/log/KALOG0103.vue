@@ -52,7 +52,7 @@
     padding-top: 30px;
 "
                   >솔루션명</label>
-                  <v-combobox
+                  <v-select
                     v-model="solution"
                     class="form-control compact-form"
                     :items="items"

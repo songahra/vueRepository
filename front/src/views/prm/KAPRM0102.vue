@@ -93,7 +93,7 @@
               </td>
               <td>
                 <!-- <div class="form-group"> -->
-                <v-combobox
+                <v-select
                   v-model="solution"
                   class="form-control compact-form"
                   :items="items"
@@ -132,18 +132,15 @@
                     class="btn btn-m"
                     for="ex_file"
                   >업로드</label>
-                  <div
-                    v-if="alert"
-                    class="alert alert-danger"
-                  >
-                    이미지 파일이 맞는지 확인해 주세요.
-                  </div>
-                  <input
+                  <v-file-input
                     id="ex_file"
                     ref="fileTag"
+                    v-model="image"
+                    hide-input
                     type="file"
                     accept="image/*"
-                  >
+                    @change="onUpload"
+                  />
                 </div>
               </td>
             </tr>
@@ -178,6 +175,7 @@
 <script>
 import { userType, userSolution, getSolution } from '@/api/log/Login.js'
 import { updateProfile, selectProfile } from '@/api/prm/Profile.js'
+import { formData } from '@/api/log/Signup.js'
 import Modal from '@/components/prm/KAPRM0103.vue' // 1. 비밀번호 변경 모달
 import Alert from '@/components/common/CompletePOP.vue' // 완료 alert
 
@@ -192,12 +190,13 @@ export default {
       isAddBoard: false,
       completeAlert: false,
       imgSrc: '',
+      image: null,
       code: '',
       typeCode: '',
       alert: false,
       dept: '',
-      solution: 'solution',
       user_type: 'user_type',
+      solution: 'solution',
       items: [],
       items2: [
         {
@@ -231,13 +230,10 @@ export default {
       user_id: this.$store.state.userid
     }
     const { data } = await selectProfile(userdata)
-    console.log('data 트루야 펄스야?', data === '')
     if (data === '') {
       this.showNoImage = true
-      console.log('data 트루야 펄스야?', data === '')
     } else {
       this.imgSrc = data
-      console.log('data펄스다.', this.imgSrc)
     }
   },
   async created () {
@@ -295,6 +291,26 @@ export default {
       }
       )
     },
+    async onUpload () {
+      try {
+        var fd = new FormData()
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'] // 이미지 파일만 업로드
+        if (!allowedTypes.includes(this.image.type)) {
+          this.alert = true // 이미지 파일이 아닐 경우 alert 창 띄움
+        } else {
+          this.alert = false
+          console.log('이미지파일 맞음')
+          console.log(this.image.type === 'image/*')
+          fd.append('profile_image', this.image)
+          fd.append('user_id', this.user_id)
+          const { data } = await formData(fd)
+          this.imgSrc = data
+        }
+      } catch (error) {
+      } finally {
+
+      }
+    },
     noImage () {
       return this.showNoImage
     }
@@ -307,7 +323,7 @@ export default {
 .form-group i{position: absolute; right: 9px; top: 9px;}
 .form-group img{ width: 1.2rem; position: absolute; right: 7px; top: 7px}
 
-.filebox input[type="file"] {
+.filebox v-file-input[type="file"] {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -316,5 +332,9 @@ export default {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+.theme--light.v-file-input{
+  display: none;
 }
 </style>
