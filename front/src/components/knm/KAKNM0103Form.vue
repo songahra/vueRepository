@@ -60,7 +60,7 @@
 </template>
 <!-- Bootstrap CDN -->
 <script>
-import { getPrList, srchPrList } from '@/api/knm/Question.js'
+import { getPjList, srchPjList } from '@/api/knm/Question.js'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
@@ -114,7 +114,7 @@ export default {
     console.log('mounted!!')
 
     // 서버요청
-    getPrList()
+    getPjList()
       .then((res) => {
         this.lists = res.data
         this.makeData()
@@ -136,7 +136,7 @@ export default {
       console.log('srchData', srchData)
 
       // 서버요청
-      srchPrList(srchData)
+      srchPjList(srchData)
         .then((res) => {
           console.log('2. rowData : ', this.rowData)
           this.lists = res.data

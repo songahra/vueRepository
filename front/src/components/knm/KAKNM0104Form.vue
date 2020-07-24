@@ -12,7 +12,7 @@
                        <a href="" class="btn btn-m" type="submit" @click.prevent="btnDelete"><span class="hide">삭제</span></a>
                        <a href="" class="btn btn-m" type="submit" @click.prevent="movePage('btnModify')"><span class="hide">수정</span></a>
                     </div>
-                    <a class="btn btn-primary" @click="() => this.$router.push({ name: 'KAKNM0101List' })"><span class="hide">목록보기</span></a>
+                    <a class="btn btn-m" @click="() => this.$router.push({ name: 'KAKNM0101List' })"><span class="hide">목록보기</span></a>
                 </div>
             </header>
             <div class="ct-header">
@@ -82,6 +82,19 @@
            <div v-if = "chkAnswerId()">
              <KAKNM0205Form :sendData="answerData"></KAKNM0205Form>
            </div>
+           <div class="sub-bar">
+              <div class="ml-auto form-inline m-full">
+                <p href="" style="padding-top: 8px;">
+                  <i class="icon-bookmark text-bookmark"></i>
+                  <i class="icon-bookmark text-bookmark"></i>
+                  <i class="icon-bookmark text-bookmark"></i>
+                  <i class="icon-bookmark"></i>
+                  <i class="icon-bookmark"></i>
+                </p>
+                <a href="" class="btn btn-m"><span class="hide">평가하기</span></a>
+                <a href="" class="btn btn-primary"><i class="icon-message text-light"></i><span class="hide">질문하기</span></a>
+              </div>
+            </div>
         </form>
         <v-app id="app">
             <KAKNM0106P1 :dialog="isDialog" :sendData="paramData" @close="close" ></KAKNM0106P1>
@@ -133,7 +146,6 @@ export default {
   created () {
     this.param = this.$route.params
     console.log('created=>', this.param)
-    this.answerData = this.param
     const formData = {
       reg_userid: this.param.reg_userid,
       question_id: this.param.question_id,
@@ -145,6 +157,7 @@ export default {
         if (res.status === 200) {
           console.log('res => ', res)
           const data = res.data
+          this.answerData = res.data
           this.reg_userid = data.reg_userid
           this.question_id = data.question_id
           this.project_id = data.project_id
@@ -163,6 +176,7 @@ export default {
           this.tag_erc = data.tag_erc
           this.tag_ert = data.tag_ert
         }
+
         return res
       })
       // .then((res) => console.log(res))
@@ -205,26 +219,7 @@ export default {
       // 서버요청
       console.log('formData=>>', formData)
     },
-    initData (params) {
-      this.reg_userid = params.reg_userid
-      this.question_id = params.question_id
-      this.project_id = params.project_id
-      this.project_name = params.project_name
-      this.score = params.score
-      this.answer_id = params.answer_id
-      this.solution_name = params.solution_name
-      this.solution_id = params.solution_id
-      this.title = params.title
-      this.content_q = params.content_q
-      this.content_s = params.content_s
-      this.err_log = params.err_log
-      this.reg_userName_tq = params.reg_userName_tq
-      this.reg_date_tq = params.reg_date_tq
-      this.status = params.status
-      this.tag_tag = params.tag_tag
-      this.tag_erc = params.tag_erc
-      this.tag_ert = params.tag_ert
-    },
+
     // 수정/답변 페이지 이동
     movePage (action) {
       console.log('userid ', this.userid)

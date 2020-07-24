@@ -65,7 +65,7 @@
             </div>
             <div class="ct-content">
                 <div class="sub-bar">
-                    <i class="icon-right text-danger"></i><p class="font-weight-bold">질문</p>
+                    <i class="icon-right text-danger" ></i><p class="font-weight-bold">질문</p>
                 </div>
                 <textarea class="textarea-basic-md"  id="content_q" v-model="content_q" ></textarea>
                 <div class="sub-bar">
@@ -73,11 +73,11 @@
                 </div>
                 <textarea class="textarea-basic-md"  id="content_s"  v-model="content_s"></textarea>
                 <div class="sub-bar">
-                    <i class="icon-right text-danger"></i><p class="font-weight-bold">오류 로그</p>
+                    <i class="icon-right text-danger" ></i><p class="font-weight-bold">오류 로그</p>
                 </div>
             </div>
             <div class="ct-content">
-                <textarea class="textarea-basic-lg"></textarea>
+                <textarea class="textarea-basic-lg" v-model="err_log" ></textarea>
             </div>
             <v-app id="app">
                 <KAKNM0102P1 :dialog="dialog" :sendData="paramData" @previewClose="previewClose"></KAKNM0102P1>

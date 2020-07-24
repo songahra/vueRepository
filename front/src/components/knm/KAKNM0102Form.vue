@@ -30,11 +30,18 @@
                     </div>
                     <div class="filter no-gutters no-btn">
                         <div class="col">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">솔루션명</b>
-                                  <select name="solution_id" id="solution_id" v-model="solution_id">
-                                    <option :key= "index"  v-for="(code, index) in codes" v-bind:value="code.codeId">{{code.codeContent}}</option>
-                                  </select>
+                            <label>
+                                <b >솔루션명</b>
+                                  <v-select
+                                    flat
+                                    v-model="solution_id"
+                                      class="compact-form"
+                                     :items="codes"
+                                      dense
+                                      solo
+                                      item-text="codeContent"
+                                      item-value="codeId"
+                                   />
                             </label>
                         </div>
                         <div class="col">
@@ -72,7 +79,7 @@
                 </div>
             </div>
             <div class="ct-content">
-                <textarea class="textarea-basic-lg"></textarea>
+                <textarea class="textarea-basic-lg" v-model="err_log"></textarea>
             </div>
             <v-app id="app">
                 <KAKNM0102P1 :dialog="dialog" :sendData="paramData" @previewClose="previewClose"></KAKNM0102P1>
@@ -170,6 +177,7 @@ export default {
         alert('환경 및 상황 작성은 필수입니다.')
       } else {
         console.log('FormData : ', FormData)
+        console.log('FormData : ', this.solution_id)
 
         // 서버요청
         modify(FormData)
@@ -228,7 +236,7 @@ export default {
         title: this.title,
         project_id: this.project_id,
         project_name: this.project_name,
-        solution_id: this.solution_id,
+        solution_name: this.solution_id.codeContent,
         tag_tag: this.tag_tag,
         tag_erc: this.tag_erc,
         tag_ert: this.tag_ert,
@@ -237,6 +245,7 @@ export default {
         err_log: this.err_log,
         userid: this.$store.state.userid
       }
+      console.log('this', this.paramData)
       this.dialog = true
     },
     // 미리보기 팝업닫기
