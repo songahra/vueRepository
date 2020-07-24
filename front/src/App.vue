@@ -5,7 +5,7 @@
       data-app
     />
     <Navigator v-if="isLoginPage()" />
-    <router-view />
+    <router-view data-app />
   </div>
 </template>
 
@@ -30,6 +30,7 @@ export default {
   created () {
     console.dir(location.pathname)
   },
+
   mounted () {
     var $body = $('body')
     var $tooltip = $('[data-toggle="tooltip"]')
@@ -98,7 +99,7 @@ export default {
     /* 로그인 페이지에서는 Header, Navigator 숨기기 */
     isLoginPage () {
       console.log('location.pathname !== ', location.pathname !== '/login')
-      return location.pathname !== '/login'
+      return location.pathname !== '/login' // 현재주소가 /login 이 아니라면 true
     }
   }
 

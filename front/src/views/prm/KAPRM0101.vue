@@ -1,188 +1,99 @@
 <template>
   <div id="ct">
     <section class="card">
-      <header
-        class="card-header"
-        style="padding: 1.6rem 1rem;"
-      >
+      <header class="card-header">
         <h2 class="card-title">
-          <span class="i-rounded bg-danger"><i class="icon-user" /></span>프로필 관리 |
-        </h2><a
-          href="/point"
-        >
+          <span class="i-rounded bg-danger"><i class="icon-user" /></span>프로필관리
+        </h2>
+        <h2 class="card-title text-tertiary text-pad">
+          |
+        </h2>
+        <a href="/point">
           <h2
-            class="card-title"
-            style="color : lightgrey"
+            class="card-title text-tertiary"
           >
-            지식 포인트
+            지식포인트
           </h2>
         </a>
-      </header>
-      <div class="card-body">
-        <!--  flat="false" -> 그림자 없애줌 -->
-        <v-toolbar
-          flat
-          md-elevation="0"
-          height="50"
-          color="#FFFFF"
-        >
-          <!-- <v-tabs>
-            <v-tab>프로필 관리</v-tab>
-            <v-tab @click="() => {this.$router.push('/point')}">
-              지식 포인트
-            </v-tab>
-          </v-tabs> -->
-          <v-spacer />
-          <v-btn
-            class="btn"
+        <div class="btn-container">
+          <a
+            class="btn btn-m"
             @click="updateProfile"
-          >
-            <span>편집</span>
-          </v-btn>
-        </v-toolbar>
-
-        <div class="modal-content">
-          <v-row justify="space-between">
-            <v-col
-              cols="auto"
-            >
-              <v-img
-                height="300"
-                width="300"
-                :src="get_img_src"
-              />
-            </v-col>
-
-            <v-col
-              cols="auto"
-              class="text-center pl-0"
-              style="
-    margin-left: 20px;
-"
-            >
-              <v-row
-                class="flex-column ma-0 fill-height"
-                justify="center"
-              >
-                <div
-                  class="form-group"
-                  style="
-    width: 222px;
-"
-                >
-                  <label class="control-label">이름</label>
-                  <input
-                    v-model="user_name"
-                    type="text"
-                    dense
-                    solo
-                    readonly
-                    class="form-control compact-form"
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">이메일</label>
-                  <input
-                    v-model="user_id"
-                    type="text"
-                    dense
-                    solo
-                    readonly
-                    class="form-control compact-form"
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">소속회사</label>
-                  <input
-                    v-model="company"
-                    type="text"
-                    dense
-                    solo
-                    readonly
-                    class="form-control compact-form"
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">부서</label>
-                  <input
-                    v-model="dept"
-                    type="text"
-                    dense
-                    solo
-                    class="form-control compact-form"
-                    readonly
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">솔루션명</label>
-                  <input
-                    v-model="solution"
-                    type="text"
-                    dense
-                    solo
-                    class="form-control compact-form"
-                    readonly
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">권한</label>
-                  <input
-                    v-model="usertype"
-                    type="text"
-                    dense
-                    solo
-                    class="form-control compact-form"
-                    readonly
-                  >
-                </div>
-
-                <v-card-actions
-                  xs10
-                  style="
-    padding-left: 0px;
-"
-                >
-                  <!-- <input
-        type="file"
-        @change="onFileSelected"
-      > -->
-                  <!-- accept 클릭했을 때 이미지 파일만 뜨게해주는 역할 -->
-                  <div
-                    class="form-group"
-                    style="
-    margin-top: 5px;
-"
-                  >
-                    <v-file-input
-                      v-model="image"
-                      style="margin-left: 0px;"
-                      outlined
-                      dense
-                      :rules="rules"
-                      accept="image/*"
-                      placeholder="사진업로드"
-                      prepend-icon="mdi-camera"
-                      @change="onUpload"
-                    />
-                  </div>
-                  <v-alert
-                    v-model="alert"
-                    dense
-                    type="error"
-                  >
-                    이미지 파일만 업로드 하세요
-                  </v-alert>
-                </v-card-actions>
-              </v-row>
-            </v-col>
-          </v-row>
+          ><span class="hide">편집</span></a>
         </div>
+      </header>
+      <div class="card-body card-img">
+        <!-- DB에 프로필 이미지 없을 때 v-if -->
+        <div
+          v-if="noImage()"
+          class="profile_management_sample"
+        >
+          <i
+            class="icon-pic"
+          />
+          <span class="text-secondary">No image loaded</span>
+        </div>
+        <!-- DB에 프로필 이미지 있을 때 v-else -->
+        <v-img
+          v-else
+          :src="get_img_src"
+        />
       </div>
+      <div
+        class="table-responsive"
+        style="width: 30rem"
+      >
+        <table class="table">
+          <colgroup>
+            <col style="width: 30%">
+            <col style="width: 70%">
+          </colgroup>
+          <tbody>
+            <tr>
+              <td class="alert-text">
+                이름
+              </td>
+              <td>{{ user_name }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                이메일
+              </td>
+              <td>{{ user_id }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                소속회사
+              </td>
+              <td>{{ company }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                부서
+              </td>
+              <td>{{ dept }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                담당솔루션
+              </td>
+              <td>{{ solution }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                권한
+              </td>
+              <td>{{ usertype }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--  flat="false" -> 그림자 없애줌 -->
+      <!-- <v-img
+          height="300"
+          width="300"
+          :src="get_img_src"
+        /> -->
     </section>
   </div>
 </template>
@@ -195,6 +106,7 @@ import { selectProfile } from '@/api/prm/Profile.js'
 export default {
   data: () => {
     return {
+      showNoImage: false,
       usertype: '',
       solution: '',
       imageBytes: '',
@@ -237,9 +149,14 @@ export default {
     }
     console.log(userdata)
     const { data } = await selectProfile(userdata)
-    console.log(data === '')
-    this.imgSrc = data
-    console.log(this.imgSrc)
+    console.log('data 트루야 펄스야?', data === '')
+    if (data === '') {
+      this.showNoImage = true
+      console.log('data 트루야 펄스야?', data === '')
+    } else {
+      this.imgSrc = data
+      console.log('data펄스다.', this.imgSrc)
+    }
   },
   methods: {
     async onUpload () {
@@ -278,6 +195,10 @@ export default {
     },
     pointPage () {
       this.$router.push('/point') // 포인트 화면으로 이동
+    },
+
+    noImage () {
+      return this.showNoImage
     }
 
   }

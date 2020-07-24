@@ -1,200 +1,175 @@
 <template>
   <div id="ct">
     <section class="card">
-      <header
-        class="card-header"
-        style="padding: 1.6rem 1rem;"
-      >
+      <header class="card-header">
         <h2 class="card-title">
-          <span class="i-rounded bg-danger"><i class="icon-user" /></span>프로필 편집|
+          <span class="i-rounded bg-danger"><i class="icon-user" /></span>프로필편집
         </h2>
-        <a
-          href="/point"
-        >
-          <h2
-            class="card-title"
-            style="color : lightgrey"
-          >
-            지식 포인트
+        <h2 class="card-title text-tertiary text-pad">
+          |
+        </h2>
+        <a href="/point">
+          <h2 class="card-title text-tertiary">
+            지식포인트
           </h2>
         </a>
-      </header>
-      <div class="card-body">
-        <!--  flat="false" -> 그림자 없애줌 -->
-        <v-toolbar
-          flat
-          md-elevation="0"
-          height="50"
-          color="#FFFFF"
-        >
-          <!-- <v-tabs>
-            <v-tab>프로필 관리</v-tab>
-            <v-tab @click="() => {this.$router.push('/point')}">
-              지식 포인트
-            </v-tab>
-          </v-tabs> -->
-          <v-spacer />
-          <v-btn
-            style="
-    margin-right: 5px;
-"
-            class="btn"
+        <div class="btn-container">
+          <a
+            class="btn btn-m"
             @click="() => {this.$router.go(-1)}"
-          >
-            <!-- 이전 단계로 이동-->
-            <span>취소</span>
-          </v-btn>
-          <v-btn
-            class="btn"
+          ><span class="hide">취소</span></a>
+          <a
+            class="btn btn-primary"
             @click="submitForm"
-          >
-            <span>확인</span>
-          </v-btn>
-        </v-toolbar>
-
-        <div class="modal-content">
-          <v-row justify="space-between">
-            <v-col cols="auto">
-              <v-img
-                height="300"
-                width="300"
-                :src="get_img_src"
-              />
-            </v-col>
-
-            <v-col
-              cols="auto"
-              class="text-center pl-0"
-              style="
-    margin-left: 20px;
-"
-            >
-              <v-row
-                class="flex-column ma-0 fill-height"
-                justify="center"
-              >
+          ><span
+            class="hide"
+            style="color:white;"
+          >확인</span></a>
+        </div>
+      </header>
+      <!-- 이미지 -->
+      <div class="card-body card-img">
+        <div
+          v-if="noImage()"
+          class="profile_management_sample"
+        >
+          <i
+            class="icon-pic"
+          />
+          <span class="text-secondary">No image loaded</span>
+        </div>
+        <!-- DB에 프로필 이미지 있을 때 v-else -->
+        <v-img
+          v-else
+          :src="get_img_src"
+        />
+      </div>
+      <div
+        class="table-responsive"
+        style="width: 30rem"
+      >
+        <table class="table">
+          <colgroup>
+            <col style="width: 30%">
+            <col style="width: 70%">
+          </colgroup>
+          <tbody>
+            <tr>
+              <td class="alert-text">
+                이름
+              </td>
+              <td>{{ user_name }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                이메일
+              </td>
+              <td>{{ user_id }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                소속회사
+              </td>
+              <td>{{ company }}</td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                부서
+              </td>
+              <td>
                 <div class="form-group">
-                  <label class="control-label">이름</label>
-                  <input
-                    v-model="user_name"
-                    type="text"
-                    dense
-                    solo
-                    readonly
-                    class="form-control compact-form"
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">이메일</label>
-                  <input
-                    v-model="user_id"
-                    type="text"
-                    dense
-                    solo
-                    readonly
-                    class="form-control compact-form"
-                  >
-                </div>
-
-                <div class="form-group">
-                  <v-row
-                    style="
-    margin-left: 0px;
-"
-                  >
-                    <label class="control-label">비밀번호</label>
-                    <button
-                      type="button"
-                      class="btn"
-                      style="
-    margin-left: 20px;
-"
-                      depressed
-                      color="primary"
-                      @click.prevent="addBoard"
-                      @close="isAddBoard=false"
-                    >
-                      비밀번호 변경
-                    </button>
-                  </v-row>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">소속회사</label>
-                  <input
-                    v-model="company"
-                    type="text"
-                    dense
-                    solo
-                    readonly
-                    class="form-control compact-form"
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">부서</label>
                   <input
                     v-model="dept"
                     type="text"
-                    dense
-                    solo
-                    class="form-control compact-form"
+                    class="form-control"
+                    placeholder="부서명을 입력하세요."
                   >
                 </div>
-
-                <div>
+              </td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                담당솔루션
+              </td>
+              <td>
+                <!-- <div class="form-group"> -->
+                <v-combobox
+                  v-model="solution"
+                  class="form-control compact-form"
+                  :items="items"
+                  dense
+                  solo
+                  item-text="codeContent"
+                  item-value="codeId"
+                  @change="selectSolution"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                권한
+              </td>
+              <td>
+                <v-combobox
+                  v-model="user_type"
+                  class="form-control compact-form"
+                  :items="items2"
+                  dense
+                  solo
+                  item-text="name"
+                  item-value="code"
+                  @change="selectType"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td class="alert-text">
+                프로필 사진
+              </td>
+              <td>
+                <div class="filebox">
                   <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >솔루션명</label>
-                  <v-combobox
-                    v-model="solution"
-                    class="form-control compact-form"
-                    :items="items"
-                    dense
-                    solo
-                    item-text="codeContent"
-                    item-value="codeId"
-                    @change="selectSolution"
-                  />
+                    class="btn btn-m"
+                    for="ex_file"
+                  >업로드</label>
+                  <div
+                    v-if="alert"
+                    class="alert alert-danger"
+                  >
+                    이미지 파일이 맞는지 확인해 주세요.
+                  </div>
+                  <input
+                    id="ex_file"
+                    ref="fileTag"
+                    type="file"
+                    accept="image/*"
+                  >
                 </div>
+              </td>
+            </tr>
 
-                <div>
-                  <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >담당</label>
-                  <v-combobox
-                    v-model="user_type"
-                    class="form-control compact-form"
-                    :items="items2"
-                    label="권한"
-                    dense
-                    solo
-                    item-text="name"
-                    item-value="code"
-                    @change="selectType"
-                  />
-                </div>
-              </v-row>
-            </v-col>
-          </v-row>
-        </div>
-        <v-card-actions>
-          <Modal
-            :dialog="isAddBoard"
-            @close="isAddBoard=false"
-          />
-          <Alert
-            :dialog="completeAlert"
-            @close="completeAlert=false"
-          />
-        </v-card-actions>
+            <tr>
+              <td class="alert-text">
+                비밀번호
+              </td>
+              <td>
+                <a
+                  class="btn mr-2 mb-2"
+                  data-toggle="modal"
+                  @click.prevent="addBoard"
+                ><span class="hide">변경</span></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <Modal
+          :dialog="isAddBoard"
+          @close="isAddBoard=false"
+        />
+        <Alert
+          :dialog="completeAlert"
+          @close="completeAlert=false"
+        />
       </div>
     </section>
   </div>
@@ -213,11 +188,13 @@ export default {
   },
   data: () => {
     return {
+      showNoImage: false,
       isAddBoard: false,
       completeAlert: false,
       imgSrc: '',
       code: '',
       typeCode: '',
+      alert: false,
       dept: '',
       solution: 'solution',
       user_type: 'user_type',
@@ -254,7 +231,14 @@ export default {
       user_id: this.$store.state.userid
     }
     const { data } = await selectProfile(userdata)
-    this.imgSrc = data
+    console.log('data 트루야 펄스야?', data === '')
+    if (data === '') {
+      this.showNoImage = true
+      console.log('data 트루야 펄스야?', data === '')
+    } else {
+      this.imgSrc = data
+      console.log('data펄스다.', this.imgSrc)
+    }
   },
   async created () {
     const { data } = await getSolution() // 솔루션 목록 가져오기
@@ -310,6 +294,9 @@ export default {
         }
       }
       )
+    },
+    noImage () {
+      return this.showNoImage
     }
   }
 }
@@ -320,4 +307,14 @@ export default {
 .form-group i{position: absolute; right: 9px; top: 9px;}
 .form-group img{ width: 1.2rem; position: absolute; right: 7px; top: 7px}
 
+.filebox input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
 </style>
