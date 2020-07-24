@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import FileUpload from '@/components/knd/FILEUPLOADForm.vue'
+import FileUpload from '@/components/common/FILEUPLOADForm.vue'
 
 export default {
   components: {

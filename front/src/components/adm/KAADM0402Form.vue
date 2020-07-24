@@ -1,73 +1,59 @@
 <template>
-<div id="ct">
-  <section class="card">
-    <div>
-        <!-- <div class="container" style="margin-top:100px"> -->
-            <form id="KAADM0402Form" @submit.prevent="onSubmit" class="form">
-                <div class="card-body">
-                <h4 class="card-title">지식포인트</h4>
-                      <v-row>
-                        <v-subheader style="padding-left: 20px; padding-top: 5px;">
-                          기간선택
-                        </v-subheader>
-                        <date-picker
-                          v-model="range"
-                          style="padding-top: 10px;"
-                          :lang="lang"
-                          range
-                          type="date"
-                          format="YYYY-MM-DD"
-                          width="500"
-                          confirm
-                          @change="updateDate"
-                        />
-                        <V-btn
-                          color="indigo"
-                          dark
-                          tile
-                          class="ma-2"
-                          @click="onSubmit"
-                          style="border-top-width: 10px;
-                                    margin-top: 9px;
-                                    margin-left: 5px;"
-                        >
-                          조회
-                        </V-btn>
-                      </v-row>
-                <!-- </div>
-                <div> -->
-                  <v-app id="app">
-                  <ag-grid-vue style="width: 100%; height:550px;"
-                              class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                              :columnDefs="columnDefs"
-                              :rowData="rowData"
-                              :gridOptions="gridOptions"
-                              :get-row-style="getRowStyle"
-                              :tooltipShowDelay="tooltipShowDelay"
-                              @cell-clicked="onCellClicked"
-                              @gridReady="gridSizeFit"
-                              @gridSizeChanged="gridSizeFit">
-                  </ag-grid-vue>
-                  <Modal2
-                    :dialog="isDialog"
-                    :propsdata="params"
-                    ref="popup"
-                    @close="isDialog=false"
-                  />
-                </v-app>
-                </div>
-            </form>
-        <!-- </div> -->
-    </div>
-  </section>
-</div>
+  <div id="ct">
+    <section class="card">
+      <header class="card-header">
+                <h2 class="card-title text-tertiary"><span class="i-rounded bg-danger"><i class="icon-set"></i></span><a href="solList">솔루션</a></h2>
+                <h2 class="card-title text-pad">|</h2>
+                <h2 class="card-title">사용자</h2>
+            </header>
+      <div class="ct-header">
+          <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+          <div id="collapse-filter" class="collapse collapse-filter">
+              <div class="filter no-gutters">
+                  <div class="col">
+                      <label class="form-control-label">
+                          <b class="control-label">등록기간</b>
+                          <input type="text" v-model="range" class="form-control input-daterange">
+                      </label>
+                  </div>
+                  <div class="col-auto">
+                      <button type="button" class="btn btn-primary" @click="onSubmit"><i class="icon-srch"></i>조회</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="ct-content">
+        <v-app id="app">
+        <ag-grid-vue style="width: 100%; height:550px;"
+                    class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                    :columnDefs="columnDefs"
+                    :rowData="rowData"
+                    :grid-options="gridOptions"
+                    :get-row-style="getRowStyle"
+                    :grid-size-changed="gridSizeFit"
+                    :grid-ready="gridSizeFit"
+                    @cell-clicked="onCellClicked"
+                    @gridReady="gridSizeFit"
+                    @gridSizeChanged="gridSizeFit">
+        </ag-grid-vue>
+        <Modal2
+        :dialog="isDialog"
+        :propsdata="params"
+        ref="popup"
+        @close="isDialog=false"
+        />
+        </v-app>
+      </div>
+
+    </section>
+
+  </div>
 
 </template>
 
 <script>
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import DatePicker from 'vue2-datepicker'
 import moment from 'moment'
 import 'vue2-datepicker/index.css'
 import Modal2 from '@/components/adm/KAADM0402POPForm'
@@ -77,7 +63,6 @@ import { AgGridVue } from 'ag-grid-vue'
 export default {
   components: {
     Modal2,
-    DatePicker,
     AgGridVue
   },
   name: 'KAADM0402From',

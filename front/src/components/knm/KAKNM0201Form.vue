@@ -72,6 +72,7 @@
               </div>
               <textarea class="textarea-basic" v-model="content_t"></textarea>
           </div>
+          <CompletePOP :dialog="isDialog" :sendData="alertContent" ref="popup" @close="close"></CompletePOP>
     </section>
   </div>
 </template>
@@ -79,9 +80,13 @@
 <script>
 
 import { postAnswer } from '@/api/knm/Answer.js'
+import { CompletePOP } from '@/components/common/CompletePOP.vue'
 
 export default {
   name: 'KAKNM0201Form',
+  components: {
+    CompletePOP
+  },
   data: () => {
     return {
       userid: '',
@@ -101,7 +106,10 @@ export default {
       question_id: '',
       project_id: '',
       solution_id: '',
-      param: ''
+      param: '',
+      // alert
+      isDialog: false,
+      alertContent: ''
     }
   },
   computed: {
@@ -142,7 +150,8 @@ export default {
 
       console.log('POST DATA : ', data)
       const response = await postAnswer(data)
-      alert('1개의 답변과 ' + response.data + '개의 태그가 등록되었습니다.')
+      this.alertContent = '1개의 답변과 ' + response.data + '개의 태그가 등록되었습니다.'
+      this.isDialog = true
       this.$router.push({ name: 'KAKNM0101List' })
     }
   }

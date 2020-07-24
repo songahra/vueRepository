@@ -1,5 +1,7 @@
 <template>
-  <v-app>
+<div id="ct">
+  <section class="card">
+
     <v-dialog
       v-model="dialog"
       persistent
@@ -18,7 +20,7 @@
             <div class="modal-body">
               <i class="iconb-compt" />
               <p class="alert-text">
-                상세 정보가 수정되었습니다
+                {{ this.sendData }}
               </p>
             </div>
             <div class="modal-footer">
@@ -35,12 +37,21 @@
         </div>
       </div>
     </v-dialog>
-  </v-app>
+
+  </section>
+</div>
 </template>
 
 <script>
 export default {
-  props: ['dialog'],
+  name: 'CompletePOP',
+  props: ['dialog', 'sendData'],
+  data: () => {
+    return {
+    }
+  },
+  created () {
+  },
   methods: {
     onClose () {
       this.$emit('close')

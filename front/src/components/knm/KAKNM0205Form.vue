@@ -37,6 +37,8 @@ export default {
       userType: '',
       ansContent: '',
       ansId: '',
+      content_b: '',
+      content_t: '',
       question_id: '',
       lists: '',
       paramData: '',
@@ -71,6 +73,8 @@ export default {
       console.log('data!!', data)
       this.ansName = data[0].ansName + '(' + data[0].dept + ') 답변 ' + '(' + data[0].reg_date + ')'
       this.ansContent = data[0].content_a
+      this.content_t = data[0].content_t
+      this.content_b = data[0].content_b
       if (data[0].upAnsName != null) {
         this.upAnsName = '└ ' + data[0].upAnsName + '(' + data[0].upDept + ') 수정 답변 ' + '(' + data[0].update_date + ')'
       }
@@ -93,7 +97,10 @@ export default {
           title: this.answerData.title,
           tag_tag: this.answerData.tag_tag,
           tag_erc: this.answerData.tag_erc,
-          tag_ert: this.answerData.tag_ert
+          tag_ert: this.answerData.tag_ert,
+          content_a: this.ansContent,
+          content_b: this.content_b,
+          content_t: this.content_t
         }
       }
       console.log('modify!!', params)

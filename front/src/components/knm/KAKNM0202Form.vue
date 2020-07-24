@@ -114,6 +114,9 @@ export default {
     this.err_c = this.param.tag_erc
     this.err_t = this.param.tag_ert
     this.question_content = this.param.content_q
+    this.content_a = this.param.content_a
+    this.content_b = this.param.content_b
+    this.content_t = this.param.content_t
   },
   computed: {
     user_id () {

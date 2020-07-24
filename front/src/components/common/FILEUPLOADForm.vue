@@ -4,9 +4,6 @@
       <section class="card">
         <input ref="fileTag" type="file" multiple="multiple" @change="selectFile"/>
         <a href="" @click.prevent="upload" :disabled="!selectedFiles.length" class="btn btn-m"><span class="hide">업로드</span></a>
-        <!-- <v-btn class="btn btn-success"  :disabled="!selectedFiles.length" @click.prevent="upload">
-            Upload
-        </v-btn> -->
       </section>
     </div>
 </template>
