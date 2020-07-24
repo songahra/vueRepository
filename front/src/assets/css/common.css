@@ -76,6 +76,8 @@ br{font-family: arial}
 .text-cht-10-l{color: #f2e1a6 !important}
 .text-cht-11-l{color: #cae19a !important}
 
+.text-pad{padding: 0 15px;}
+
 .bg-info{background-color: #21aaea !important}
 .bg-bookmark{background-color: #fdc202 !important}
 .bg-normal{background-color: #62d36f !important}
@@ -107,6 +109,12 @@ br{font-family: arial}
 .bg-cht-10-l{background-color: #f2e1a6 !important}
 .bg-cht-11-l{background-color: #cae19a !important}
 
+/*Dashboard*/
+.legend{line-height: 1.25rem}
+.legend .status{display: inline-flex;align-items: center;margin-left: .75rem;font-size: .85rem;color: rgba(21, 24, 38, .7)}
+.legend .dot{display: inline-block;vertical-align: top;width: .75rem;height: .75rem;border-radius: 100%;margin-right: .375rem}
+.legend .status>b{margin-left: .375rem;font-size: .875rem;color: #151826}
+
 /* Icon */
 [class^=iconb-]{display:inline-block;overflow:hidden;margin:0;padding:0;border:0;background-color:transparent;background-position:50% 50%;background-size: auto 100%;background-repeat:no-repeat;font-size:0;line-height:0;text-decoration:none;vertical-align: middle;text-indent:-1000em}
 .iconb-compt, .iconb-alert{width: 1rem;height: 1rem}
@@ -124,8 +132,10 @@ br{font-family: arial}
 input[type=password]{font-family: arial}
 
 .form-group{position: relative}
-.form-group i{position: absolute; right: 9px; top: 9px;}
-.form-group img{ width: 1.2rem; position: absolute; right: 7px; top: 7px}
+.form-group .icon-input{position: absolute; right: 9px; top: 9px;}
+.form-group .input-img{ position: absolute; right: 7px; top: 7px}
+.form-group .input-icon{ position: absolute; right: 7px; top: 8px}
+.form-group img{ width: 1.05rem;}
 
 .form-control{min-width: 7rem;height: 2rem;padding: .375rem .5rem;background: #fff;border-color: #babbc2;font-size: .875rem;-webkit-appearance: none;box-shadow: none !important}
 .form-control[readonly]{background: #fff;pointer-events: none}
@@ -239,6 +249,10 @@ select::-ms-expand{display: none}
 td.invisible{visibility: visible !important}
 td.invisible *{visibility: hidden;pointer-events: none}
 
+.table-line-light{border-bottom: 1px solid #f0f1f6;}
+.table-line{border-top: 1px solid #2b2c3a;}
+.table-line-pbm{border-top: 1px solid #2b2c3a; padding-bottom: 0.7rem}
+
 /* Navs */
 .pagination{padding: 1rem 0 0;justify-content: center}
 .ct-content>.pagination{padding-bottom: 1rem}
@@ -261,7 +275,7 @@ td.invisible *{visibility: hidden;pointer-events: none}
 
 /* Card */
 .card{overflow: hidden;background: #fff;border-radius: .5rem;border: 0;box-shadow: none}
-.card-header{display: flex;align-items: center;padding: 1rem;background: none;border-radius: 0;border: 0;position: relative}
+.card-header{display: flex;align-items: center;padding: 1.3rem 0rem; background: none;border-radius: 0;border: 0;position: relative}
 .card-header .btn-container{position: absolute;right: 0;}
 .card-header .btn-container a{margin-right: 5px}
 .card-header .btn-container a:last-child{margin-right: 0px}
@@ -285,7 +299,7 @@ td.invisible *{visibility: hidden;pointer-events: none}
 .textarea-basic-lg{background-color: #f5f6fb; border: 0px; width: 100%; height: 300px; border-radius: 0.25rem;}
 
 /* Tootip */
-.tooltip-inner:{padding: .3rem .375rem .2rem;border-radius: 0;font-size: .75rem;line-height: 1rem}
+.tooltip-inner{padding: .3rem .375rem .2rem;border-radius: 0;font-size: .75rem;line-height: 1rem}
 
 /* Badge */
 .badge{min-width: 5.25rem;padding: .3rem .5rem .2rem;border-radius: .125rem;font-size: .75rem;line-height: 1.25rem;letter-spacing: .072em;font-weight: 900;color: #fff}
@@ -414,6 +428,7 @@ td.invisible *{visibility: hidden;pointer-events: none}
 .note-current-fontname{font-size: .85rem}
 .note-editor.note-airframe .note-editing-area .note-editable, .note-editor.note-frame .note-editing-area .note-editable,
 .note-editor.note-airframe .note-placeholder, .note-editor.note-frame .note-placeholder{padding: 1.5rem .75rem .75rem}
+.icon-link{margin-right: 5px;}
 
 /*--------------------------------------
     PAGES
@@ -434,35 +449,33 @@ body{display: flex}
 .breadcrumb-item:not(:last-child)::after{content: "\e913";padding: 0 .75rem;font-family: 'icomoon';font-size: 1rem;color: #8a8b92;font-weight: 400}
 .breadcrumb-item.active{font-size: 1.75rem;font-weight: 700;color: #151826}
 .hd-side{margin-left: auto;font-size: 1.5rem;margin-right: 1.5rem;display: flex;align-items: center}
-
-.hd-side>a{position: relative;margin-left: .975rem}
-.hd-side>span{position: relative;margin-left: .375rem}
-
-.hd-side>*:after, .menu-bookmark:after{content: '';position: absolute;width: 2rem;height: 2rem;top: 50%;left: 50%;margin: -1rem}
+.hd-side>span>a{margin-left: 5px}
+.hd-side>span{margin-left: .4rem}
+.hd-side>a{margin-left: .8rem}
+.hd-side>*{position: relative}
+/* .hd-side>*:after, .menu-bookmark:after{content: '';position: absolute;width: 2rem;height: 2rem;top: 50%;left: 50%;margin: -1rem} */
 .hd-brand{display: flex;align-items: center}
+.hd-logout{background-color: #fff; border: 1px solid #2b2c3a; z-index: 100; width: 210px; height: 100px; border-radius: 0.8rem; position: absolute; right: 15px; top: 60px; text-align: center; padding: 22px 10px;}
+.hd-logout .btn{background-color: #ed3137; border: none; color: #fff; padding: .3rem 2.5rem;}
+.hd-logout>p{padding-bottom: 5px;}
 
 /* Sidebar */
 #sidebar{font-weight: 700;background: #fff;;flex-basis: 240px;max-width: 240px;transition: all .2s linear}
 #sidebar .panel-content{box-shadow: none;height: 100%}
 #sidebar [class*=-link]{display: flex;align-items: center}
 #sidebar [class*=-link]:hover, .menu-item:hover .menu-link, .menu-link.active{background: #f5f6fb}
-.menu-link{padding: .625rem 1.5rem;line-height: 1.25rem}
-.menu-link>[class^=icon]{margin-right: .5rem;font-size: 1rem}
+.menu-link{padding: .625rem 1.5rem;line-height: 1rem; font-size: 0.8rem; color: #8a8b92;}
+.menu-link>[class^=icon]{margin-right: .5rem;}
 .menu-divider{margin: .75rem 0;border-top: 1px solid #f0f1f6}
 .menu-item{position: relative}
 .menu-bookmark{position: absolute;top: .625rem;right: 1.5em;background: none;border: 0;font-size: 1rem;line-height: 1.25;opacity: 0}
 .menu-collapse{padding-left: 1rem}
-.menu-collapse-link, .menu-title{padding: .5rem 1.5rem;font-size: .75rem;color: rgba(21, 24, 38, 0.5) !important;line-height: 1rem}
+.menu-collapse-link, .menu-title{padding: .5rem 1.5rem;font-size: 0.9rem;line-height: 1.2rem}
+.menu-collapse-link i:first-child{ margin-right: 8px}
+
 .menu-collapse-link .icon-down{margin-left:  auto}
 .menu-collapse-link:not(.collapsed) .icon-down{transform: scaleY(-1)}
-.menu-collapse-link.collapsed:not(:hover) .icon-down, .menu-collapse-link.disabled 
-
-.menu-link, .menu-title{padding: .5rem 1.5rem;font-size: .75rem;color: rgba(21, 24, 38, 0.5) !important;line-height: 1rem}
-.menu-link .icon-down{margin-left:  auto}
-.menu-link:not(.collapsed) .icon-down{transform: scaleY(-1)}
-.menu-link.collapsed:not(:hover) .icon-down, .menu-collapse-link.disabled 
-
-.icon-down{opacity: 0}
+.menu-collapse-link.collapsed:not(:hover) .icon-down, .menu-collapse-link.disabled .icon-down{opacity: 0}
 .menu-title{display: block}
 .menu-item:hover .menu-bookmark, .menu-link.active+.menu-bookmark{opacity: 1}
 .menu-link .icon-dash{margin-top: -.125rem}
@@ -478,15 +491,25 @@ body{display: flex}
 .login .form-group{position: relative;margin-bottom: .75rem}
 .login .form-group>[class*=icon]{position: absolute;top: 1rem;left: 1rem}
 .login .form-group+.form-group{margin-top: 0}
-.login .btn{margin-top: 1.5rem}
+.login .btn{margin-top: 1rem}
 .login .form-control{padding-left: 2.75rem}
 .login .form-control:focus{padding-left: calc(2.75rem - 1px)}
+.login-menu{text-align: center; margin-top: 15px;}
 
 /* content */
 .ct-header{flex-shrink: 0;}
 .ct-header .collapse-filter:last-child{margin-bottom: 1.25rem;}
 .ct-header .col-auto{border-top: 1px solid #f0f1f6;}
 .ct-content{flex: 1 1 auto}
+
+.card-info{text-align: center; padding: 1.5rem; border: 1px solid #f0f1f6; border-radius: 0.5rem; margin-bottom: 1rem}
+.card-info>span{display: block}
+.card-info>.card-title{text-align: center; display: block; padding: 20px 0 0 0}
+
+.card-img{padding: 0 0 1rem 0}
+.card-img>div{background-color: #f0f1f6; width: 30rem; height: 15rem; text-align: center; border-radius: 1rem}
+.card-img>div>i{font-size: 8rem;display: block; height: 10.5rem;padding-top: 2rem}
+
 .backdrop{position: fixed;top: 0;left: 0;right: 0;bottom: 0;background: rgba(21, 24, 38, .7);z-index: 100}
 .sub-bar{display: flex;align-items: center;flex-wrap: wrap;padding-top: .75rem;padding-bottom: .75rem; position: relative}
 .sub-bar btn-container{position: absolute; right: 0;}
@@ -606,11 +629,6 @@ body{display: flex}
     .table td{font-size: .75rem}
     .table thead th, .table td, .form-table-head>[class*=col]{padding-left: .5rem;padding-right: .5rem}
     .ct-content td .form-control{margin: 0 -.25rem;width: calc(100% + .5rem);padding-left: .25rem;padding-right: .25rem}
-
-    .btn-m{min-width: 0;padding-left: .45rem;padding-right: .45rem}
-    .btn-m [class*=icon]{margin-right: 0;font-size: 1rem}
-    .btn-m .hide{display: none}
-    .btn-m:disabled{ background-color:#f0f1f6;}
 
     .panel-bottom .panel-content{max-height: 100vh}
     .panel-bottom.expand .panel-content{height: 100vh}

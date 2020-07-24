@@ -8,7 +8,6 @@
             alt="INZENT"
           ></a>
       </h1>
-      <!-- <button type="button" class="menu-toggler d-none d-lg-block"><i class="icon-hamburger-back"></i></button> -->
       <button
         type="button"
         class="menu-toggler d-none d-lg-block"
@@ -22,17 +21,20 @@
         <i class="icon-hamburger-back" />
       </button>
     </div>
-    <!-- <ul class="breadcrumb">
+    <ul class="breadcrumb">
       <li class="breadcrumb-item">
         홈
+      </li>
+      <li class="breadcrumb-item">
+        1Depth
       </li>
       <li
         class="breadcrumb-item active"
         aria-current="page"
       >
-        MY page
+        2Depth
       </li>
-    </ul> -->
+    </ul>
     <div class="hd-side">
       <a
         href=""
@@ -55,8 +57,8 @@
 </template>
 
 <script>
-import Modal from '@/components/log/KALOGPOP1.vue' // 1. 비밀번호 변경 모달
-import { selectTotalPoint } from '@/api/Profile.js'
+import Modal from '@/components/log/KALOGPOP1.vue'
+import { selectTotalPoint } from '@/api/prm/Profile.js'
 
 export default {
   components: {

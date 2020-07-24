@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { updatePassword } from '@/api/Profile.js'
+import { updatePassword } from '@/api/prm/Profile.js'
 
 export default {
   props: ['dialog'],

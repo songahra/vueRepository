@@ -189,8 +189,8 @@
 
 <script>
 import { userType, userSolution } from '@/api/log/Login.js'
-import { formData } from '@/api/Signup.js'
-import { selectProfile } from '@/api/Profile.js'
+import { formData } from '@/api/log/Signup.js'
+import { selectProfile } from '@/api/prm/Profile.js'
 
 export default {
   data: () => {

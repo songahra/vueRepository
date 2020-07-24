@@ -1,43 +1,68 @@
 <template>
-  <div class="text-center">
-    <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          v-bind="attrs"
-          icon
-          v-on="on"
-        >
-          <i
-            class="icon-down"
-          />
-        </v-btn>
-      </template>
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title">
-            {{ this.$store.state.userid }}
-          </h2>
-          <button
-            type="button"
-            class="btn-icon"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <i class="icon-close" />
-          </button>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="logout"
-          >
-            로그아웃
-          </button>
-        </div>
+  <v-menu offset-y>
+    <template v-slot:activator="{ on, attrs }">
+      <v-btn
+        v-bind="attrs"
+        icon
+        v-on="on"
+        @click="clickEvent()"
+      >
+        <i
+          class="icon-down"
+        />
+      </v-btn>
+    </template>
+
+    <!-- <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          {{ this.$store.state.userid }}
+        </h2>
       </div>
-    </v-menu>
-  </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="logout"
+        >
+          로그아웃
+        </button>
+      </div>
+    </div> -->
+
+    <div
+      id="hd-logout"
+      class="modal-content"
+    >
+      <div class="modal-header">
+        <p class="font-weight-bold">
+          {{ this.$store.state.userid }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn"
+          @click="logout"
+        >
+          <span class="hide">로그아웃</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- //logout -->
+    <!-- <div
+      id="hd-logout"
+      class="hd-logout"
+    >
+      <p class="font-weight-bold">
+        {{ this.$store.state.userid }}
+      </p>
+      <a
+        href=""
+        class="btn"
+      ><span class="hide">로그아웃</span></a>
+    </div> -->
+  </v-menu>
 </template>
 
 <script>
@@ -59,11 +84,16 @@ export default {
       this.$store.commit('SET_DEPT', '')
       this.$store.commit('SET_EXP', '')
       this.$router.push('/login')
+    },
+    clickEvent () {
+      console.log('click event')
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+#hd-logout .btn >>> {
+  background-color: #ed3137; border: none; color: #fff; padding: .3rem 2.5rem;
+}
 </style>

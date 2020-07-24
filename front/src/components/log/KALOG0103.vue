@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import { signupUser } from '@/api/Signup.js'
+import { signupUser } from '@/api/log/Signup.js'
 import { getSolution, idChk } from '@/api/log/Login.js'
 
 export default {

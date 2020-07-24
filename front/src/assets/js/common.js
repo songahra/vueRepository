@@ -3,6 +3,7 @@ global.jQuery = require('jquery')
 var $ = global.jQuery
 window.$ = $
 
+// Panel Open
 export const common = {
   panelOpen: function (o) {
     var $wrap = $('#wrap')
@@ -23,6 +24,8 @@ export const common = {
       })
     }, 200)
   },
+
+  // Panel Close
   panelClose: function (o) {
     var $wrap = $('#wrap')
     var originScroll = -$wrap.position().top

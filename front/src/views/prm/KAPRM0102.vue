@@ -202,7 +202,7 @@
 
 <script>
 import { userType, userSolution, getSolution } from '@/api/log/Login.js'
-import { updateProfile, selectProfile } from '@/api/Profile.js'
+import { updateProfile, selectProfile } from '@/api/prm/Profile.js'
 import Modal from '@/components/prm/KAPRM0103.vue' // 1. 비밀번호 변경 모달
 import Alert from '@/components/common/CompletePOP.vue' // 완료 alert
 

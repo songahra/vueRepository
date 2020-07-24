@@ -92,7 +92,7 @@
 import DatePicker from 'vue2-datepicker'
 import moment from 'moment'
 import 'vue2-datepicker/index.css'
-import { selectMonthPoint, selectTotalPoint } from '@/api/Profile.js'
+import { selectMonthPoint, selectTotalPoint } from '@/api/prm/Profile.js'
 /* ag-grid */
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'

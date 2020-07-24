@@ -1,6 +1,9 @@
 <template>
   <div id="wrap">
-    <Header v-if="isLoginPage()" />
+    <Header
+      v-if="isLoginPage()"
+      data-app
+    />
     <Navigator v-if="isLoginPage()" />
     <router-view />
   </div>
@@ -12,6 +15,7 @@ import Navigator from '@/components/common/Navigator.vue'
 import '@/assets/vendor/bootstrap/css/bootstrap.min.css'
 import '@/assets/css/common.css'
 import { common } from '@/assets/js/common.js'
+import '@/assets/vendor/bootstrap/js/bootstrap.bundle.min.js'
 
 global.jQuery = require('jquery')
 var $ = global.jQuery
@@ -32,7 +36,6 @@ export default {
 
     // 메뉴토글
     $('.menu-toggler').click(function () {
-      console.log('zzz')
       $(this).hasClass('d-lg-none') ? common.panelOpen('sidebar') : $body.toggleClass('sidebar-toggled')
     })
 
@@ -94,6 +97,7 @@ export default {
   methods: {
     /* 로그인 페이지에서는 Header, Navigator 숨기기 */
     isLoginPage () {
+      console.log('location.pathname !== ', location.pathname !== '/login')
       return location.pathname !== '/login'
     }
   }
@@ -101,6 +105,14 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+textarea:focus {
+  outline: none;
+}
+button:focus {
+  outline: none;
+}
+input:focus {
+  outline: none;
+}
 </style>
