@@ -2,72 +2,91 @@
 <template>
  <div id="ct">
     <section class="card">
-  <v-dialog
-    v-model="dialog"
-    persistent
-    max-width="50%"
-  >
-  <v-card>
-  <v-container fluid>
-    <h3>기술문의</h3>
-    <input type="hidden" id="project_id" readonly name="project_id" v-model="this.sendData.project_id">
-    <div>
-      <v-text-field label="제목" id="title" readonly type="textarea" cols="30" rows="6" v-model="this.sendData.title" ></v-text-field>
-      <v-text-field label="프로젝트" id="project_name" readonly type="textarea" v-model="this.sendData.project_name" ></v-text-field>
-      <div class="form-group" style="resize: none;width: 526.66666px;">
-        <label for="param.solution_id">솔루션명  :  </label>
-        <select name="solution_id" id="solution_id" disabled v-model="this.sendData.solution_id">
-        <option selected>--선택--</option>
-        <option value="SL010000">iGate</option>
-        <option value="SL020000">eCross</option>
-        <option value="SL030000">Xtorm</option>
-        <option value="SL040000">eXperDB</option>
-        <option value="SL050000">Libeka</option>
-        <option value="SL060000">iWorks</option>
-        <option value="SL070000">iXeb</option>
-        <option value="SL080000">APIM</option>
-        <option value="SL090000">MyGuard</option>
-        <option value="SL100000">문서중앙화</option>
-        </select>
-      </div>
-      <v-text-field label="태그#01" id="tag_tag" readonly v-model="this.sendData.tag_tag" ></v-text-field>
-      <v-text-field label="에러코드" id="tag_erc" readonly v-model="this.sendData.tag_erc" ></v-text-field>
-      <v-text-field label="예외종류" id="tag_ert" readonly v-model="this.sendData.tag_ert" ></v-text-field>
-    </div>
-    <v-row>
-      <v-col cols="2">
-        <v-subheader>질문</v-subheader>
-      </v-col>
-      <v-col cols="10">
-        <v-text-field type="textarea" id="content_q" readonly v-model="this.sendData.content_q" ></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="2">
-        <v-subheader>환경 및 상황</v-subheader>
-      </v-col>
-      <v-col cols="10">
-        <v-text-field type="textarea" id="content_s" readonly v-model="this.sendData.content_s"></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="2">
-        <v-subheader>오류 로그</v-subheader>
-      </v-col>
-      <v-col cols="10">
-        <v-text-field type="textarea" id="err_log" readonly v-model="this.sendData.err_log" ></v-text-field>
-      </v-col>
-    </v-row>
-      <div class="row col-md-6">
-        <input class="btn btn-default col-md-3" @click="previewClose" type="button" value="닫기">
-      </div>
-  </v-container>
-  </v-card>
-  </v-dialog>
+      <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="50%"
+      >
+        <v-card>
+          <v-container fluid>
+            <form id="KAKNM0102From" @submit.prevent="onSubmit" class="form">
+            <header class="modal-header" style="padding: 1.6rem 1rem;">
+                <h2 class="modal-title"><span class="i-rounded bg-danger"><i class="icon-std-code"></i></span>기술문의</h2>
+                <button type="button" class="btn-icon" data-dismiss="modal" aria-label="Close" @click="previewClose"><i class="icon-close"></i></button>
+            </header>
+            <div class="ct-header">
+                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+                <div id="collapse-filter" class="collapse collapse-filter">
+                    <div class="filter no-gutters no-btn">
+                        <div class="col" style="min-width: 75%;">
+                            <label class="form-control-label" data-toggle="modal" data-target="#" >
+                                <b class="control-label">질문 제목</b>
+                              <input type="text" class="form-control" v-model="this.sendData.title" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">프로젝트</b>
+                                <input type="text" class="form-control" v-model="this.sendData.project_name" disabled>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter no-gutters no-btn">
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">솔루션 명</b>
+                                  <select name="solution_id" id="solution_id" v-model="this.sendData.solution_id">
+                                    <option :key= "index"  v-for="(code, index) in codes" v-bind:value="code.codeId" disabled >{{code.codeContent}}</option>
+                                  </select>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">태그</b>
+                                <input type="text" class="form-control" v-model="this.sendData.tag_tag" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">에러 코드</b>
+                                <input type="text" class="form-control" v-model="this.sendData.tag_erc" readonly>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label" data-toggle="modal" data-target="#">
+                                <b class="control-label">예외 종류</b>
+                                <input type="text" class="form-control" v-model="this.sendData.tag_ert" readonly>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ct-content">
+                <div class="sub-bar">
+                    <i class="icon-right text-danger"></i><p class="font-weight-bold">질문</p>
+                </div>
+                <textarea class="textarea-basic-md" v-model="this.sendData.content_q" readonly></textarea>
+                <div class="sub-bar">
+                    <i class="icon-right text-danger"></i><p class="font-weight-bold">환경 및 상황</p>
+                </div>
+                <textarea class="textarea-basic-md" v-model="this.sendData.content_s" readonly></textarea>
+                <div class="sub-bar">
+                    <i class="icon-right text-danger"></i><p class="font-weight-bold">오류 로그</p>
+                </div>
+            </div>
+            <div class="ct-content">
+                <textarea class="textarea-basic-lg" v-model="this.sendData.err_log" readonly></textarea>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn" @click="previewClose" data-dismiss="modal">취소</button>
+            <button type="button" class="btn btn-primary" @click="previewClose">확인</button>
+          </div>
+          </v-container>
+        </v-card>
+      </v-dialog>
     </section>
-</div>
+  </div>
 </template>
 
 <script>

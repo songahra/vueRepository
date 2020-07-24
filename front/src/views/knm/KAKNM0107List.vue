@@ -3,7 +3,7 @@
     <div id="ct">
     <section class="card">
     <KAKNM0107Form @srchList="srchList"></KAKNM0107Form>
-    <KAKNM01ListForm ref="list"></KAKNM01ListForm>
+    <KAKNM01ListForm ref="list" :sendData="flag"></KAKNM01ListForm>
     </section>
     </div>
 </template>
@@ -19,9 +19,15 @@ export default {
   },
   data () {
     return {
-      srchData: ''
-
+      userid: this.$store.state.userid,
+      srchData: '',
+      flag: 'mL'
     }
+  },
+  created () {
+    console.log('뷰 created ')
+    console.log('flag  ', this.flag)
+    // this.myList()
   },
   methods: {
     /* 지식관리 리스트 조회 */
@@ -32,9 +38,10 @@ export default {
       this.$refs.list.allListChange(this.srchData)
     },
     /* 내가 문의한 질문 리스트  */
-    myList () {
-      this.$refs.list.myList()
-    },
+    // myList () {
+    //   console.log('내가 문의한 질문 리스트 ')
+    //   this.$refs.list.myList()
+    // },
     /* 내가 문의한 질문 조회 리스트 */
     srchMyList (data) {
       this.srchData = data

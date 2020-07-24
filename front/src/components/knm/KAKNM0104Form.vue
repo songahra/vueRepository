@@ -1,4 +1,4 @@
-<!-- 질문 상세보기 : 새로고침 후 데이터 저장방법 알아보기-->
+<!-- 질문 상세보기 -->
 <template>
   <div>
         <form id="KAKNM0104Form" @submit.prevent="onSubmit" class="form">
@@ -6,13 +6,13 @@
                 <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-check"></i></span>{{title}}</h2>
                 <div class="btn-container">
                     <div v-if = "chkUserType()">
-                       <a class="btn btn-m" @click="movePage('btnAnswer')"><span class="hide">답변하기</span></a>
+                       <a href="" class="btn btn-m" @click="movePage('btnAnswer')"><span class="hide">답변하기</span></a>
                     </div>
-                    <div v-else-if = "chkWriter()">
+                    <div v-if = "chkWriter()">
                        <a href="" class="btn btn-m" type="submit" @click.prevent="btnDelete"><span class="hide">삭제</span></a>
                        <a href="" class="btn btn-m" type="submit" @click.prevent="movePage('btnModify')"><span class="hide">수정</span></a>
                     </div>
-                    <a href="" class="btn btn-primary" @click="() => this.$router.push({ name: 'KAKNM0101List' })"><span class="hide">목록보기</span></a>
+                    <a class="btn btn-primary" @click="() => this.$router.push({ name: 'KAKNM0101List' })"><span class="hide">목록보기</span></a>
                 </div>
             </header>
             <div class="ct-header">
@@ -27,13 +27,13 @@
                         </div>
                         <div class="col">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">작성일시</b>
+                                <b class="control-label">작성 일시</b>
                                 <input type="text" class="form-control" v-model="reg_date_tq" readonly>
                             </label>
                         </div>
                         <div class="col">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">답변여부</b>
+                                <b class="control-label">답변 여부</b>
                                 <input type="text" class="form-control" v-model="status" readonly>
                             </label>
                         </div>
@@ -53,7 +53,7 @@
                     <div class="filter no-gutters no-btn">
                         <div class="col" style="min-width: 40%;">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">솔루션</b>
+                                <b class="control-label">솔루션 명</b>
                                 <input type="text" class="form-control" v-model="solution_name" readonly>
                             </label>
                         </div>
@@ -65,13 +65,13 @@
                         </div>
                         <div class="col">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">에러코드</b>
+                                <b class="control-label">에러 코드</b>
                                 <input type="text" class="form-control" v-model="tag_erc" readonly>
                             </label>
                         </div>
                         <div class="col">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">예외종류</b>
+                                <b class="control-label">예외 종류</b>
                                 <input type="text" class="form-control" v-model="tag_ert" readonly>
                             </label>
                         </div>
@@ -132,11 +132,52 @@ export default {
   },
   created () {
     this.param = this.$route.params
+    console.log('created=>', this.param)
     this.answerData = this.param
-    this.getData()
+    const formData = {
+      reg_userid: this.param.reg_userid,
+      question_id: this.param.question_id,
+      answer_id: this.param.answer_id
+    }
+
+    getDetail(formData) /* 에러처리 확인필요!! */
+      .then((res) => {
+        if (res.status === 200) {
+          console.log('res => ', res)
+          const data = res.data
+          this.reg_userid = data.reg_userid
+          this.question_id = data.question_id
+          this.project_id = data.project_id
+          this.project_name = data.project_name
+          this.score = data.score
+          this.answer_id = data.answer_id
+          this.solution_name = data.solution_name
+          this.title = data.title
+          this.content_q = data.content_q
+          this.content_s = data.content_s
+          this.err_log = data.err_log
+          this.reg_userName_tq = data.reg_userName_tq
+          this.reg_date_tq = data.reg_date_tq
+          this.status = data.status
+          this.tag_tag = data.tag_tag
+          this.tag_erc = data.tag_erc
+          this.tag_ert = data.tag_ert
+        }
+        return res
+      })
+      // .then((res) => console.log(res))
+      .catch(function (e) {
+        const result = e.message
+        if (e.message.indexOf('500')) {
+          this.$router.push({ name: '500Error' })
+        } else if (result.indexOf('404')) {
+          this.$router.push({ name: '404Error' })
+        } else {
+          this.$router.push({ name: 'Exception' })
+        }
+      })
   },
   mounted () {
-    this.init()
   },
   computed: {
     user_id () {
@@ -147,7 +188,7 @@ export default {
       console.log(' computed param components ', this.$store.state.usertype)
       return this.$store.state.usertype
     },
-    param_ch () {
+    chk_param () {
       console.log(' computed param components ', this.$route.params)
       return this.$route.params
     }
@@ -160,59 +201,29 @@ export default {
   },
   methods: {
     // 초기화
-    init () {
-      this.param = this.$route.params
-      this.userid = this.param.userid
-      this.reg_userid = this.param.reg_userid
-      this.title = this.param.title
-      this.question_id = this.param.question_id
-      this.project_id = this.param.project_id
-      this.project_name = this.param.project_name
-      this.solution_id = this.param.solution_id
-      this.solution_name = this.param.solution_name
-      this.score = this.param.score
-      this.answer_id = this.param.answer_id
-      this.content_q = this.param.content_q
-      this.content_s = this.param.content_s
-      this.err_log = this.param.err_log
-      this.reg_userName_tq = this.param.reg_userName_tq
-      this.reg_date_tq = this.param.reg_date_tq
-      this.status = this.param.status
-      this.tag_tag = this.param.tag_tag
-      this.tag_erc = this.param.tag_erc
-      this.tag_ert = this.param.tag_ert
-      this.userid = this.user_id
-      this.param = this.param_ch
-    },
-    getData () {
+    getData (formData) {
       // 서버요청
-      const formData = {
-        reg_userid: this.reg_userid,
-        question_id: this.question_id,
-        answer_id: this.answer_id
-      }
-
-      getDetail(formData) /* 에러처리 확인필요!! */
-        .then((res) => {
-          if (res.status === 200) {
-            console.log('res => ', res)
-            const params = res.data
-            console.log('params => ', params)
-            this.$router.push({ name: 'KAKNM0104Detail', params: params })
-          }
-          return res
-        })
-      // .then((res) => console.log(res))
-        .catch(function (e) {
-          const result = e.message
-          if (e.message.indexOf('500')) {
-            this.$router.push({ name: '500Error' })
-          } else if (result.indexOf('404')) {
-            this.$router.push({ name: '404Error' })
-          } else {
-            this.$router.push({ name: 'Exception' })
-          }
-        })
+      console.log('formData=>>', formData)
+    },
+    initData (params) {
+      this.reg_userid = params.reg_userid
+      this.question_id = params.question_id
+      this.project_id = params.project_id
+      this.project_name = params.project_name
+      this.score = params.score
+      this.answer_id = params.answer_id
+      this.solution_name = params.solution_name
+      this.solution_id = params.solution_id
+      this.title = params.title
+      this.content_q = params.content_q
+      this.content_s = params.content_s
+      this.err_log = params.err_log
+      this.reg_userName_tq = params.reg_userName_tq
+      this.reg_date_tq = params.reg_date_tq
+      this.status = params.status
+      this.tag_tag = params.tag_tag
+      this.tag_erc = params.tag_erc
+      this.tag_ert = params.tag_ert
     },
     // 수정/답변 페이지 이동
     movePage (action) {

@@ -1,47 +1,65 @@
 <!-- 프로젝트 관리 Form -->
 <template>
-    <div style="width: 100%; height:100%">
-        <div class="container" style="margin-top:100px">
-            <form id="KAKNM0103From" @submit.prevent="onSubmit" class="form">
-            <div class="card shadow">
-                <div class="card-body">
-                <h4 class="card-title">프로젝트</h4>
+    <div>
+           <header class="card-header">
+                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-set"></i></span>프로젝트</h2>
+            </header>
+            <div class="ct-header">
+                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+                <div id="collapse-filter" class="collapse collapse-filter">
+                    <div class="filter no-gutters">
+                        <div class="col">
+                            <label class="form-control-label">
+                                <b class="control-label">프로젝트 명</b>
+                                <input type="text" class="form-control" v-model="project_name" placeholder="프로젝트 명을 입력하세요.">
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label label-select">
+                                <b class="control-label">최종고객</b>
+                                <input type="text" class="form-control" v-model="customer" placeholder="최종고객을 입력하세요.">
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label class="form-control-label">
+                                <b class="control-label">기간</b>
+                                  <v-row>
+                                    <date-picker
+                                       v-model="range"
+                                        style="padding-top: 10px;"
+                                        :lang="lang"
+                                        range
+                                         type="date"
+                                       format="YYYY-MM-DD"
+                                        width="500"
+                                     />
+                                  </v-row>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary"><i class="icon-srch"></i>조회</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-left">
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <v-text-field label="프로젝트ID" id="project_id" value="" v-model="project_id"></v-text-field>
-                    </div>
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <v-text-field label="프로젝트명" id="project_name" value="" v-model="project_name"></v-text-field>
-                    </div>
-                    <div class="form-group" style="resize: none;width: 526.66666px;">
-                      <v-text-field label="최종고객" id="customer" value="" v-model="customer"></v-text-field>
-                    </div>
-                    <div>
-                    <v-btn small color="primary" type="submit">조회</v-btn>
-                    </div>
-                </div>
-                <div style="width: 100%; height:100%">
-                    <ag-grid-vue style="width: 80%; height: 650px;"
-                                 class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                                :columnDefs="columnDefs"
-                                :rowData="rowData"
-                                :gridOptions="gridOptions"
-                                @getRowStyle="getRowStyle"
-                                @gridReady="gridSizeFit"
-                                @gridSizeChanged="gridSizeFit">
-                    </ag-grid-vue>
-                 </div>
             </div>
-            </form>
-        </div>
+            <div class="ct-content">
+                <ag-grid-vue style="width: 100%; height: 650px;"
+                             class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                            :columnDefs="columnDefs"
+                            :rowData="rowData"
+                            :gridOptions="gridOptions"
+                            @getRowStyle="getRowStyle"
+                            @gridReady="gridSizeFit"
+                            @gridSizeChanged="gridSizeFit">
+                </ag-grid-vue>
+            </div>
     </div>
 </template>
 <!-- Bootstrap CDN -->
 <script>
-import { getPrList, srchPrList } from '@/api/knm/Question.js'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+import { getPjList, srchPjList } from '@/api/adm/Project.js'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { AgGridVue } from 'ag-grid-vue'
 
@@ -50,7 +68,6 @@ export default {
   components: {
     AgGridVue
   },
-  props: ['dialog'],
   data: () => {
     return {
       // gridOptions
@@ -69,8 +86,7 @@ export default {
       reg_date: '',
       reg_date_st: '',
       reg_date_ed: '',
-      checked: false, // 체크박스
-      maxDate: new Date() // 데이트피커 날짜 max
+      checked: false // 체크박스
     }
   },
   beforeMount () {
@@ -93,7 +109,7 @@ export default {
     console.log('mounted!!')
 
     // 서버요청
-    getPrList()
+    getPjList()
       .then((res) => {
         this.lists = res.data
         this.makeData()
@@ -115,7 +131,7 @@ export default {
       console.log('srchData', srchData)
 
       // 서버요청
-      srchPrList(srchData)
+      srchPjList(srchData)
         .then((res) => {
           console.log('2. rowData : ', this.rowData)
           this.lists = res.data
@@ -160,7 +176,6 @@ export default {
     getRowStyle: function (param) {
       return { 'text-align': 'center' }
     }
-
   }
 }
 </script>

@@ -17,7 +17,7 @@
               <div class="col">
                   <label class="form-control-label label-select">
                       <b class="control-label">처리상태</b>
-                      <select class="form-control selectpicker" v-model="status" title="선택하세요">
+                      <select class="form-control selectpicker" v-model="status" placeholder="선택하세요">
                           <option value="">선택안함</option>
                           <option value="SS">완료</option>
                           <option value="NN">미완료</option>
@@ -42,6 +42,7 @@ import { srchMyList } from '@/api/knm/Question.js'
 export default {
   data: () => {
     return {
+      userid: this.$store.state.userid,
       title: '',
       status: '',
       sortType: '',

@@ -7,7 +7,7 @@
                 <div class="btn-container">
                     <a href="" class="btn btn-m" @click.prevent="previewOpen"  @previewClose="dialog=false"><span class="hide">미리보기</span></a>
                     <a href="" class="btn btn-primary" type="submit" @click.prevent="onSubmit"><span class="hide">확인</span></a>
-                    <a href="" class="btn btn-primary"  @click="() => this.$router.push({ name: 'KAKNM0101List' })" ><span class="hide">목록보기</span></a>
+                    <a href="" class="btn btn-primary"  @click="() => this.$router.go(-1)" ><span class="hide">목록보기</span></a>
                 </div>
             </header>
             <div class="ct-header">
@@ -79,7 +79,6 @@
                 <KAKNM0103P1 :dialog="isDialog" @close="close" @checkedbtn="checkedbtn"></KAKNM0103P1>
             </v-app>
         </form>
-
     </div>
 </template>
 
@@ -94,9 +93,6 @@ export default {
   components: {
     KAKNM0102P1,
     KAKNM0103P1
-  },
-  icons: {
-    iconfont: 'faSvg'
   },
   data: () => {
     return {

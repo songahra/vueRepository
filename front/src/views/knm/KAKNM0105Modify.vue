@@ -1,5 +1,9 @@
 <template>
- <KAKNM0105Form :sendData='paramData'></KAKNM0105Form>
+  <div id="ct">
+    <section class="card">
+      <KAKNM0105Form :sendData='paramData'></KAKNM0105Form>
+    </section>
+  </div>
 </template>
 
 <script>

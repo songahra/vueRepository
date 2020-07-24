@@ -1,5 +1,9 @@
 <template>
-  <KAADM0101Form></KAADM0101Form>
+  <div id="ct">
+    <section class="card">
+       <KAADM0101Form></KAADM0101Form>
+    </section>
+  </div>
 </template>
 
 <script>

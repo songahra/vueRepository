@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mainList, getDetail, getMyList } from '@/api/knm/Question.js'
+import { mainList, getMyList } from '@/api/knm/Question.js'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
@@ -27,10 +27,11 @@ export default {
   components: {
     AgGridVue
   },
-  porps: ['srchList'],
+  props: ['srchList', 'sendData'],
   data () {
     return {
-      usrid: this.$store.state.userid,
+      userid: this.$store.state.userid,
+      flag: '',
       columnDefs: null,
       lists: [],
       rowData: [],
@@ -64,23 +65,23 @@ export default {
   },
   created () {
     console.log('created')
-    this.getAllList()
+    const flag = this.sendData
+    if (flag === 'mL') {
+      this.myList()
+    } else {
+      this.getAllList()
+    }
   },
   methods: {
     /* 초기 전체 리스트 */
     async getAllList () {
       console.log('makeData')
 
-      // this.lists.data = await getList()
       const data = await mainList()
       this.lists = data.data
 
       console.log('this.lists', this.lists)
       this.makeData()
-      // .then(rowData => this.rowData = rowData);
-      // .then((res) => console.log(res))
-      // .catch(console.error())
-      //     return this.rowData
     },
     /* 지식관리 리스트 조회 */
     allListChange (srchData) {
@@ -95,14 +96,16 @@ export default {
     /* 내가 문의한 질문 리스트 */
     myList () {
       const formData = {
-        userid: this.$store.state.userid
+        userid: this.userid
       }
+      console.log('formData =>>>', formData)
       // 서버요청
       getMyList(formData) /* 에러처리 확인필요!! */
         .then((res) => {
           if (res.status === 200) {
             console.log('res => ', res)
             this.lists = res.data
+            this.makeData()
           } else {
             alert('다시 시도해주세요.')
             // this.$router.go(-1)
@@ -141,6 +144,7 @@ export default {
         this.rowData.push(value)
       })
     },
+    /* 그리드 반응형 사이즈 */
     gridSizeFit (params) {
       console.log('gridSizeFit')
       // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정
@@ -158,45 +162,20 @@ export default {
     },
     /* 그리드 클릭 이벤트 */
     onCellClicked (event) {
-      console.log('ddd', event)
       if (event.colDef.field === 'title') {
         console.log('ddd2')
-        const formData = {
+        const params = {
           reg_userid: event.data.reg_userid,
           question_id: event.data.question_id,
           answer_id: event.data.answer_id
         }
-        console.log('formData  => ', formData)
-
-        // 서버요청
-        getDetail(formData) /* 에러처리 확인필요!! */
-          .then((res) => {
-            if (res.status === 200) {
-              console.log('res => ', res)
-              const params = res.data
-              console.log('params => ', params)
-              this.$router.push({ name: 'KAKNM0104Detail', params: params })
-            }
-            return res
-          })
-          // .then((res) => console.log(res))
-          .catch(function (e) {
-            const result = e.message
-            if (e.message.indexOf('500')) {
-              this.$router.push({ name: '500Error' })
-            } else if (result.indexOf('404')) {
-              this.$router.push({ name: '404Error' })
-            } else {
-              this.$router.push({ name: 'Exception' })
-            }
-          })
+        this.$router.push({ name: 'KAKNM0104Detail', params: params })
       } else {
         return event
       }
     }
   }
 }
-
 </script>
 
 <style lang="scss">

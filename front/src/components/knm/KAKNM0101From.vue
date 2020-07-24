@@ -28,9 +28,7 @@
                             </label>
                         </div>
                         <div class="col-auto">
-                            <button type="submit" @onClick="onSubmit" style="
-    margin-left: 10px;
-" class="btn btn-primary"><i class="icon-srch"></i>조회</button>
+                            <button type="submit" @onClick="onSubmit" style=" margin-left: 10px;" class="btn btn-primary"><i class="icon-srch"></i>조회</button>
                         </div>
                     </div>
                     <div class="filter no-gutters">
