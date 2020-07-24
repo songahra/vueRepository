@@ -5,34 +5,32 @@
       <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-msg-text"></i></span>내가 답변한 질문</h2>
     </header>
     <div class="ct-header">
-                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-                <div id="collapse-filter" class="collapse collapse-filter">
-                    <div class="filter no-gutters">
-                        <div class="col" style="min-width: 70%;">
-                            <label class="form-control-label">
-                                <b class="control-label">질문제목</b>
-                                <input type="text" class="form-control" v-model="title" placeholder="제목을 입력하세요">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label label-select">
-                                <b class="control-label">처리상태</b>
-                                <select class="form-control selectpicker" v-model="status" title="선택하세요">
-                                    <option value="">선택안함</option>
-                                    <option value="SS">완료</option>
-                                    <!-- <option value="NN">미완료</option> -->
-                                    <option value="RQ">재질문</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-primary" style="
-    margin-left: 10px;
-" @click.prevent="onSubmit()"><i class="icon-srch"></i>조회</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
+      <div id="collapse-filter" class="collapse collapse-filter">
+        <div class="filter no-gutters">
+          <div class="col" style="min-width: 70%;">
+            <label class="form-control-label">
+              <b class="control-label">질문제목</b>
+              <input type="text" class="form-control" v-model="title" placeholder="제목을 입력하세요">
+            </label>
+          </div>
+          <div class="col">
+            <label class="form-control-label label-select">
+              <b class="control-label">처리상태</b>
+              <select class="form-control selectpicker" v-model="status" title="선택하세요">
+                <option value="">선택안함</option>
+                <option value="SS">완료</option>
+                <!-- <option value="NN">미완료</option> -->
+                <option value="RQ">재질문</option>
+              </select>
+            </label>
+          </div>
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary" style="margin-left: 10px;" @click.prevent="onSubmit()"><i class="icon-srch"></i>조회</button>
+          </div>
+        </div>
+      </div>
+    </div>
       <div class="ct-content">
         <ag-grid-vue style="width: 100%; height:550px;"
                     class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
@@ -40,6 +38,7 @@
                     :rowData="rowData"
                     :gridOptions="gridOptions"
                     :get-row-style="getRowStyle"
+                    @cell-clicked="onCellClicked"
                     @gridReady="gridSizeFit"
                     @gridSizeChanged="gridSizeFit">
         </ag-grid-vue>
@@ -51,6 +50,7 @@
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { getAnsList } from '@/api/knm/Answer.js'
+import { getDetail } from '@/api/knm/Question.js'
 import { AgGridVue } from 'ag-grid-vue'
 
 export default {
@@ -135,10 +135,44 @@ export default {
           auser: e.reg_userid_ta,
           adate: e.reg_date_ta,
           term: e.term,
-          status: e.status
+          status: e.status,
+          reg_userid: e.reg_userid,
+          question_id: e.question_id,
+          answer_id: e.answer_id
         }
         this.rowData.push(value)
       })
+    },
+    async onCellClicked (event) {
+      console.log('내가 답변한 질문 click!!')
+      if (event.colDef.field === 'title') {
+        const formData = {
+          reg_userid: event.data.reg_userid,
+          question_id: event.data.question_id,
+          answer_id: event.data.answer_id
+        }
+        await getDetail(formData) /* 에러처리 확인필요!! */
+          .then((res) => {
+            if (res.status === 200) {
+              console.log('res => ', res)
+              const params = res.data
+              console.log('params => ', params)
+              this.$router.push({ name: 'KAKNM0104Detail', params: params })
+            }
+            return res
+          })
+          // .then((res) => console.log(res))
+          .catch(function (e) {
+            const result = e.message
+            if (e.message.indexOf('500')) {
+              this.$router.push({ name: '500Error' })
+            } else if (result.indexOf('404')) {
+              this.$router.push({ name: '404Error' })
+            } else {
+              this.$router.push({ name: 'Exception' })
+            }
+          })
+      }
     },
     gridSizeFit (params) {
       // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정

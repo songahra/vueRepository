@@ -1,22 +1,24 @@
 <template>
-<div>
-      <div class="ct-content">
-        <div class="sub-bar">
-          <p class="font-weight-bold">{{ this.ansName }}</p>
-          <div class="ml-auto form-inline m-full">
-            <div v-if = "chkUserType()">
-              <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
-              <a href="" @click.prevent="clickModify" class="btn btn-primary"><span class="hide">수정</span></a>
-            </div>
+  <div>
+    <div class="ct-content">
+      <div class="sub-bar">
+        <div>
+          <p class="font-weight-bold">{{ this.ansName }}<br></p>
+          <p style="font-size: 12.5px">{{ this.upAnsName }}</p>
+        </div>
+        <div class="ml-auto form-inline m-full">
+          <div v-if = "chkUserType()">
+            <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
+            <a href="" @click.prevent="clickModify" class="btn btn-primary"><span class="hide">수정</span></a>
           </div>
         </div>
-        <textarea class="textarea-basic-md" v-model="ansContent" readonly></textarea>
-
       </div>
-      <v-app>
-        <KAKNM0203DelPopup :dialog="isDialog" :sendData="paramData" ref="popup" @close="close" @ansDelete="ansDelete"></KAKNM0203DelPopup>
-      </v-app>
-</div>
+      <textarea class="textarea-basic-md" v-model="ansContent" readonly></textarea>
+    </div>
+    <v-app>
+      <KAKNM0203DelPopup :dialog="isDialog" :sendData="paramData" ref="popup" @close="close" @ansDelete="ansDelete"></KAKNM0203DelPopup>
+    </v-app>
+  </div>
 </template>
 
 <script>
@@ -31,6 +33,7 @@ export default {
   data: () => {
     return {
       ansName: '',
+      upAnsName: '',
       userType: '',
       ansContent: '',
       ansId: '',
@@ -68,6 +71,9 @@ export default {
       console.log('data!!', data)
       this.ansName = data[0].ansName + '(' + data[0].dept + ') 답변 ' + '(' + data[0].reg_date + ')'
       this.ansContent = data[0].content_a
+      if (data[0].upAnsName != null) {
+        this.upAnsName = '└ ' + data[0].upAnsName + '(' + data[0].upDept + ') 수정 답변 ' + '(' + data[0].update_date + ')'
+      }
       console.log(this.ansName)
       console.log(this.ansContent)
     },
