@@ -174,7 +174,7 @@
         <div class="panel-content">
           <header class="panel-header sub-bar">
             <h2 class="sub-bar-tit">
-              공지사항 글쓰기
+              공지사항 상세보기
             </h2>
             <div class="ml-auto">
               <button
@@ -239,13 +239,12 @@
                 </div>
               </div>
             </div>
-            <div class="form-group form-group-editor">
-              <div
-                id="summernote"
-                class="well"
-              >
-                어디 내려온 풍부하게 봄바람을 말이다. 이상은 목숨이 하는 구할 끝에 대고, 가진 새 아니다. 작고 커다란 웅대한 부패를 끓는다. 있는 속에서 영원히 청춘을 충분히 운다. 예수는 인생에 뭇 청춘을 싶이 스며들어 주는 것이다. 설레는 있는 위하여서, 별과 봄바람을 쓸쓸하랴? 것이 무엇이 청춘의 얼마나 가슴이 인간에 것이다. 우리 새가 이것을 이상이 맺어, 풀밭에 피어나기 말이다. 속잎나고, 청춘의 천지는 품었기 위하여 보는 피부가 생명을 열락의 칼이다.
-              </div>
+            <div class="form-group">
+              <textarea
+                class="form-control"
+                rows="3"
+                disabled
+              >어디 내려온 풍부하게 봄바람을 말이다. 이상은 목숨이 하는 구할 끝에 대고, 가진 새 아니다. 작고 커다란 웅대한 부패를 끓는다. 있는 속에서 영원히 청춘을 충분히 운다. 예수는 인생에 뭇 청춘을 싶이 스며들어 주는 것이다. 설레는 있는 위하여서, 별과 봄바람을 쓸쓸하랴? 것이 무엇이 청춘의 얼마나 가슴이 인간에 것이다. 우리 새가 이것을 이상이 맺어, 풀밭에 피어나기 말이다. 속잎나고, 청춘의 천지는 품었기 위하여 보는 피부가 생명을 열락의 칼이다.</textarea>
             </div>
             <div class="form-group">
               <div class="sub-bar">
@@ -327,6 +326,7 @@
 
 <script>
 import '@/assets/vendor/daterangepicker/daterangepicker.min.css'
+// 공지상세
 import { common } from '@/assets/js/common.js'
 
 /* jquery */

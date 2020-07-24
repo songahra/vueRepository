@@ -53,7 +53,7 @@
             data-toggle="collapse"
           ><i class="icon-graph text-dark" />지식자산 통계</a>
           <a
-            href="/notice"
+            href="/noticeList"
             class="menu-collapse-link collapsed"
           ><i class="icon-alarm text-dark" />공지사항</a>
           <a
