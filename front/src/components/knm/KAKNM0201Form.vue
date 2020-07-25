@@ -71,8 +71,8 @@
                   <i class="icon-right text-danger"></i><p class="font-weight-bold">답변자 태그</p>
               </div>
               <textarea class="textarea-basic" v-model="content_t"></textarea>
+              <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
           </div>
-          <CompletePOP :dialog="isDialog" :sendData="alertContent" ref="popup" @close="close"></CompletePOP>
     </section>
   </div>
 </template>
@@ -80,12 +80,12 @@
 <script>
 
 import { postAnswer } from '@/api/knm/Answer.js'
-import { CompletePOP } from '@/components/common/CompletePOP.vue'
+import alert from '@/components/common/CompletePOP.vue'
 
 export default {
   name: 'KAKNM0201Form',
   components: {
-    CompletePOP
+    alert
   },
   data: () => {
     return {
@@ -152,6 +152,9 @@ export default {
       const response = await postAnswer(data)
       this.alertContent = '1개의 답변과 ' + response.data + '개의 태그가 등록되었습니다.'
       this.isDialog = true
+    },
+    close () {
+      this.isDialog = false
       this.$router.push({ name: 'KAKNM0101List' })
     }
   }

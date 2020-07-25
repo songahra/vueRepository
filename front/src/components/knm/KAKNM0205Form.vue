@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="ct-content">
       <div class="sub-bar">
         <div>
           <p class="font-weight-bold">{{ this.ansName }}<br></p>
@@ -14,21 +13,20 @@
         </div>
       </div>
       <textarea class="textarea-basic-md" v-model="ansContent" readonly></textarea>
-    </div>
     <v-app>
-      <KAKNM0203DelPopup :dialog="isDialog" :sendData="paramData" ref="popup" @close="close" @ansDelete="ansDelete"></KAKNM0203DelPopup>
+      <alert :dialog="isDialog" @postDelete = "postDelete" @close="isDialog=false"></alert>
     </v-app>
   </div>
 </template>
 
 <script>
 import { getAnswer, delAnswer } from '@/api/knm/Answer.js'
-import KAKNM0203DelPopup from '@/components/knm/KAKNM0203Form.vue'
+import alert from '@/components/common/DeletePOP.vue'
 
 export default {
   name: 'KAKNM0205Form',
   components: {
-    KAKNM0203DelPopup
+    alert
   },
   data: () => {
     return {
@@ -111,19 +109,19 @@ export default {
       this.isDialog = true
       console.log('this.isDialog!', this.isDialog)
     },
-    close () {
-      this.isDialog = false
-    },
-    async ansDelete () {
-      console.log('ansDelete 호출')
+    // close () {
+    //   this.isDialog = false
+    // },
+    async postDelete () {
+      console.log('postDelete 호출')
       const params = {
         params: {
           ansId: this.ansId
         }
       }
-      const { data } = await delAnswer(params)
-      alert(data + ' 개의 답변이 삭제되었습니다.')
-      this.close()
+      /* const { data } = */ await delAnswer(params)
+      // alert(data + ' 개의 답변이 삭제되었습니다.')
+      this.isDialog = false
       this.$router.push({ name: 'KAKNM0101List' })
     }
   }

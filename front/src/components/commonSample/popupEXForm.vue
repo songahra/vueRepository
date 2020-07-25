@@ -4,7 +4,7 @@
   <div id="ct">
     <section class="card">
         <a  @click.prevent="onSubmit()" class="btn btn-primary"><span class="hide">확인</span></a>
-        <alert :dialog="isDialog" :sendData="alertContent" @close="isDialog=false"></alert>
+        <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
     </section>
   </div>
 </template>
@@ -30,6 +30,11 @@ export default {
       this.alertContent = 'aaaa'
       console.log('1. alertContent', this.alertContent)
       this.isDialog = true
+      // this.$router.push({ name: 'KAKNM0101List' })
+    },
+    close () {
+      this.isDialog = false
+      this.$router.push({ name: 'KAKNM0101List' })
     }
   }
 }
