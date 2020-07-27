@@ -68,13 +68,13 @@
           >
             <li class="menu-item">
               <a
-                href="/adm/PJList"
+                href="/adm/pjList"
                 class="menu-link"
               >프로젝트</a>
             </li>
             <li class="menu-item">
               <a
-                href=""
+                href="/adm/authList"
                 class="menu-link"
               >사용자 권한</a>
             </li>

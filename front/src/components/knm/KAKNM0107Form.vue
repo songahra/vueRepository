@@ -42,7 +42,7 @@ import { srchMyList } from '@/api/knm/Question.js'
 export default {
   data: () => {
     return {
-      userid: this.$store.state.userid,
+      userid: '',
       title: '',
       status: '',
       sortType: '',
@@ -54,7 +54,7 @@ export default {
     async onSubmit () {
       console.log('onSubmit')
       const srchData = {
-        userid: this.$store.state.userid,
+        userid: this.user_id,
         title: this.title,
         status: this.status
       }
@@ -67,6 +67,11 @@ export default {
   }, // methods
   mounted () {
     console.log('mounted!!')
+  },
+  computed: {
+    user_id: function () {
+      return this.$store.state.userid
+    }
   }
 }
 </script>
