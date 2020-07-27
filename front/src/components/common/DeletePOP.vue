@@ -18,20 +18,14 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-alert">
           <div class="modal-content">
             <div class="modal-body">
-              <i class="iconb-compt"/>
+              <i class="iconb-warn"></i>
               <p class="alert-text">
-                {{ this.sendData }}
+                삭제하시겠습니까?
               </p>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-dismiss="modal"
-                @click.prevent="onClose"
-              >
-                확인
-              </button>
+              <button type="button" class="btn" data-dismiss="modal" @click.prevent="onClose">취소</button>
+              <button type="button" class="btn btn-primary" @click.prevent="onDelete">확인</button>
             </div>
           </div>
         </div>
@@ -44,10 +38,11 @@
 
 <script>
 export default {
-  name: 'CompletePOP',
-  props: ['dialog', 'sendData'],
+  name: 'DeletePOP',
+  props: ['dialog'],
   data: () => {
     return {
+      isDialog: ''
     }
   },
   created () {
@@ -55,6 +50,9 @@ export default {
   methods: {
     onClose () {
       this.$emit('close')
+    },
+    onDelete () {
+      this.$emit('postDelete')
     }
   }
 }

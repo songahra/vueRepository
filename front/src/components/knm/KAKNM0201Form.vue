@@ -1,3 +1,4 @@
+<!--답변하기 -->
 <template>
   <div id="ct">
     <section class="card">
@@ -80,6 +81,7 @@
 <script>
 
 import { postAnswer } from '@/api/knm/Answer.js'
+import { getDetail } from '@/api/knm/Question.js'
 import alert from '@/components/common/CompletePOP.vue'
 
 export default {
@@ -118,18 +120,36 @@ export default {
     }
   },
   mounted () {
-    console.log('params => ' + this.$route.params.solution_id)
+    console.log('<< 답변 작성 >> params => ' + this.$route.params.question_id)
     this.param = this.$route.params
-    this.question_id = this.param.question_id
-    this.solution_name = this.param.solution_name
-    this.solution_id = this.param.solution_id
-    this.question_title = this.param.title
-    this.project_name = this.param.project_name
-    this.project_id = this.param.project_id
-    this.tag = this.param.tag_tag
-    this.err_c = this.param.tag_erc
-    this.err_t = this.param.tag_ert
-    this.question_content = this.param.content_q
+    const formData = {
+      question_id: this.param.question_id
+    }
+    getDetail(formData)
+      .then((res) => {
+        console.log('res => ', res.data)
+        const data = res.data
+        this.solution_name = data.solution_name
+        this.question_title = data.title
+        this.project_name = data.project_name
+        this.tag = data.tag_tag
+        this.err_c = data.tag_erc
+        this.err_t = data.tag_ert
+        this.question_content = data.content_q
+        this.question_id = data.question_id
+        this.project_id = data.project_id
+        this.solution_id = data.solution_id
+      })
+    // this.question_id = this.param.question_id
+    // this.solution_name = this.param.solution_name
+    // this.solution_id = this.param.solution_id
+    // this.question_title = this.param.title
+    // this.project_name = this.param.project_name
+    // this.project_id = this.param.project_id
+    // this.tag = this.param.tag_tag
+    // this.err_c = this.param.tag_erc
+    // this.err_t = this.param.tag_ert
+    // this.question_content = this.param.content_q
   },
   methods: {
     async onSubmit () {

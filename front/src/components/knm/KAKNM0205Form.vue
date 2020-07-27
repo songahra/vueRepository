@@ -34,22 +34,22 @@ export default {
       upAnsName: '',
       userType: '',
       ansContent: '',
-      ansId: '',
+      answer_id: '',
       content_b: '',
       content_t: '',
       question_id: '',
       lists: '',
-      paramData: '',
+      param: '',
       answerData: '',
       isDialog: false
     }
   },
   props: ['sendData'],
   created () {
-    console.log('created!!')
+    console.log('0205 created!!', this.sendData)
     this.answerData = this.sendData
-    this.ansId = this.answerData.answer_id
-    console.log('답변하기 ans Id : ', this.ansId)
+    this.answer_id = this.answerData.answer_id
+    console.log('답변하기 ans Id : ', this.answer_id)
     this.getAnswerDetail()
   },
   computed: {
@@ -62,7 +62,7 @@ export default {
       console.log('getAnswer function')
       const params = {
         params: {
-          ansId: this.ansId
+          answer_id: this.answer_id
         }
       }
       const { data } = await getAnswer(params)
@@ -90,6 +90,7 @@ export default {
         params: {
           project_name: this.answerData.project_name,
           answer_id: this.answerData.answer_id,
+          question_id: this.answerData.question_id,
           solution_name: this.answerData.solution_name,
           content_q: this.answerData.content_q,
           title: this.answerData.title,
@@ -116,7 +117,7 @@ export default {
       console.log('postDelete 호출')
       const params = {
         params: {
-          ansId: this.ansId
+          answer_id: this.answer_id
         }
       }
       /* const { data } = */ await delAnswer(params)

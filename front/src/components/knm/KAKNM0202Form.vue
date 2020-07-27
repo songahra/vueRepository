@@ -103,8 +103,14 @@ export default {
       param: ''
     }
   },
+  computed: {
+    user_id () {
+      return this.$store.state.userid
+    }
+  },
   mounted () {
     console.log('params => ' + this.$route.params.params.solution_name)
+
     this.param = this.$route.params.params
     this.answer_id = this.param.answer_id
     this.solution_name = this.param.solution_name
@@ -117,11 +123,6 @@ export default {
     this.content_a = this.param.content_a
     this.content_b = this.param.content_b
     this.content_t = this.param.content_t
-  },
-  computed: {
-    user_id () {
-      return this.$store.state.userid
-    }
   },
   methods: {
     async onSubmit () {
