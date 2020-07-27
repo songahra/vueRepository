@@ -122,7 +122,7 @@ export default {
   },
   created () {
     console.log('main created!!')
-    this.getSolution()
+    // this.getSolution()
     this.getList()
   },
   methods: {

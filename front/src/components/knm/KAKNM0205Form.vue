@@ -8,15 +8,13 @@
         <div class="ml-auto form-inline m-full">
           <div v-if = "chkUserType()">
             <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
-            <a href="" @click.prevent="clickModify" class="btn btn-primary"><span class="hide">수정</span></a>
+            <a href="" @click.prevent="clickModify" class="btn btn-m"><span class="hide">수정</span></a>
           </div>
         </div>
       </div>
       <textarea class="textarea-basic-md" v-model="ansContent" readonly></textarea>
-    <v-app>
       <alert :dialog="isDialog" @postDelete = "postDelete" @close="isDialog=false"></alert>
       <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
-    </v-app>
   </div>
 </template>
 
@@ -36,6 +34,8 @@ export default {
       ansName: '',
       upAnsName: '',
       userType: '',
+      userid: '',
+      reg_userid: '',
       ansContent: '',
       answer_id: '',
       content_b: '',
@@ -56,6 +56,7 @@ export default {
     this.answerData = this.sendData
     this.score = this.answerData.score
     this.answer_id = this.answerData.answer_id
+    this.reg_userid = this.answerData.reg_userid
     this.getAnswerDetail()
   },
   computed: {
@@ -85,6 +86,15 @@ export default {
       console.log(this.ansName)
       console.log(this.ansContent)
     },
+    chkWriter () {
+      this.userid = this.$store.state.userid
+      console.log(this.userid === this.reg_userid)
+      if (this.userid === this.reg_userid) {
+        return true
+      } else {
+        return false
+      }
+    },
     chkUserType () {
       this.userType = this.$store.state.usertype
       if (this.userType === 'A' || this.userType === 'O') {
@@ -92,7 +102,10 @@ export default {
       }
     },
     clickModify () {
-      if (this.score === 0) {
+      if (this.chkWriter()) {
+        this.alertContent = '본인이 작성한 질문의 답변은 수정할 수 없습니다.'
+        this.fDialog = true
+      } else if (this.score === 0) {
         const params = {
           answer_id: this.answerData.answer_id,
           question_id: this.answerData.question_id
@@ -106,7 +119,10 @@ export default {
       }
     },
     clickDelete () {
-      if (this.score === 0) {
+      if (this.chkWriter()) {
+        this.alertContent = '본인이 작성한 질문의 답변은 삭제할 수 없습니다.'
+        this.fDialog = true
+      } else if (this.score === 0) {
         console.log('click Delete 실행!')
         this.isDialog = true
         console.log('this.isDialog!', this.isDialog)

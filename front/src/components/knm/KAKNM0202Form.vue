@@ -152,7 +152,6 @@ export default {
         content_t: this.content_t,
         reg_userid: this.$store.state.userid,
         do_type: 'M'
-
       }
       console.log('POST DATA : ', data)
       await postAnswer(data)
