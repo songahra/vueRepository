@@ -15,6 +15,7 @@
       <textarea class="textarea-basic-md" v-model="ansContent" readonly></textarea>
     <v-app>
       <alert :dialog="isDialog" @postDelete = "postDelete" @close="isDialog=false"></alert>
+      <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
     </v-app>
   </div>
 </template>
@@ -22,11 +23,13 @@
 <script>
 import { getAnswer, delAnswer } from '@/api/knm/Answer.js'
 import alert from '@/components/common/DeletePOP.vue'
+import failAlert from '@/components/common/FailPOP.vue'
 
 export default {
   name: 'KAKNM0205Form',
   components: {
-    alert
+    alert,
+    failAlert
   },
   data: () => {
     return {
@@ -38,18 +41,21 @@ export default {
       content_b: '',
       content_t: '',
       question_id: '',
+      score: '',
       lists: '',
       param: '',
       answerData: '',
-      isDialog: false
+      isDialog: false,
+      fDialog: false,
+      alertContent: ''
     }
   },
   props: ['sendData'],
   created () {
     console.log('0205 created!!', this.sendData)
     this.answerData = this.sendData
+    this.score = this.answerData.score
     this.answer_id = this.answerData.answer_id
-    console.log('답변하기 ans Id : ', this.answer_id)
     this.getAnswerDetail()
   },
   computed: {
@@ -86,33 +92,30 @@ export default {
       }
     },
     clickModify () {
-      const params = {
-        params: {
-          project_name: this.answerData.project_name,
+      if (this.score === 0) {
+        const params = {
           answer_id: this.answerData.answer_id,
-          question_id: this.answerData.question_id,
-          solution_name: this.answerData.solution_name,
-          content_q: this.answerData.content_q,
-          title: this.answerData.title,
-          tag_tag: this.answerData.tag_tag,
-          tag_erc: this.answerData.tag_erc,
-          tag_ert: this.answerData.tag_ert,
-          content_a: this.ansContent,
-          content_b: this.content_b,
-          content_t: this.content_t
+          question_id: this.answerData.question_id
         }
+        console.log('modify!!', params)
+        this.$router.push({ name: 'KAKNM02Modify', params: params })
+      } else {
+        console.log('modify score check ', this.score === 0)
+        this.alertContent = '평가가 완료된 답변은 수정할 수 없습니다.'
+        this.fDialog = true
       }
-      console.log('modify!!', params)
-      this.$router.push({ name: 'KAKNM02Modify', params: params })
     },
     clickDelete () {
-      console.log('click Delete 실행!')
-      this.isDialog = true
-      console.log('this.isDialog!', this.isDialog)
+      if (this.score === 0) {
+        console.log('click Delete 실행!')
+        this.isDialog = true
+        console.log('this.isDialog!', this.isDialog)
+      } else {
+        console.log('delete score check ', this.score === 0)
+        this.alertContent = '평가가 완료된 답변은 삭제할 수 없습니다.'
+        this.fDialog = true
+      }
     },
-    // close () {
-    //   this.isDialog = false
-    // },
     async postDelete () {
       console.log('postDelete 호출')
       const params = {
@@ -120,8 +123,7 @@ export default {
           answer_id: this.answer_id
         }
       }
-      /* const { data } = */ await delAnswer(params)
-      // alert(data + ' 개의 답변이 삭제되었습니다.')
+      await delAnswer(params)
       this.isDialog = false
       this.$router.push({ name: 'KAKNM0101List' })
     }

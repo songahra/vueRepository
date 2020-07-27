@@ -6,7 +6,7 @@
         <div class="btn-container">
             <!-- <a href="" class="btn btn-m"><span class="hide">미리보기</span></a> -->
             <a href="" @click.prevent="onSubmit()" class="btn btn-primary"><span class="hide">확인</span></a>
-            <a href="mainList" class="btn btn-primary"><span class="hide">닫기</span></a>
+            <a href="" @click.prevent="back()" class="btn btn-primary"><span class="hide">닫기</span></a>
         </div>
       </header>
       <div class="ct-header">
@@ -71,15 +71,20 @@
                   <i class="icon-right text-danger"></i><p class="font-weight-bold">답변자 태그</p>
               </div>
               <textarea class="textarea-basic" v-model="content_t"></textarea>
+              <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
           </div>
     </section>
   </div>
 </template>
 
 <script>
-import { postAnswer } from '@/api/knm/Answer.js'
+import { postAnswer, getModifyDetail } from '@/api/knm/Answer.js'
+import alert from '@/components/common/CompletePOP.vue'
 export default {
   name: 'KAKNM0202Form',
+  components: {
+    alert
+  },
   data: () => {
     return {
       answer_id: '',
@@ -100,7 +105,10 @@ export default {
       // question_id: '',
       // project_id: '',
       // solution_id: '',
-      param: ''
+      param: '',
+      // alert
+      isDialog: false,
+      alertContent: ''
     }
   },
   computed: {
@@ -109,20 +117,28 @@ export default {
     }
   },
   mounted () {
-    console.log('params => ' + this.$route.params.params.solution_name)
-
-    this.param = this.$route.params.params
-    this.answer_id = this.param.answer_id
-    this.solution_name = this.param.solution_name
-    this.question_title = this.param.title
-    this.project_name = this.param.project_name
-    this.tag = this.param.tag_tag
-    this.err_c = this.param.tag_erc
-    this.err_t = this.param.tag_ert
-    this.question_content = this.param.content_q
-    this.content_a = this.param.content_a
-    this.content_b = this.param.content_b
-    this.content_t = this.param.content_t
+    this.param = this.$route.params
+    console.log('답변 수정 answer_id : ', this.param.answer_id)
+    const formData = {
+      // questionId: this.param.question_id,
+      answer_id: this.param.answer_id
+    }
+    getModifyDetail(formData)
+      .then((res) => {
+        console.log('답변수정!! res.data', res.data)
+        const data = res.data
+        this.answer_id = data.answer_id
+        this.solution_name = data.solution_name
+        this.question_title = data.title
+        this.project_name = data.project_name
+        this.tag = data.tag_tag
+        this.err_c = data.tag_erc
+        this.err_t = data.tag_ert
+        this.question_content = data.content_q
+        this.content_a = data.content_a
+        this.content_b = data.content_b
+        this.content_t = data.content_t
+      })
   },
   methods: {
     async onSubmit () {
@@ -139,8 +155,15 @@ export default {
 
       }
       console.log('POST DATA : ', data)
-      /* const response = */await postAnswer(data)
-      alert('1 개의 답변이 수정되었습니다.')
+      await postAnswer(data)
+      this.alertContent = '답변이 수정되었습니다.'
+      this.isDialog = true
+    },
+    close () {
+      this.isDialog = false
+      this.$router.push({ name: 'KAKNM0101List' })
+    },
+    back () {
       this.$router.push({ name: 'KAKNM0101List' })
     }
   }
