@@ -13,7 +13,7 @@
                   <div class="col">
                       <label class="form-control-label">
                           <b class="control-label">등록기간</b>
-                          <input type="text" v-model="range" class="form-control input-daterange">
+                          <input id="datePicker" type="text" class="form-control input-daterange">
                       </label>
                   </div>
                   <div class="col-auto">
@@ -54,11 +54,19 @@
 <script>
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import moment from 'moment'
-import 'vue2-datepicker/index.css'
+/* daterangepicker */
+import '@/assets/vendor/daterangepicker/daterangepicker.min.js'
+import '@/assets/vendor/daterangepicker/daterangepicker.min.css'
+import '@/assets/vendor/daterangepicker/moment.min.js'
+
 import Modal2 from '@/components/adm/KAADM0402POPForm'
 import { getUserList, getSearchUserList } from '@/api/adm/Point.js'
 import { AgGridVue } from 'ag-grid-vue'
+
+/* jQuery 사용 */
+global.jQuery = require('jquery')
+var $ = global.jQuery
+window.$ = $
 
 export default {
   components: {
@@ -85,16 +93,7 @@ export default {
       startDate: '',
       endDate: '',
       now: '',
-      range: '',
-      lang: {
-        days: ['일', '월', '화', '수', '목', '금', '토', '일'],
-        daysMin: ['일', '월', '화', '수', '목', '금', '토', '일'],
-        months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
-      },
-      DatePickerFormat: 'YYYY-MM-DD hh:mm'
+      range: ''
     }
   },
   beforeMount () {
@@ -126,12 +125,70 @@ export default {
     console.log('main created!!')
     this.time()
     var moment = require('moment')
-    moment.locale('ko')
-    this.now = moment().format('YYYY-MM-DD HH:mm')
-    // const userId = {
-    //   user_id: this.$store.state.userid
-    // }
+    moment.locale('ko') // 언어팩 변경
+    this.now = moment().format('YYYY-MM-DD HH:mm') // 현재 시간
+    this.month = moment().format('MM') // 현재 월
     this.getList()
+  },
+  mounted () {
+    $('#demo').daterangepicker({
+      locale: {
+        format: 'MM/DD/YYYY',
+        separator: ' - ',
+        applyLabel: 'Apply',
+        cancelLabel: 'Cancel',
+        fromLabel: 'From',
+        toLabel: 'To',
+        customRangeLabel: 'Custom',
+        weekLabel: 'W',
+        daysOfWeek: [
+          'Su',
+          'Mo',
+          'Tu',
+          'We',
+          'Th',
+          'Fr',
+          'Sa'
+        ],
+        monthNames: [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December'
+        ],
+        firstDay: 1
+      },
+      startDate: '12/01/2016',
+      endDate: '12/07/2016'
+    }, function (start, end, label) {
+    })
+    $(() => {
+      $('#datePicker').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        autoApply: true,
+        locale: {
+          format: 'YYYY.MM.DD HH:mm:ss',
+          separator: ' ~ ',
+          daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+          monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+        }
+      }, (start, end) => {
+        this.startDate = start.format('YYYY-MM-DD')
+        this.endDate = end.format('YYYY-MM-DD')
+        console.log('this.startDate', this.startDate) // datePicker시작 날짜
+        console.log('this.endDate', this.endDate) //  datePicker끝 날짜
+      })
+    })
   },
   methods: {
     async onSubmit () {
@@ -212,10 +269,6 @@ export default {
       const date = new Date()
       this.now = date.getDate
       console.log(this.now)
-    },
-    updateDate () {
-      this.startDate = moment(this.range[0]).format('YYYY-MM-DD')
-      this.endDate = moment(this.range[1]).format('YYYY-MM-DD')
     }
   }
 }
