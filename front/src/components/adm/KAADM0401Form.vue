@@ -62,6 +62,8 @@ import Modal from '@/components/adm/KAADM0401POPForm'
 import { getSolList, getSearchSolList } from '@/api/adm/Point.js'
 import { AgGridVue } from 'ag-grid-vue'
 
+import { getSolution } from '@/api/log/Login.js'
+
 export default {
   components: {
     Modal,
@@ -120,13 +122,7 @@ export default {
   },
   created () {
     console.log('main created!!')
-    this.time()
-    var moment = require('moment')
-    moment.locale('ko')
-    this.now = moment().format('YYYY-MM-DD HH:mm')
-    // const userId = {
-    //   user_id: this.$store.state.userid
-    // }
+    this.getSolution()
     this.getList()
   },
   methods: {
@@ -221,6 +217,16 @@ export default {
       const date = new Date()
       this.now = date.getDate
       console.log(this.now)
+    },
+    // 공통코드 솔루션 값
+    userSolution () {
+      getSolution()
+        .then((res) => {
+          console.log('res=>>', res)
+          this.items = res.data
+          console.log('solution_id ', this.items)
+        })
+        .catch(console.error())
     }
   }
 }

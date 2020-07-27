@@ -30,16 +30,18 @@
                     </div>
                     <div class="filter no-gutters no-btn">
                         <div class="col">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">솔루션 명</b>
-                                  <v-combobox
+                            <label>
+                                <b >솔루션명</b>
+                                  <v-select
+                                    flat
                                     v-model="solution_id"
-                                    class="form-control compact-form"
-                                   :items="items"
-                                    dense
-                                     solo
-                                    item-text="codeContent"
-                                    item-value="codeId" />
+                                      class="compact-form"
+                                     :items="items"
+                                      dense
+                                      solo
+                                      item-text="codeContent"
+                                      item-value="codeId"
+                                   />
                             </label>
                         </div>
                         <div class="col">
@@ -125,6 +127,7 @@ export default {
       tag_ert: '',
       flag: '',
       errors: [],
+      items: [],
       isDialog: false,
       dialog: false,
       paramData: ''
@@ -134,6 +137,7 @@ export default {
 
   ],
   created () {
+    this.userSolution()
     this.param = this.$route.params
     console.log('created=>', this.param)
     this.answerData = this.param
@@ -249,7 +253,7 @@ export default {
                 // this.$router.go(-1)
               } else {
                 alert(result + ' 건이 등록되었습니다.')
-                this.$router.push('/knm/mainList')
+                this.$router.push({ name: 'KAKNM0101List' })
               }
             } else {
               alert('ffffff 실패하였습니다.')
@@ -263,8 +267,7 @@ export default {
       getSolution()
         .then((res) => {
           console.log('res=>>', res)
-          this.codes = res.data
-          this.solution_id = this.codes
+          this.items = res.data
           console.log('solution_id ', this.codes)
         })
         .catch(console.error())

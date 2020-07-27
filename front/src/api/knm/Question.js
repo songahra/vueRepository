@@ -15,6 +15,12 @@ function srchList (srchData) {
 }
 
 // 지식관리 상세조회
+function srchQuId (formData) {
+  console.log(formData)
+  return instance.get('knm/srchQuId', { params: formData })
+}
+
+// 지식관리 상세조회
 function getDetail (formData) {
   console.log(formData)
   return instance.get('knm/getDetail', { params: formData })
@@ -25,6 +31,10 @@ function modify (formData) {
   return instance.post('knm/modify', formData)
 }
 
+// 지식관리 기술문의 답변에 대해 평가하기
+function estimateAn (formData) {
+  return instance.post('knm/estimateAn', formData)
+}
 // 지식관리 등록시 프로젝트 조회 메인화면
 function getPjList () {
   return instance.get('knm/getPjList')
@@ -45,4 +55,4 @@ function srchMyList (formData) {
   return instance.get('knm/srchMyList', { params: formData })
 }
 
-export { mainList, srchList, getDetail, modify, getPjList, srchPjList, getMyList, srchMyList }
+export { mainList, srchList, srchQuId, getDetail, modify, estimateAn, getPjList, srchPjList, getMyList, srchMyList }

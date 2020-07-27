@@ -15,6 +15,7 @@
                 <div id="collapse-filter" class="collapse collapse-filter">
                     <div class="filter no-gutters no-btn">
                         <div class="col" style="min-width: 75%;">
+                          <p>{{this.requestion_id}}</p>
                             <label class="form-control-label" data-toggle="modal" data-target="#">
                                 <b class="control-label">질문제목</b>
                               <input type="text" class="form-control" placeholder="제목은 필수입력사항입니다." v-model="title">
@@ -36,7 +37,7 @@
                                     flat
                                     v-model="solution_id"
                                       class="compact-form"
-                                     :items="codes"
+                                     :items="items"
                                       dense
                                       solo
                                       item-text="codeContent"
@@ -92,7 +93,7 @@
 <script>
 import KAKNM0102P1 from '@/views/knm/KAKNM0102P1.vue'
 import KAKNM0103P1 from '@/views/knm/KAKNM0103P1.vue'
-import { modify } from '@/api/knm/Question.js'
+import { modify, srchQuId } from '@/api/knm/Question.js'
 import { getSolution } from '@/api/log/Login.js'
 
 export default {
@@ -104,7 +105,10 @@ export default {
   data: () => {
     return {
       userid: '',
+      reg_userid_ta: '',
       question_id: '',
+      up_question_id: '',
+      requestion_id: '',
       project_id: '',
       project_name: '',
       solution_id: '',
@@ -116,8 +120,9 @@ export default {
       content_s: '',
       err_log: '',
       flag: '',
-      codes: [],
-      errors: [],
+      params: null,
+      items: [],
+      value: 0,
       isDialog: false,
       dialog: false,
       paramData: ''
@@ -125,6 +130,40 @@ export default {
   },
   created () {
     this.userSolution()
+    console.log('this.params 은?', this.params)
+
+    // 재질문 등록시
+    if (typeof this.$route.params.question_id !== 'undefined') {
+      this.params = this.$route.params
+      console.log('2this.params=>', this.params)
+      const formData = {
+        question_id: this.params.question_id,
+        userid: this.params.userid
+      }
+
+      // 서버요청
+      srchQuId(formData)
+        .then((res) => {
+          this.reg_userid_ta = res.data.reg_userid_ta
+          this.up_question_id = res.data.question_id
+          this.solution_id = res.data.solution_id
+          this.solution_name = res.data.solution_name
+          this.project_id = res.data.project_id
+          this.project_name = res.data.project_name
+          this.title = '[재질문] ' + res.data.title
+          return res
+        })
+        .catch(function (e) {
+          const result = e.message
+          if (result.indexOf('500')) {
+            this.$router.push({ name: '500Error' })
+          } else if (result.indexOf('404')) {
+            this.$router.push({ name: '404Error' })
+          } else {
+            this.$router.push({ name: 'Exception' })
+          }
+        })
+    }
   },
   mounted () {
     console.log('mounted!!')
@@ -140,6 +179,8 @@ export default {
       const FormData = {
         title: this.title,
         project_id: this.project_id,
+        requestion_id: this.requestion_id,
+        up_question_id: this.up_question_id,
         project_name: this.project_name,
         solution_id: this.solution_id,
         tag_tag: this.tag_tag,
@@ -149,6 +190,7 @@ export default {
         content_s: this.content_s,
         err_log: this.err_log,
         userid: this.$store.state.userid,
+        reg_userid_ta: this.reg_userid_ta,
         flag: 'W'
       }
       console.log(this.tag_erc === '')
@@ -205,8 +247,8 @@ export default {
       getSolution()
         .then((res) => {
           console.log('res=>>', res)
-          this.codes = res.data
-          console.log('solution_id ', this.codes)
+          this.items = res.data
+          console.log('solution_id ', this.items)
         })
         .catch(console.error())
     },
@@ -236,7 +278,7 @@ export default {
         title: this.title,
         project_id: this.project_id,
         project_name: this.project_name,
-        solution_name: this.solution_id.codeContent,
+        solution_name: this.solution_id.codeContent, // 확인필요
         tag_tag: this.tag_tag,
         tag_erc: this.tag_erc,
         tag_ert: this.tag_ert,
@@ -245,7 +287,7 @@ export default {
         err_log: this.err_log,
         userid: this.$store.state.userid
       }
-      console.log('this', this.paramData)
+      console.log('this', this.solution_id)
       this.dialog = true
     },
     // 미리보기 팝업닫기

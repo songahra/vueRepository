@@ -10,7 +10,6 @@
         <v-card-title class="headline">질문하신 내용을 삭제하시겠습니까?</v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn
             color="green darken-1"
             text
@@ -26,7 +25,6 @@
           >
             취소
           </v-btn>
-
         </v-card-actions>
       </v-card>
     </v-dialog>

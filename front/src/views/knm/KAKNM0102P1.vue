@@ -35,9 +35,7 @@
                         <div class="col">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
                                 <b class="control-label">솔루션 명</b>
-                                  <select name="solution_id" id="solution_id" v-model="this.sendData.solution_id">
-                                    <option :key= "index"  v-for="(code, index) in codes" v-bind:value="code.codeId" disabled >{{code.codeContent}}</option>
-                                  </select>
+                                <input type="text" class="form-control"  v-model="this.sendData.solution_name" disabled>
                             </label>
                         </div>
                         <div class="col">
@@ -108,6 +106,7 @@ export default {
       project_name: '',
       score: '',
       answer_id: '',
+      solution_id: '',
       solution_name: '',
       title: '',
       content_q: '',
@@ -118,7 +117,8 @@ export default {
       status: '',
       tag_tag: '',
       tag_erc: '',
-      tag_ert: ''
+      tag_ert: '',
+      items: ''
     }
   },
   mounted () {
