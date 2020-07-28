@@ -6,9 +6,7 @@
     max-width="50%"
   >
     <v-card>
-    <!--   <KAKNM0103Form @close="() => {isDialog=false}"></KAKNM0103Form> -->
-    <KAKNM0103Form @close="close" @checkedbtn="checkedbtn"></KAKNM0103Form>
-    <!-- <v-btn @click.prevent="close">취소</v-btn> -->
+    <KAKNM0103Form @pjClose="pjClose" @checkedbtn="checkedbtn"></KAKNM0103Form>
     </v-card>
   </v-dialog>
 </template>
@@ -22,14 +20,14 @@ export default {
   },
   data () {
     return {
-      isDialog: ''
+      pjDialog: ''
     }
   },
   props: ['dialog'],
   methods: {
-    close () {
+    pjClose () {
       console.log('parent-close')
-      this.$emit('close')
+      this.$emit('pjClose')
     },
     checkedbtn (params) {
       console.log('2 checkedbtn')

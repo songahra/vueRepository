@@ -1,6 +1,6 @@
 <!-- 질문하기 Form -->
 <template>
-  <div>
+      <div>
         <form id="KAKNM0102From" @submit.prevent="onSubmit" class="form">
             <header class="card-header" style="padding: 1.6rem 1rem;">
                 <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-std-code"></i></span>기술문의</h2>
@@ -25,24 +25,23 @@
                             <label class="form-control-label" data-toggle="modal" data-target="#">
                                 <b class="control-label">프로젝트</b>
                                 <input type="text" class="form-control" placeholder="프로젝트명을 입력하세요" v-model="project_name" disabled>
-                                <button type="submit" @click.prevent="btnSearch" @close="isDialog=false"><i class="icon-srch"></i>찾기</button>
+                                <button type="submit" @click.prevent="btnSearch" @close="pjDialog=false"><i class="icon-srch"></i>찾기</button>
                             </label>
                         </div>
                     </div>
                     <div class="filter no-gutters no-btn">
                         <div class="col">
-                            <label>
-                                <b >솔루션명</b>
-                                  <v-select
-                                    flat
-                                    v-model="solution_id"
-                                      class="compact-form"
-                                     :items="items"
-                                      dense
-                                      solo
-                                      item-text="codeContent"
-                                      item-value="codeId"
-                                   />
+                          <label class="form-control-label">
+                            <b class="control-label">솔루션명</b>
+                              <select v-model="solution_id" class="form-control selectpicker" title="선택하세요">
+                               <option
+                                 v-for="(item,index) in items"
+                                 :key="index"
+                                 :value="item.codeId"
+                                >
+                                {{ item.codeContent }}
+                                </option>
+                              </select>
                             </label>
                         </div>
                         <div class="col">
@@ -82,25 +81,29 @@
             <div class="ct-content">
                 <textarea class="textarea-basic-lg" v-model="err_log"></textarea>
             </div>
-            <v-app id="app">
-                <KAKNM0102P1 :dialog="dialog" :sendData="paramData" @previewClose="previewClose"></KAKNM0102P1>
-                <KAKNM0103P1 :dialog="isDialog" @close="close" @checkedbtn="checkedbtn"></KAKNM0103P1>
-            </v-app>
+                <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
+                <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
+                <KAKNM0102P1 :dialog="pvdialog" :sendData="paramData" @previewClose="previewClose"></KAKNM0102P1>
+                <KAKNM0103P1 :dialog="pjDialog" @pjClose="pjClose" @checkedbtn="checkedbtn"></KAKNM0103P1>
         </form>
-    </div>
+      </div>
 </template>
 
 <script>
 import KAKNM0102P1 from '@/views/knm/KAKNM0102P1.vue'
 import KAKNM0103P1 from '@/views/knm/KAKNM0103P1.vue'
+import failAlert from '@/components/common/FailPOP.vue'
+import alert from '@/components/common/CompletePOP.vue'
 import { modify, srchQuId } from '@/api/knm/Question.js'
-import { getSolution } from '@/api/log/Login.js'
+import { getSolution, userSolution } from '@/api/log/Login.js'
 
 export default {
   name: 'KAKNM0102From',
   components: {
     KAKNM0102P1,
-    KAKNM0103P1
+    KAKNM0103P1,
+    failAlert,
+    alert
   },
   data: () => {
     return {
@@ -123,13 +126,17 @@ export default {
       params: null,
       items: [],
       value: 0,
+      alertContent: '',
       isDialog: false,
       dialog: false,
+      fDialog: false,
+      pvdialog: false,
+      pjDialog: false,
       paramData: ''
     }
   },
   created () {
-    this.userSolution()
+    this.getSolution()
     console.log('this.params 은?', this.params)
 
     // 재질문 등록시
@@ -196,33 +203,43 @@ export default {
       console.log(this.tag_erc === '')
       this.errors = []
       if (!this.title) {
-        alert('제목 작성은 필수입니다.')
+        this.alertContent = '제목 작성은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.project_name) {
-        alert('프로젝트명 입력은 필수입니다.')
+        this.alertContent = '프로젝트명 입력은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.solution_id) {
-        alert('솔루션명 선택은 필수입니다.')
+        this.alertContent = '솔루션명 선택은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.tag_tag) {
-        alert('태그#01 입력은 필수입니다.')
+        this.alertContent = '태그#01 입력은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.content_q) {
-        alert('질문 내용 작성은 필수입니다.')
+        this.alertContent = '질문 내용 작성은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.content_s) {
-        alert('환경 및 상황 작성은 필수입니다.')
+        this.alertContent = '환경 및 상황 작성은 필수입니다.'
+        this.fDialog = true
       } else {
         console.log('FormData : ', FormData)
         console.log('FormData : ', this.solution_id)
 
         // 서버요청
         modify(FormData)
+        this.alertContent = '등록되었습니다. 메일을 확인해주세요'
+        this.isDialog = true
+        this.$router.push('/knm/mainList')
+        /* modify(FormData)
           .then((res) => {
             console.log('result', res.data)
             const result = res.data
@@ -239,11 +256,11 @@ export default {
               this.$router.go(-1)
             }
           })
-          .catch(console.error())
+          .catch(console.error()) */
       }
     },
     // 공통코드 솔루션 값
-    userSolution () {
+    getSolution () {
       getSolution()
         .then((res) => {
           console.log('res=>>', res)
@@ -252,10 +269,15 @@ export default {
         })
         .catch(console.error())
     },
+    userSolution () {
+      const code = this.solution_id
+      this.solution_name = userSolution(code)
+      return this.solution_name
+    },
     // 프로젝트 id 조회 팝업오픈
     btnSearch: function () {
       console.log('btnSearch실행')
-      this.isDialog = true
+      this.pjDialog = true
     },
     // 프로젝트 id 가져오기
     checkedbtn (params) {
@@ -264,12 +286,15 @@ export default {
 
       this.project_id = params.project_id
       this.project_name = params.project_name
-      this.close()
+      this.pjClose()
+    },
+    close () {
+      this.isDialog = !this.isDialog
     },
     // 프로젝트 조회 팝업닫기
-    close () {
+    pjClose () {
       console.log('grand-parent-close')
-      this.isDialog = !this.isDialog
+      this.pjDialog = !this.pjDialog
     },
     // 미리보기 팝업오픈
     previewOpen: function () {
@@ -278,7 +303,7 @@ export default {
         title: this.title,
         project_id: this.project_id,
         project_name: this.project_name,
-        solution_name: this.solution_id.codeContent, // 확인필요
+        solution_name: this.userSolution(), // 확인필요
         tag_tag: this.tag_tag,
         tag_erc: this.tag_erc,
         tag_ert: this.tag_ert,
@@ -287,13 +312,12 @@ export default {
         err_log: this.err_log,
         userid: this.$store.state.userid
       }
-      console.log('this', this.solution_id)
-      this.dialog = true
+      this.pvdialog = true
     },
     // 미리보기 팝업닫기
     previewClose () {
       console.log('previewClose')
-      this.dialog = !this.dialog
+      this.pvdialog = !this.pvdialog
     }
   }
 

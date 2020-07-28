@@ -88,7 +88,7 @@
                  <div class="sub-bar">
 
                     <div class="ml-auto form-inline m-full">
-                      <div v-if = "chkScore()">
+                      <div v-show = "chkScore()">
                       <p href="" style="padding-top: 8px;">
                       <v-rating
                         @input="addRating($event, rating)"
@@ -111,6 +111,7 @@
         </form>
             <KAKNM0104P1 :dialog="reQuDialog" @reQuClose="reQuClose" ></KAKNM0104P1>
             <KAKNM0106P1 :dialog="isDialog" :sendData="paramData" @close="close" ></KAKNM0106P1>
+            <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
     </div>
 </template>
 
@@ -118,13 +119,17 @@
 import KAKNM0205Form from '@/components/knm/KAKNM0205Form.vue'
 import KAKNM0104P1 from '@/views/knm/KAKNM0104P1.vue'
 import KAKNM0106P1 from '@/views/knm/KAKNM0106P1.vue'
+import failAlert from '@/components/common/FailPOP.vue'
 import { getDetail, estimateAn } from '@/api/knm/Question.js'
+import { userSolution } from '@/api/log/Login.js'
+
 export default {
   name: 'KAKNM0104Form',
   components: {
     KAKNM0104P1,
     KAKNM0106P1,
-    KAKNM0205Form
+    KAKNM0205Form,
+    failAlert
   },
   icons: {
     iconfont: 'faSvg'
@@ -135,6 +140,7 @@ export default {
       userid: '',
       usertype: '',
       reg_userid: '',
+      reg_userid_ta: '',
       question_id: '',
       project_id: '',
       project_name: '',
@@ -154,11 +160,14 @@ export default {
       tag_erc: '',
       tag_ert: '',
       time: '',
-      rating: '',
+      rating: null,
       paramData: '',
       answerData: '',
+      alertContent: '',
       isDialog: false,
-      reQuDialog: false
+      fDialog: false,
+      reQuDialog: false,
+      test: true
     }
   },
   created () {
@@ -177,6 +186,9 @@ export default {
           const data = res.data
           this.answerData = res.data
           this.reg_userid = data.reg_userid
+          this.reg_userName_tq = data.reg_userName_tq
+          this.reg_userid_ta = data.reg_userid_ta
+          this.reg_date_tq = data.reg_date_tq
           this.question_id = data.question_id
           this.project_id = data.project_id
           this.project_name = data.project_name
@@ -188,8 +200,6 @@ export default {
           this.content_q = data.content_q
           this.content_s = data.content_s
           this.err_log = data.err_log
-          this.reg_userName_tq = data.reg_userName_tq
-          this.reg_date_tq = data.reg_date_tq
           this.term = data.term
           this.status = data.status
           this.tag_tag = data.tag_tag
@@ -253,7 +263,7 @@ export default {
         score: this.score,
         star: this.star,
         solution_name: this.solution_name,
-        solution_id: this.solution_id,
+        solution_id: this.userSolution(),
         title: this.title,
         content_q: this.content_q,
         content_s: this.content_s,
@@ -266,7 +276,6 @@ export default {
         tag_ert: this.tag_ert
       }
       console.log('params', params)
-
       if (action === 'btnModify') {
         this.$router.push({ name: 'KAKNM0105Modify', params: params })
       } else if (action === 'btnAnswer') {
@@ -293,6 +302,11 @@ export default {
         return true
       }
     },
+    chkAnswer () {
+      if (this.userid === this.reg_userid_ta) {
+        return true
+      }
+    },
     // 답변id 여부 체크
     chkAnswerId () {
       if (this.answer_id) {
@@ -301,15 +315,18 @@ export default {
     },
     // 스코어 체크
     chkScore () {
+      console.log('스코어 체크', this.score)
       if (this.score === 0 || this.score === '') {
         return true
       }
+      // return true
     },
     // 삭제 팝업 호출
     btnDelete () {
       console.log('btndelete실행')
       if (this.answer_id) {
-        alert('답변완료 상태이므로 삭제할 수 없습니다.')
+        this.alertContent = '답변완료 상태이므로 삭제할 수 없습니다.'
+        this.fDialog = true
       } else {
         this.paramData = {
           userid: this.userid,
@@ -338,7 +355,8 @@ export default {
       console.log('평가하기 term', this.term)
 
       if (this.star === null) {
-        alert('별점을 선택해주세요')
+        this.alertContent = '별점을 선택해주세요'
+        this.fDialog = true
         return
       }
 
@@ -350,8 +368,10 @@ export default {
       const formData = {
         time: this.time,
         score: this.star,
-        question_id: this.question_id
+        question_id: this.question_id,
+        solution_id: this.solution_id
       }
+      console.log('평가하기 formData', formData)
       // 서버요청
       estimateAn(formData)
         .then((res) => {
@@ -383,6 +403,12 @@ export default {
     // 질문하기
     writeFrom () {
       this.$router.push({ name: 'KAKNM02Write' })
+    },
+    // 솔루션 id
+    userSolution () {
+      const code = this.solution_id
+      this.solution_name = userSolution(code)
+      return this.solution_name
     },
     reQuClose () {
       console.log('parent-close')

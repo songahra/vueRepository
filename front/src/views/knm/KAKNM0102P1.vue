@@ -35,7 +35,7 @@
                         <div class="col">
                             <label class="form-control-label" data-toggle="modal" data-target="#">
                                 <b class="control-label">솔루션 명</b>
-                                <input type="text" class="form-control"  v-model="this.sendData.solution_name" disabled>
+                                <input type="text" class="form-control"  v-model="this.sendData.solution_name" readonly>
                             </label>
                         </div>
                         <div class="col">
@@ -124,9 +124,7 @@ export default {
   mounted () {
     // 추후 삭제
     this.userid = this.user_id
-    this.params = this.sendData
     console.log('sendData =>>> ', this.sendData)
-    console.log('params =>>> ', this.params)
   },
   computed: {
     user_id () {

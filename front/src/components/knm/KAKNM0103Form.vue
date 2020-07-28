@@ -7,7 +7,7 @@
    <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title">기술문의</h2>
-        <button type="button" class="btn-icon" data-dismiss="modal" aria-label="Close" @click="close"><i class="icon-close"></i></button>
+        <button type="button" class="btn-icon" data-dismiss="modal" aria-label="Close" @click="pjClose"><i class="icon-close"></i></button>
       </div>
       <div class="modal-body modal-body-ct">
         <div class="ct-header">
@@ -50,8 +50,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn" @click="close" data-dismiss="modal">취소</button>
-        <button type="button" class="btn btn-primary" @click="close">확인</button>
+        <button type="button" class="btn" @click="pjClose" data-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" @click="pjClose">확인</button>
       </div>
     </div>
   </div>
@@ -165,9 +165,9 @@ export default {
     },
 
     // 팝업 닫기
-    close () {
+    pjClose () {
       console.log('child-close')
-      this.$emit('close')
+      this.$emit('pjClose')
     },
 
     // 그리드 셀 클릭시 이벤트

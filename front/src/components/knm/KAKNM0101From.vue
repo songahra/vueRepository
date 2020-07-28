@@ -37,9 +37,10 @@
                                 <b class="control-label" label for="sortType">정렬기준</b>
                                 <select class="form-control selectpicker" select name="sortType" id="sortType" v-model="sortType">
                                     <option selected value="">경과일</option>
-                                    <option value="SS">완료</option>
-                                    <option value="NN">미완료</option>
-                                    <option value="RQ">재질문</option>
+                                    <option value="1">질문자</option>
+                                    <option value="2">답변자</option>
+                                    <option value="3">경과일</option>
+                                    <option value="4">상태</option>
                                 </select>
                             </label>
                         </div>

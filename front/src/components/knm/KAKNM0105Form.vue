@@ -30,18 +30,17 @@
                     </div>
                     <div class="filter no-gutters no-btn">
                         <div class="col">
-                            <label>
-                                <b >솔루션명</b>
-                                  <v-select
-                                    flat
-                                    v-model="solution_id"
-                                      class="compact-form"
-                                     :items="items"
-                                      dense
-                                      solo
-                                      item-text="codeContent"
-                                      item-value="codeId"
-                                   />
+                          <label class="form-control-label">
+                            <b class="control-label">솔루션명</b>
+                              <select v-model="solution_id" class="form-control selectpicker" title="선택하세요">
+                               <option
+                                 v-for="(item,index) in items"
+                                 :key="index"
+                                 :value="item.codeId"
+                                >
+                                {{ item.codeContent }}
+                                </option>
+                              </select>
                             </label>
                         </div>
                         <div class="col">
@@ -81,10 +80,9 @@
             <div class="ct-content">
                 <textarea class="textarea-basic-lg" v-model="err_log" ></textarea>
             </div>
-            <v-app id="app">
                 <KAKNM0102P1 :dialog="dialog" :sendData="paramData" @previewClose="previewClose"></KAKNM0102P1>
                 <KAKNM0103P1 :dialog="isDialog" @close="close" @checkedbtn="checkedbtn"></KAKNM0103P1>
-            </v-app>
+                <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
         </form>
     </div>
 </template>
@@ -92,14 +90,16 @@
 <script>
 import KAKNM0102P1 from '@/views/knm/KAKNM0102P1.vue'
 import KAKNM0103P1 from '@/views/knm/KAKNM0103P1.vue'
+import failAlert from '@/components/common/FailPOP.vue'
 import { getDetail, modify } from '@/api/knm/Question.js'
-import { getSolution } from '@/api/log/Login.js'
+import { getSolution, userSolution } from '@/api/log/Login.js'
 
 export default {
   name: 'KAKNM0105From',
   components: {
     KAKNM0102P1,
-    KAKNM0103P1
+    KAKNM0103P1,
+    failAlert
   },
   icons: {
     iconfont: 'faSvg'
@@ -128,7 +128,9 @@ export default {
       flag: '',
       errors: [],
       items: [],
+      alertContent: '',
       isDialog: false,
+      fDialog: false,
       dialog: false,
       paramData: ''
     }
@@ -137,7 +139,8 @@ export default {
 
   ],
   created () {
-    this.userSolution()
+    this.getSolution()
+
     this.param = this.$route.params
     console.log('created=>', this.param)
     this.answerData = this.param
@@ -157,6 +160,7 @@ export default {
           this.score = data.score
           this.answer_id = data.answer_id
           this.solution_name = data.solution_name
+          this.solution_id = data.solution_id
           this.title = data.title
           this.content_q = data.content_q
           this.content_s = data.content_s
@@ -182,21 +186,17 @@ export default {
         }
       })
   },
-  mounted () {
-    // console.log('2222. sendData ', this.sendData)
-    this.userSolution()
-    // this.userid = this.user_id
-    // this.param = this.param_ch
-  },
   computed: {
     user_id () {
-      console.log('KAKNM0105Form computed param ', this.$store.state.userid)
       return this.$store.state.userid
     },
-    param_ch () {
-      console.log('KAKNM0105Form computed route param ', this.$route.params)
+    chg_param () {
       return this.$route.params
+    },
+    chk_solution_id () {
+      return this.userSolution()
     }
+
   },
   methods: {
     onSubmit: function () {
@@ -218,27 +218,33 @@ export default {
       console.log('넘어왓니', FormData)
 
       if (!this.title) {
-        alert('제목 작성은 필수입니다.')
+        this.alertContent = '제목 작성은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.project_name) {
-        alert('프로젝트명 입력은 필수입니다.')
+        this.alertContent = '프로젝트명 입력은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.solution_id) {
-        alert('솔루션명 선택은 필수입니다.')
+        this.alertContent = '솔루션명 선택은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.tag_tag) {
-        alert('태그#01 입력은 필수입니다.')
+        this.alertContent = '태그#01 입력은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.content_q) {
-        alert('질문 내용 작성은 필수입니다.')
+        this.alertContent = '질문 내용 작성은 필수입니다.'
+        this.fDialog = true
         return
       }
       if (!this.content_s) {
-        alert('환경 및 상황 작성은 필수입니다.')
+        this.alertContent = '환경 및 상황 작성은 필수입니다.'
+        this.fDialog = true
       } else {
         console.log('FormData : ', FormData)
 
@@ -249,28 +255,35 @@ export default {
             const result = res.data
             if (res.status === 200) {
               if (result === 0) {
-                alert('ddddddd 실패하였습니다.')
+                this.alertContent = '실패하였습니다'
+                this.fDialog = true
                 // this.$router.go(-1)
               } else {
                 alert(result + ' 건이 등록되었습니다.')
                 this.$router.push({ name: 'KAKNM0101List' })
               }
             } else {
-              alert('ffffff 실패하였습니다.')
+              this.alertContent = '실패하였습니다'
+              this.fDialog = true
               this.$router.go(-1)
             }
           })
       }
     },
     // 공통코드 솔루션 값
-    userSolution () {
+    getSolution () {
       getSolution()
         .then((res) => {
           console.log('res=>>', res)
           this.items = res.data
-          console.log('solution_id ', this.codes)
+          console.log('solution_id ', this.items)
         })
         .catch(console.error())
+    },
+    userSolution () {
+      const code = this.solution_id
+      this.solution_name = userSolution(code)
+      return this.solution_name
     },
     btnSearch: function () {
       console.log('btnSearch실행')
