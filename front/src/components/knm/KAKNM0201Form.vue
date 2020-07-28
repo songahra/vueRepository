@@ -5,7 +5,7 @@
       <header class="card-header" style="padding: 1.6rem 1rem;">
         <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-text"></i></span>답변작성</h2>
         <div class="btn-container">
-            <!-- <a href="" class="btn btn-m"><span class="hide">미리보기</span></a> -->
+            <a href="" @click.prevent="show()" class="btn btn-m"><span class="hide">미리보기</span></a>
             <a href="" @click.prevent="onSubmit()" class="btn btn-primary"><span class="hide">확인</span></a>
             <a href="mainList" class="btn btn-primary"><span class="hide">닫기</span></a>
         </div>
@@ -106,6 +106,7 @@ export default {
       question_content: '',
       // 답변 insert 할때 보내줘야할 질문 정보
       question_id: '',
+      reg_userid_q: '',
       project_id: '',
       solution_id: '',
       param: '',
@@ -129,6 +130,7 @@ export default {
       .then((res) => {
         console.log('res => ', res.data)
         const data = res.data
+        this.reg_userid_tq = data.reg_userid
         this.solution_name = data.solution_name
         this.question_title = data.title
         this.project_name = data.project_name
@@ -160,11 +162,12 @@ export default {
         project_id: this.project_id,
         solution_id: this.solution_id,
         // 답변 정보
-        title: this.title,
+        title: this.question_title,
         content_a: this.content_a,
         content_b: this.content_b,
         content_t: this.content_t,
         reg_userid: this.$store.state.userid,
+        reg_userid_tq: this.reg_userid_tq,
         do_type: 'W'
       }
 
