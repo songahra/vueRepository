@@ -15,4 +15,9 @@ function selectNotice () {
   return instance.get('/notice/list')
 }
 
-export { writeNotice, selectNotice }
+// 공지사항 상세보기
+function detailNotice (formData) {
+  console.log('detailNotice함수 실행')
+  return instance.get('/notice/detail', { params: formData })
+}
+export { writeNotice, selectNotice, detailNotice }

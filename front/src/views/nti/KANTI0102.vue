@@ -169,7 +169,7 @@
         <Alert
         :dialog="completeAlert"
         :send-data="alertContent"
-        @close="completeAlert=false"
+        @close="close()"
       />
     </section>
     </div>
@@ -177,7 +177,6 @@
 
 <script>
 
-import '@/assets/vendor/daterangepicker/daterangepicker.min.css'
 import { common } from '@/assets/js/common.js'
 import { getSolution } from '@/api/log/Login.js'
 // import { postFile } from '@/api/File.js'
@@ -213,6 +212,7 @@ export default {
     this.items = data
     console.log('this.items?', this.items)
   },
+  /* summernote jQuery */
   mounted () {
     common.panelOpen('detail')
     $(function () {
@@ -230,7 +230,11 @@ export default {
       })
     })
   },
+
   methods: {
+    close () {
+      this.$router.push('/noticeList')
+    },
     selectFile () {
       console.log('select File 함수')
       console.log('selectFile << file >> : ', event.target.files)
@@ -243,6 +247,7 @@ export default {
     fileDel (index) {
       this.selectedFiles.splice(index, 1)
     },
+
     async upload (file) {
       console.log('upload 함수')
 
@@ -259,13 +264,19 @@ export default {
 
       this.content = notice[0].value
       this.currentFile = this.selectedFiles
+
       console.log('this.currentFile', this.currentFile)
       console.log('this.selectedFiles', this.selectedFiles)
-      const formData = new FormData()
 
-      for (var i = 0, afile; (afile = this.selectedFiles[i]); i++) {
-        formData.append('attachFile', afile)
+      const formData = new FormData()
+      console.log('이거 확인점', this.selectedFiles.length !== 0)
+
+      if (this.selectedFiles.length !== 0) { // 파일이 있으면 서버로 보냄, 없으면 안보냄
+        for (var i = 0, afile; (afile = this.selectedFiles[i]); i++) {
+          formData.append('attachFile', afile)
+        }
       }
+
       formData.append('post_type', 'n')
       formData.append('content', this.content)
       formData.append('reg_userid', this.$store.state.userid)
