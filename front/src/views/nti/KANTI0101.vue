@@ -78,6 +78,7 @@
               :grid-options="gridOptions"
               :get-row-style="getRowStyle"
               @gridSizeChanged="gridSizeFit"
+              @cell-clicked="onCellClicked"
             />
             </table>
           </div>
@@ -152,11 +153,11 @@ export default {
       const value = {
         title: e.title,
         solution_code: userSolution(e.solution_code), // solution code -> value 변환하는 함수
-        reg_userid: e.reg_userid,
+        user_name: e.user_name,
         hit: e.hit,
         file_count: e.file_count,
-        reg_date: e.reg_date
-
+        reg_date: e.reg_date,
+        notice_id: e.notice_id
       }
       this.rowData.push(value)
     })
@@ -181,8 +182,15 @@ export default {
     // 가운데정렬
     getRowStyle: function (param) {
       return { 'text-align': 'center' }
-    }
+    },
+    onCellClicked (event) {
+      console.log('제목을 클릭')
+      console.log('제목을 클릭2', event)
 
+      // const formData = {
+
+      // }
+    }
   },
   beforeMount () {
     this.gridOptions = {
@@ -199,7 +207,7 @@ export default {
       { headerName: '글번호', colId: 0, valueGetter: (params) => { return params.node.rowIndex + 1 } },
       { headerName: '제목', field: 'title', sortable: true, filter: true },
       { headerName: '솔루션', field: 'solution_code', sortable: true, filter: true },
-      { headerName: '작성자', field: 'reg_userid', sortable: true, filter: true },
+      { headerName: '작성자', field: 'user_name', sortable: true, filter: true },
       {
         headerName: '첨부',
         field: 'file_count',
@@ -219,5 +227,7 @@ export default {
 </script>
 
 <style>
-
+.ag-header-cell-label{
+  justify-content: center
+}
 </style>
