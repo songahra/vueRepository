@@ -88,12 +88,6 @@
           </tbody>
         </table>
       </div>
-      <!--  flat="false" -> 그림자 없애줌 -->
-      <!-- <v-img
-          height="300"
-          width="300"
-          :src="get_img_src"
-        /> -->
     </section>
   </div>
 </template>
@@ -155,7 +149,6 @@ export default {
       console.log('data 트루야 펄스야?', data === '')
     } else {
       this.imgSrc = data
-      console.log('data펄스다.', this.imgSrc)
     }
   },
   methods: {

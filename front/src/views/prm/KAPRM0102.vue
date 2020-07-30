@@ -92,7 +92,6 @@
                 담당솔루션
               </td>
               <td>
-                <!-- <div class="form-group"> -->
                 <v-select
                   v-model="solution"
                   class="form-control compact-form"
@@ -110,7 +109,7 @@
                 권한
               </td>
               <td>
-                <v-combobox
+                <v-select
                   v-model="user_type"
                   class="form-control compact-form"
                   :items="items2"
@@ -134,7 +133,6 @@
                   >업로드</label>
                   <v-file-input
                     id="ex_file"
-                    ref="fileTag"
                     v-model="image"
                     hide-input
                     type="file"
@@ -165,6 +163,7 @@
         />
         <Alert
           :dialog="completeAlert"
+          :send-data="alertContent"
           @close="completeAlert=false"
         />
       </div>
@@ -186,6 +185,7 @@ export default {
   },
   data: () => {
     return {
+      alertContent: '',
       showNoImage: false,
       isAddBoard: false,
       completeAlert: false,
@@ -195,8 +195,8 @@ export default {
       typeCode: '',
       alert: false,
       dept: '',
-      user_type: 'user_type',
-      solution: 'solution',
+      user_type: '',
+      solution: '',
       items: [],
       items2: [
         {
@@ -242,54 +242,61 @@ export default {
     console.log('data: ', data)
     this.items = data
     this.userType()
+    console.log('유저타입', this.user_type)
     this.code = this.$store.state.solution // 솔루션 코드 저장
     console.log('code는?' + this.code)
     this.solution = userSolution(this.code)
     console.log('솔루션명은?' + this.solution) // 솔루션 명 저장
-
     this.dept = this.$store.state.dept
     console.log('this.items' + this.items)
+    this.solution = { codeContent: this.solution, codeId: this.code }
   },
   methods: {
     selectSolution () {
-      this.code = this.solution.codeId // 변경됐을 때 solution code
+      this.code = this.solution // 변경됐을 때 solution code
     },
     selectType () {
-      this.typeCode = this.user_type.code // 변경됐을 때 user_type code
+      this.typeCode = this.user_type // 변경됐을 때 user_type code
     },
     userType () {
       this.typeCode = this.$store.state.usertype
       this.user_type = userType(this.typeCode)
+      console.log('this.typeCode', this.typeCode)
+      console.log('this.user_type', this.user_type)
+      this.user_type = { name: this.user_type, code: this.typeCode }
     },
     addBoard () {
-      console.log('addBoard 실행')
       this.isAddBoard = true
       console.log(this.isAddBoard)
     },
-    async submitForm () { // 회원 정보 수정
+    submitForm () { // 회원 정보 수정
       console.log('submitForm 실행')
+
       const userData = {
         dept: this.dept,
         solution: this.code,
         user_type: this.typeCode,
         user_id: this.user_id
       }
-      console.log(userData)
-      await updateProfile(userData).then((res) => {
-        // alert(res.data)
-        if (res.status === 200) {
-          console.log('status200 맞나요?' + res.status)
-          console.log('this.code모지??' + this.code)
 
-          // 회원 정보 수정 됐을 때 vue에 있는 data도 변경되어야함..
-          this.$store.commit('SET_DEPT', userData.dept)
-          this.$store.commit('SET_SOLUTION', this.code)
-          this.$store.commit('SET_USERTYPE', this.typeCode)
-          this.completeAlert = true
-          console.log('this.completeAlert', this.completeAlert)
+      console.log('여기서 솔루션?', this.solution)
+      console.log('userData', userData)
+      updateProfile(userData)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log('status200 맞나요?' + res.status)
+            console.log('this.code모지??' + this.code)
+
+            // 회원 정보 수정 됐을 때 vue에 있는 data도 변경되어야함..
+            this.$store.commit('SET_DEPT', userData.dept)
+            this.$store.commit('SET_SOLUTION', this.code)
+            this.$store.commit('SET_USERTYPE', this.typeCode)
+
+            this.alertContent = '정보가 수정되었습니다'
+            this.completeAlert = true
+          }
         }
-      }
-      )
+        )
     },
     async onUpload () {
       try {

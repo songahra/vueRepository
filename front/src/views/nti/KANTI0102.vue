@@ -1,4 +1,5 @@
 <template>
+  <!-- 공지사항 글쓰기 -->
   <div id="wrap">
     <div id="ct">
       <!-- 페이지 시작 -->
@@ -217,6 +218,7 @@
                     <label class="form-control-label">
                       <b class="control-label">공지</b>
                       <input
+                        v-model="title"
                         type="text"
                         class="form-control"
                         placeholder="공지제목을 입력하세요."
@@ -229,30 +231,62 @@
                   >
                     <label class="form-control-label">
                       <b class="control-label">제품명</b>
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="iGate"
+                      <select
+                        v-model="solution"
+                        class="form-control selectpicker"
+                        title="선택하세요"
+                        readonly
                       >
+                        <option
+                          v-for="(item,index) in items"
+                          :key="index"
+                          :value="item.codeId"
+                        >
+                          {{ item.codeContent }}
+                        </option>
+                      </select>
                     </label>
                   </div>
                 </div>
               </div>
             </div>
             <div class="form-group form-group-editor">
+              <textarea name="content" style="display: none;"></textarea>
               <div
                 id="summernote"
                 class="well"
               >
                 어디 내려온 풍부하게 봄바람을 말이다. 이상은 목숨이 하는 구할 끝에 대고, 가진 새 아니다. 작고 커다란 웅대한 부패를 끓는다. 있는 속에서 영원히 청춘을 충분히 운다. 예수는 인생에 뭇 청춘을 싶이 스며들어 주는 것이다. 설레는 있는 위하여서, 별과 봄바람을 쓸쓸하랴? 것이 무엇이 청춘의 얼마나 가슴이 인간에 것이다. 우리 새가 이것을 이상이 맺어, 풀밭에 피어나기 말이다. 속잎나고, 청춘의 천지는 품었기 위하여 보는 피부가 생명을 열락의 칼이다.
               </div>
+
             </div>
             <div class="form-group">
               <div class="sub-bar">
                 <i class="icon-right text-danger" /><p class="font-weight-bold">
                   첨부파일
                 </p>
+                <div class="ml-auto form-inline m-full">
+                  <label>
+                     <input
+                type="file"
+                class="sr-only"
+                multiple="multiple"
+                @change="selectFile()"
+              >
+                    <span
+                      class="btn"
+                    >파일 선택</span>
+                    <button
+                      type="button"
+                      class="btn"
+
+                    >
+                      업로드
+                    </button>
+                  </label>
+                </div>
               </div>
+
               <div class="table-responsive">
                 <table class="table">
                   <colgroup>
@@ -276,27 +310,32 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr v-if="selectedFiles == ''">
                       <td><span class="placeholder">첨부할 파일을 선택해 주세요.</span></td>
                       <td />
                       <td>0kbytes</td>
                       <td class="text-nowrap">
-                        <label>
-                          <input
-                            type="file"
-                            class="sr-only"
-                          >
-                          <span class="btn">파일 선택</span>
-                        </label>
                         <button
                           type="button"
                           class="btn"
+                          :disabled="!selectedFiles.length"
                         >
-                          업로드
+                          <i class="icon-delete" />삭제
                         </button>
+                      </td>
+                    </tr>
+                    <tr
+                      v-for="(file, index ) in selectedFiles"
+                      :key="index"
+                    >
+                      <td><span>{{ file.name }}</span></td>
+                      <td>{{ file.type }}</td>
+                      <td>{{ file.size / 1000 }} KBytes</td>
+                      <td class="text-nowrap">
                         <button
                           type="button"
                           class="btn"
+                          @click="fileDel(index)"
                         >
                           <i class="icon-delete" />삭제
                         </button>
@@ -311,12 +350,9 @@
             <div class="ml-auto">
               <a
                 href=""
-                class="btn"
-              >삭제</a>
-              <a
-                href=""
                 class="btn btn-primary"
-              >수정</a>
+                @click.prevent="upload"
+              >등록</a>
             </div>
           </footer>
         </div>
@@ -328,6 +364,9 @@
 <script>
 import '@/assets/vendor/daterangepicker/daterangepicker.min.css'
 import { common } from '@/assets/js/common.js'
+import { getSolution } from '@/api/log/Login.js'
+// import { postFile } from '@/api/File.js'
+import { writeNotice } from '@/api/nti/Notice.js'
 
 /* jquery */
 global.jQuery = require('jquery')
@@ -335,6 +374,22 @@ var $ = global.jQuery
 window.$ = $
 
 export default {
+  data: () => {
+    return {
+      title: '',
+      solution: '',
+      items: [],
+      selectedFiles: [],
+      temp: [],
+      currentFile: '',
+      content: ''
+    }
+  },
+  async created () {
+    const { data } = await getSolution() // 솔루션 목록 가져오기
+    this.items = data
+    console.log('this.items?', this.items)
+  },
   mounted () {
     common.panelOpen('detail')
     $(function () {
@@ -351,6 +406,59 @@ export default {
         placeholder: '내용을 입력해 주세요.'
       })
     })
+  },
+  methods: {
+    selectFile () {
+      console.log('select File 함수')
+      console.log('selectFile << file >> : ', event.target.files)
+      var files = event.target.files
+      for (var i = 0, l = files.length; i < l; i++) {
+        console.dir(files[i])
+        this.selectedFiles.push(files[i])
+      }
+    },
+    fileDel (index) {
+      this.selectedFiles.splice(index, 1)
+    },
+    async upload (file) {
+      console.log('upload 함수')
+
+      // const userData = {
+      //   reg_userid: this.$store.state.userid,
+      //   solution_code: this.solution,
+      //   title: this.title,
+      //   content: this.content
+
+      // }
+      var notice = $('textarea[name="content"]').val($('#summernote').summernote('code'))
+      console.log('벵류', notice)
+      console.log('벵류', notice[0].value)
+
+      this.content = notice[0].value
+      this.currentFile = this.selectedFiles
+      console.log('this.currentFile', this.currentFile)
+      console.log('this.selectedFiles', this.selectedFiles)
+      const formData = new FormData()
+
+      for (var i = 0, afile; (afile = this.selectedFiles[i]); i++) {
+        formData.append('attachFile', afile)
+      }
+      formData.append('post_type', 'n')
+      formData.append('content', this.content)
+      formData.append('reg_userid', this.$store.state.userid)
+      formData.append('solution_code', this.solution)
+      formData.append('title', this.title)
+
+      console.log('formData??', formData)
+      writeNotice(formData)
+
+      // formData.append('post_id', 'id') => 글번호는 글 등록되고 알 수 있는거 아닌가 ?
+      // formData.append('post_type', 'n')
+
+      console.log('myFile', formData)
+      // const { data } = await postFile(formData)
+      // alert(data + '개의 파일이 업로드 되었습니다.')
+    }
   }
 }
 </script>
