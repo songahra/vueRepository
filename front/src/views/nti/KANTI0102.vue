@@ -61,9 +61,10 @@
                 </div>
               </div>
             </div>
+
             <div class="ct-content">
             <div class="form-group form-group-editor">
-              <textarea name="content" style="display: none;"></textarea>
+              <textarea name="content" style="display: none;" ></textarea>
               <div
                 id="summernote"
                 class="well"
@@ -212,12 +213,15 @@ export default {
     this.items = data
     console.log('this.items?', this.items)
   },
+
   /* summernote jQuery */
   mounted () {
     common.panelOpen('detail')
     $(function () {
       $('#summernote').summernote({
+        height: 300, // 에디터의 높이
         disableResizeEditor: true,
+        lang: 'ko-KR', // 기본 메뉴언어 US->KR로 변경
         callbacks: {
           onFocus: function () {
             $(this).parents('.form-group-editor').addClass('focused')

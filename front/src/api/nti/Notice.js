@@ -15,9 +15,21 @@ function selectNotice () {
   return instance.get('/notice/list')
 }
 
-// 공지사항 상세보기
-function detailNotice (formData) {
-  console.log('detailNotice함수 실행')
-  return instance.get('/notice/detail', { params: formData })
+// 조회 눌렀을 때 공지사항 글 목록 불러오기
+function searchNotice (param) {
+  return instance.get('/notice/searchList', { params: param })
 }
-export { writeNotice, selectNotice, detailNotice }
+
+// 공지사항 상세보기
+function detailNotice (param) {
+  console.log('detailNotice함수 실행')
+  return instance.get('/notice/detail', { params: param })
+}
+
+// 공지사항 조회수 +
+function plusCnt (param) {
+  console.log('plusCnt 실행')
+  return instance.get('/notice/plusCnt', { params: param })
+}
+
+export { writeNotice, selectNotice, detailNotice, searchNotice, plusCnt }

@@ -13,6 +13,7 @@
             ><span class="hide">글쓰기</span></a>
           </div>
         </header>
+
         <div class="ct-header">
           <button
             type="button"
@@ -37,6 +38,7 @@
                     type="text"
                     class="form-control"
                     placeholder="제목을 입력하세요."
+                    v-model="search_title"
                   >
                 </label>
               </div>
@@ -44,13 +46,14 @@
                 <label class="form-control-label label-select">
                   <b class="control-label">정렬</b>
                   <select
+                    v-model="sortType"
                     class="form-control selectpicker"
                     title="선택하세요"
                     readonly
                   >
-                    <option value="">최신순</option>
-                    <option value="">조회수순</option>
-                    <option value="">날짜순</option>
+                    <option value="1">최신순</option>
+                    <option value="2">조회수순</option>
+                    <option value="3">날짜순</option>
                   </select>
                 </label>
               </div>
@@ -58,6 +61,7 @@
                 <button
                   type="button"
                   class="btn btn-primary"
+                  @click="onSubmit()"
                 >
                   <i class="icon-srch" />조회
                 </button>
@@ -82,38 +86,6 @@
             />
             </table>
           </div>
-          <ul class="pagination">
-            <li class="page-item">
-              <a
-                class="page-link page-link-prev"
-                href="#"
-              ><i class="icon-left" /></a>
-            </li>
-            <li class="page-item">
-              <a
-                class="page-link active"
-                href="#"
-              >1</a>
-            </li>
-            <li class="page-item">
-              <a
-                class="page-link"
-                href="#"
-              >2</a>
-            </li>
-            <li class="page-item">
-              <a
-                class="page-link"
-                href="#"
-              >3</a>
-            </li>
-            <li class="page-item">
-              <a
-                class="page-link page-link-next"
-                href="#"
-              ><span class="icon-right" /></a>
-            </li>
-          </ul>
         </div>
       </section>
     </div>
@@ -127,7 +99,7 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { AgGridVue } from 'ag-grid-vue'
 
-import { selectNotice } from '@/api/nti/Notice.js'
+import { selectNotice, searchNotice, plusCnt } from '@/api/nti/Notice.js'
 import { userSolution } from '@/api/log/Login.js'
 
 export default {
@@ -141,11 +113,16 @@ export default {
       lists: [],
       columnDefs: null,
       rowData: [],
-      gridOptions: null
+      gridOptions: null,
+
+      // 정렬 기준
+      sortType: '',
+      search_title: ''
 
     }
   },
   async created () {
+    // console.log(param)
     const { data } = await selectNotice()
     console.log('리스트는?', data)
     this.lists = data
@@ -186,10 +163,39 @@ export default {
     onCellClicked (event) {
       console.log('제목을 클릭')
       console.log('제목을 클릭2', event)
+      const param = {
+        notice_id: event.data.notice_id
+      }
 
-      // const formData = {
+      plusCnt(param) // 조회수 증가 함수
 
-      // }
+      this.$router.push({ name: 'noticeDetail', params: param })
+    },
+
+    async onSubmit () {
+      const param = {
+        search_title: this.search_title,
+        sortType: this.sortType
+      }
+
+      // 리스트 비움
+      this.rowData = []
+
+      const { data } = await searchNotice(param)
+      this.lists = data
+
+      this.lists.forEach(e => {
+        const value = {
+          title: e.title,
+          solution_code: userSolution(e.solution_code), // solution code -> value 변환하는 함수
+          user_name: e.user_name,
+          hit: e.hit,
+          file_count: e.file_count,
+          reg_date: e.reg_date,
+          notice_id: e.notice_id
+        }
+        this.rowData.push(value)
+      })
     }
   },
   beforeMount () {
