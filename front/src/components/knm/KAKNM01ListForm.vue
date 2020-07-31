@@ -16,11 +16,11 @@
 </template>
 
 <script>
-import { mainList, getMyList } from '@/api/knm/Question.js'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { AgGridVue } from 'ag-grid-vue'
+import { AllCommunityModules } from '@ag-grid-community/all-modules'
+import { mainList, getMyList } from '@/api/knm/Question.js'
 
 export default {
   name: 'KAKNM01ListForm',
@@ -35,8 +35,14 @@ export default {
       columnDefs: null,
       lists: [],
       rowData: [],
-      modules: AllCommunityModules,
-      gridOptions: null
+      gridOptions: null,
+      gridApi: null,
+      columnApi: null,
+      defaultColDef: null,
+      rowModelType: null,
+      paginationPageSize: null,
+      cacheBlockSize: null,
+      modules: [AllCommunityModules]
     }
   },
   beforeMount () {

@@ -12,4 +12,12 @@ function srchUserList (srchData) {
   return instance.get('adm/srchUserList', { params: srchData })
 }
 
-export { allUserList, srchUserList }
+function modifyUserInfo (fromData) {
+  return instance.post('adm/modify', fromData)
+}
+
+function deleteUserInfo (fromData) {
+  return instance.post('adm/delete', fromData)
+}
+
+export { allUserList, srchUserList, modifyUserInfo, deleteUserInfo }

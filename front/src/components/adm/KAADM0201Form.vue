@@ -3,8 +3,9 @@
     <header class="card-header">
         <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-set"></i></span>사용자 정보</h2>
         <div class="btn-container">
+          <p>{{rows}}</p>
             <a href="" class="btn btn-m" @click="deleteUserInfo()"><span class="hide">삭제</span></a>
-            <a href="" class="btn btn-primary" @click="saveUserInfo()"><span class="hide">저장</span></a>
+            <a href="" class="btn btn-primary" @click.prevent="saveUserInfo()"><span class="hide">저장</span></a>
         </div>
     </header>
     <div class="ct-header">
@@ -42,13 +43,18 @@
                           :columnDefs="columnDefs"
                           :rowData="rowData"
                           :gridOptions="gridOptions"
+                          @cellEditorSelector="cellEditorSelector"
                           @onCellEditingStarted="onCellEditingStarted"
                           @onCellEditingStopped="onCellEditingStopped"
                           @getRowStyle="getRowStyle"
                           @gridReady="gridSizeFit"
-                          @gridSizeChanged="gridSizeFit">
+                          @gridSizeChanged="gridSizeFit"
+                          @cellValueChanged="cellValueChanged"
+                          @paginationChanged="paginationChanged"
+                          >
             </ag-grid-vue>
         </div>
+        <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
     </div>
 </div>
 </template>
@@ -58,13 +64,15 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { AgGridVue } from 'ag-grid-vue'
-import { allUserList, srchUserList } from '@/api/adm/Auth.js'
+import alert from '@/components/common/CompletePOP.vue'
+import { allUserList, srchUserList, modifyUserInfo, deleteUserInfo } from '@/api/adm/Auth.js'
 import { getSolution } from '@/api/log/Login.js'
-
+// import { extractValuestest } from './util'
 export default {
   name: 'KAKNM0103From',
   components: {
-    AgGridVue
+    AgGridVue,
+    alert
   },
   data: () => {
     return {
@@ -74,8 +82,9 @@ export default {
       rowData: [],
       modules: AllCommunityModules,
       gridOptions: null,
-
       // form id
+      userid: '', // 로그인 유저
+      update_userid: '',
       user_id: '',
       user_name: '',
       user_pw: '',
@@ -85,9 +94,16 @@ export default {
       dept: '',
       use_yn: '',
       login_lock: '',
+      login_cnt: '',
       update_date: '',
+      userSolutions: '',
+      rows: [],
       reg_date: '', // 임시
-      checked: false // 체크박스
+      alertContent: '',
+      isDialog: false,
+      items: [],
+      gridSelectKeys: [],
+      settings: {}
     }
   },
   beforeMount () {
@@ -96,30 +112,61 @@ export default {
       // enableSorting: true,
       // enableFilter: true,
       // animateRows: false,
+      rowSelection: 'multiple',
       editable: true,
       pagination: true,
       paginationPageSize: 10
     }
     this.columnDefs = [
       { headerName: '선택', checkboxSelection: true },
-      { headerName: '이메일', field: 'user_id', sortable: true, filter: true },
+      { headerName: '이메일', id: 'user_id', field: 'user_id', sortable: true, filter: true },
       { headerName: '사용자명', field: 'user_name', sortable: true, filter: true },
-      { headerName: '소속회사', field: 'company', sortable: true, filter: true },
-      { headerName: '부서명', field: 'dept', sortable: true, filter: true, editable: true, cellEditorSelector: this.cellEditorSelector },
-      { headerName: '담당솔루션', field: 'solution', sortable: true, filter: true, editable: true },
-      { headerName: '권한그룹', field: 'user_type', sortable: true, filter: true, editable: true },
-      { headerName: '비밀번호', field: 'user_pw', sortable: true, filter: true, editable: true },
+      { headerName: '소속회사', field: 'company', sortable: true, filter: true, editable: true },
+      { headerName: '부서명', field: 'dept', sortable: true, filter: true, editable: true },
+      {
+        headerName: '담당솔루션',
+        field: 'solution',
+        sortable: true,
+        filter: true,
+        editable: true,
+        cellEditor: 'select',
+        cellEditorParams: { values: this.gridSelectKeys },
+        refData: this.settings
+      },
+      {
+        headerName: '권한그룹',
+        id: 'user_type',
+        field: 'user_type',
+        sortable: true,
+        filter: true,
+        editable: true,
+        cellEditor: 'select',
+        cellEditorParams: { values: ['Q', 'A', 'O'] },
+        refData: { Q: 'Q', A: 'A', O: 'O' }
+      },
+      { headerName: '비밀번호', field: 'user_pw', sortable: true, filter: true, editable: true, cellRenderer: this.passwordFormat },
       { headerName: '수정일', field: 'update_date', sortable: true, filter: true },
-      { headerName: '로그인실패', field: 'login_lock', sortable: true, filter: true },
-      { headerName: '사용여부', field: 'use_yn', sortable: true, filter: true, editable: true }
+      { headerName: '로그인실패', field: 'login_cnt', sortable: true, filter: true, editable: true },
+      {
+        headerName: '사용여부',
+        field: 'use_yn',
+        sortable: true,
+        filter: true,
+        editable: true,
+        cellEditor: 'select',
+        cellEditorParams: { values: ['Y', 'N'] },
+        refData: { Y: 'Y', N: 'N' }
+      },
+      { headerName: '솔루션 id', field: 'soultion', sortable: true, filter: true, hide: true }
     ]
   },
   created () {
-    this.userSolution()
+    this.getSolution()
   },
   mounted () {
     console.log('mounted!!')
-
+    const test = this.gridOptions.api.getModel()
+    console.log('tewsttttt', test)
     // 서버요청
     allUserList()
       .then((res) => {
@@ -130,7 +177,24 @@ export default {
       .then((res) => console.log(res))
       .catch(console.error())
   },
+  computed: {
+    chg_userid () {
+      return this.$store.state.userid
+    }
+  },
   methods: {
+    // sortChanged () {
+    //   console.log('sortChanged')
+    // },
+    paginationChanged () {
+      console.log('paginationChanged')
+      console.log('search option ')
+      // console.log(this.gridOptions.api.paginationSetPageSize(Number(15)))
+      // this.gridOptions.api.
+    },
+    cellValueChanged () {
+      console.log('gggg', this.rowData)
+    },
     // 조회
     onSubmit () {
       this.lists = []
@@ -141,7 +205,6 @@ export default {
         company: this.company
       }
       console.log('srchData', srchData)
-
       // 서버요청
       srchUserList(srchData)
         .then((res) => {
@@ -159,6 +222,22 @@ export default {
       const data = params.data
       console.log('data=>', data)
       const fieldName = params.colDef.field
+      if (fieldName === 'company') {
+        console.log("fieldName === 'company'")
+        return {
+          params: {
+            values: data.company
+          }
+        }
+      }
+      if (fieldName === 'solution') {
+        return {
+          component: 'agSelectCellEditor',
+          params: {
+            values: data.solution
+          }
+        }
+      }
       if (fieldName === 'dept') {
         console.log("fieldName === 'dept'")
         return {
@@ -167,11 +246,19 @@ export default {
           }
         }
       }
-
-      if (fieldName === 'solution') {
+      if (fieldName === 'user_type') {
+        console.log("fieldName === 'user_type'")
         return {
           params: {
-            values: ['Male', 'Female']
+            values: data.user_type
+          }
+        }
+      }
+      if (fieldName === 'login_cnt') {
+        console.log("fieldName === 'login_cnt'")
+        return {
+          params: {
+            values: data.login_cnt
           }
         }
       }
@@ -203,7 +290,7 @@ export default {
           solution: e.solution,
           dept: e.dept,
           use_yn: e.use_yn,
-          login_lock: e.login_lock,
+          login_cnt: e.login_cnt,
           update_date: e.update_date
         }
         this.rowData.push(value)
@@ -227,21 +314,99 @@ export default {
     getRowStyle: function (param) {
       return { 'text-align': 'center' }
     },
+    passwordFormat (params) {
+      console.log('passwordFormat', params)
+      const formatValue = '*****'
+      return formatValue
+    },
     // 공통코드 솔루션 값
-    userSolution () {
+    getSolution () {
       getSolution()
         .then((res) => {
           console.log('res=>>', res)
           this.items = res.data
+          // var something = {}
+          this.items.forEach((element) => {
+            this.gridSelectKeys.push(element.codeId)
+            this.settings[element.codeId] = element.codeContent
+          })
+          console.log('gridSelectKeys', this.gridSelectKeys)
+          //  { key: value , key: value ...}
+          // console.log('settingsaaaaaaaaa', this.settings)
+          console.log('this.settings', this.settings)
           console.log('solution_id ', this.items)
         })
         .catch(console.error())
     },
+    // 수정
     saveUserInfo () {
+      console.log('setdata', this.rowData)
+      console.log('saveUserInfo...')
+      // const dept = this.gridOptions.api.getRowNode('dept')
+      // const rowNode = this.gridOptions.api.getRowNodeId('dept')
+      // console.log('this.gridApi.getRowNode()...', rowNode)
+      // dept.setDataValue('dept', newValue)
+      // console.log('this.gridApi.getRowNode()...', newValue)
 
+      // const updateData = data => {
+      //   params.api.setRowData(data.slice(0, 50))
+      // }
+      // console.log('updateData', updateData)
+      var formData = []
+      this.rows = this.gridOptions.api.getSelectedRows()
+      console.log('rows', this.rows)
+
+      for (let i = 0; i < this.rows.length; i++) {
+        const e = this.rows[i]
+        const value = {
+          update_userid: e.update_userid,
+          user_id: e.user_id,
+          company: e.company,
+          dept: e.dept,
+          solution: e.solution,
+          user_type: e.user_type,
+          user_pw: e.user_pw,
+          login_lock: e.login_lock,
+          use_yn: e.use_yn
+        }
+        formData.push(value)
+      }
+      console.log('formData', formData)
+
+      // 서버요청
+      modifyUserInfo(formData)
+        .then((res) => {
+          console.log('res=>>', res)
+          this.alertContent = this.rows + '등록되었습니다.'
+          this.isDialog = true
+          this.$router.push('/adm/authList')
+        })
+        .catch(console.error())
     },
     deleteUserInfo () {
+      var formData = []
+      this.rows = this.gridOptions.api.getSelectedRows()
+      console.log('rows', this.rows)
 
+      for (let i = 0; i < this.rows.length; i++) {
+        const e = this.rows[i]
+        const value = {
+          update_userid: e.update_userid,
+          user_id: e.user_id
+        }
+        formData.push(value)
+      }
+      deleteUserInfo(formData)
+        .then((res) => {
+          console.log('res=>>', res)
+          this.alertContent = this.rows + '건이 삭제되었습니다.'
+          this.isDialog = true
+          this.$router.push('/adm/authList')
+        })
+        .catch(console.error())
+    },
+    close () {
+      this.isDialog = !this.isDialog
     }
   }
 }

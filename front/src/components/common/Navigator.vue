@@ -80,6 +80,12 @@
             </li>
             <li class="menu-item">
               <a
+                href="/adm/codeList"
+                class="menu-link"
+              >코드관리</a>
+            </li>
+            <li class="menu-item">
+              <a
                 href="/adm/solList"
                 class="menu-link"
               >지식포인트</a>

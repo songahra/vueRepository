@@ -1,5 +1,5 @@
 <template>
-<div>
+    <div>
             <header class="card-header" style="padding: 1.6rem 1rem;">
                 <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-result"></i></span>지식 관리</h2>
                 <div class="btn-container"><a href="/knm/quWrite" class="btn btn-m"><span class="hide">기술문의</span></a></div>
@@ -36,10 +36,10 @@
                             <label class="form-control-label label-select">
                                 <b class="control-label" label for="sortType">정렬기준</b>
                                 <select class="form-control selectpicker" select name="sortType" id="sortType" v-model="sortType">
-                                    <option selected value="">경과일</option>
-                                    <option value="1">질문자</option>
-                                    <option value="2">답변자</option>
-                                    <option value="3">경과일</option>
+                                    <option selected value="">선택</option>
+                                    <option value="1">경과일</option>
+                                    <option value="2">질문자</option>
+                                    <option value="3">답변자</option>
                                     <option value="4">상태</option>
                                 </select>
                             </label>
@@ -86,6 +86,9 @@ export default {
     }
   },
   props: ['srchData'],
+  mounted () {
+    console.log('mounted!!')
+  },
   methods: {
     async onSubmit () {
       console.log('onSubmit')
@@ -112,9 +115,6 @@ export default {
     //     .then((res) => console.log(res))
     //     .catch(console.error())
     }
-  }, // methods
-  mounted () {
-    console.log('mounted!!')
   }
 }
 </script>

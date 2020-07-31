@@ -366,7 +366,7 @@ export default {
         this.time = 'more'
       }
       const formData = {
-        time: this.time,
+        term: this.term,
         score: this.star,
         question_id: this.question_id,
         solution_id: this.solution_id
