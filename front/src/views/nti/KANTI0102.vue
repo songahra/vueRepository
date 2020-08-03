@@ -127,13 +127,7 @@
                       <td />
                       <td>0kbytes</td>
                       <td class="text-nowrap">
-                        <button
-                          type="button"
-                          class="btn"
-                          :disabled="!selectedFiles.length"
-                        >
-                          <i class="icon-delete" />삭제
-                        </button>
+
                       </td>
                     </tr>
                     <tr
@@ -144,13 +138,7 @@
                       <td>{{ file.type }}</td>
                       <td>{{ file.size / 1000 }} KBytes</td>
                       <td class="text-nowrap">
-                        <button
-                          type="button"
-                          class="btn"
-                          @click="fileDel(index)"
-                        >
-                          <i class="icon-delete" />삭제
-                        </button>
+
                       </td>
                     </tr>
                   </tbody>
@@ -281,7 +269,7 @@ export default {
         }
       }
 
-      formData.append('post_type', 'n')
+      formData.append('post_type', 'N')
       formData.append('content', this.content)
       formData.append('reg_userid', this.$store.state.userid)
       formData.append('solution_code', this.solution)

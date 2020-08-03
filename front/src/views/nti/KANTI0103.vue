@@ -6,6 +6,20 @@
           <h2 class="card-title">
             <span class="i-rounded bg-danger"><i class="icon-alarm" /></span>공지사항 상세보기
           </h2>
+            <div class="btn-container">
+          <a
+            @click="onClick()"
+            class="btn btn-m"
+          ><span class="hide">수정</span></a>
+              <a
+             @click="deleteBtn()"
+            class="btn btn-m"
+          ><span class="hide">삭제</span></a>
+               <a
+            href="/noticeList"
+            class="btn btn-m"
+          ><span class="hide">목록보기</span></a>
+        </div>
           </header>
 
      <div class="ct-header">
@@ -53,12 +67,8 @@
        <div class="ct-content">
             <div class="form-group form-group-editor">
 
-              <textarea name="content" style="display: none;"> asdasd</textarea>
-              <div
-                id="summernote"
-                class="well"
-                v-html="content"
-              >
+                <div>
+                <p class="textarea-basic-md"><span v-html="content"></span></p>
               </div>
 
             </div>
@@ -68,7 +78,7 @@
                   첨부파일
                 </p>
                 <div class="ml-auto form-inline m-full">
-                  <label>
+                  <!-- <label>
                      <input
                 type="file"
                 class="sr-only"
@@ -85,7 +95,7 @@
                     >
                       업로드
                     </button>
-                  </label>
+                  </label> -->
                 </div>
               </div>
 
@@ -130,16 +140,24 @@
                       v-for="(file, index ) in selectedFiles"
                       :key="index"
                     >
-                      <td><span>{{ file.name }}</span></td>
-                      <td>{{ file.type }}</td>
-                      <td>{{ file.size / 1000 }} KBytes</td>
+                      <td><span>{{ file.org_file_name }}</span></td>
+                      <td>{{ file.file_ext_name }}</td>
+                      <td>{{ file.file_size / 1000 }} KBytes</td>
                       <td class="text-nowrap">
-                        <button
+                        <!-- <button
                           type="button"
                           class="btn"
                           @click="fileDel(index)"
                         >
                           <i class="icon-delete" />삭제
+
+                        </button> -->
+                          <button
+                          type="button"
+                          class="btn"
+                           @click="download(file.save_file_name, file.org_file_name)"
+                        >
+                        다운로드
                         </button>
                       </td>
                     </tr>
@@ -148,13 +166,12 @@
               </div>
             </div>
           <footer class="panel-footer sub-bar">
-            <div class="ml-auto">
-              <a
-                href=""
-                class="btn btn-primary"
-                @click.prevent="upload"
-              >등록</a>
-            </div>
+  <deleteAlert
+      :dialog="deleteAlert"
+      :send-data="alertContent"
+      @close="deleteAlert=false"
+      @postDelete = "postDelete()"
+      />
           </footer>
           </div>
     </section>
@@ -163,8 +180,10 @@
 
 <script>
 import { common } from '@/assets/js/common.js'
-import { detailNotice } from '@/api/nti/Notice.js'
+import { detailNotice, deleteNotice } from '@/api/nti/Notice.js'
 import { userSolution } from '@/api/log/Login.js'
+import { getFileList, download } from '@/api/File.js'
+import deleteAlert from '@/components/common/DeletePOP.vue'
 
 /* jquery */
 global.jQuery = require('jquery')
@@ -172,10 +191,12 @@ var $ = global.jQuery
 window.$ = $
 
 export default {
+  components: {
+    deleteAlert
+  },
   data: () => {
     return {
       notice_id: '',
-      file_count: '',
       solution_code: '',
       title: '',
       content: '',
@@ -184,8 +205,10 @@ export default {
       reg_date: '',
       lists: '',
 
-      selectedFiles: []
+      selectedFiles: [],
 
+      deleteAlert: false,
+      alertContent: ''
     }
   },
   async mounted () {
@@ -197,6 +220,17 @@ export default {
     }
 
     const { data } = await detailNotice(formData)
+    const Data = {
+      params: {
+        postId: this.param.notice_id
+      }
+    }
+    console.log(Data, '데이터가나?')
+    getFileList(Data).then(response => {
+      const res = response.data
+      console.log('데이터', res)
+      this.selectedFiles = res
+    })
 
     this.notice_id = data.notice_id
     this.solution_code = userSolution(data.solution_code)
@@ -224,11 +258,42 @@ export default {
     })
   },
   methods: {
-    deleteNoticeInfo () {
-
+    async download (fileSName, fileOName) {
+      console.log(fileSName, fileOName)
+      console.log('file download', fileSName)
+      await download(fileSName)
+        .then(res => {
+          const url = window.URL.createObjectURL(new Blob([res.data], { type: res.headers['content-type'] }))
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', fileOName)
+          document.body.appendChild(link)
+          link.click()
+        })
     },
-    modifyNoticeInfo () {
+    fileDel (index) {
+      this.selectedFiles.splice(index, 1)
+    },
+    onClick () {
+      const param = {
+        notice_id: this.param.notice_id
+      }
 
+      this.$router.push({ name: 'noticeModify', params: param })
+    },
+    deleteBtn () {
+      this.deleteAlert = true
+    },
+    async postDelete () {
+      const param = new FormData()
+      param.append('notice_id', this.notice_id)
+
+      const res = await deleteNotice(param)
+      console.log('status', res.status)
+
+      if (res.status === 200) {
+        this.$router.push('/noticeList')
+      }
     }
   }
 }

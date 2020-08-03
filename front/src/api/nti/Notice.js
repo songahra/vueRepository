@@ -32,4 +32,25 @@ function plusCnt (param) {
   return instance.get('/notice/plusCnt', { params: param })
 }
 
-export { writeNotice, selectNotice, detailNotice, searchNotice, plusCnt }
+// 공지사항 수정하기
+function updateNotice (formData) {
+  console.log('updateNotic실행')
+  return instance.post('/notice/modify', formData)
+}
+
+// 공지사항 삭제하기
+function deleteNotice (param) {
+  console.log('deleteNotic실행')
+  // return instance.post('/notice/delete', { params: param })
+  return instance.post('/notice/delete', param)
+}
+
+export {
+  writeNotice,
+  selectNotice,
+  detailNotice,
+  updateNotice,
+  searchNotice,
+  plusCnt,
+  deleteNotice
+}
