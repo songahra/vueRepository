@@ -16,5 +16,8 @@ function download (data) {
     responseType: 'blob'
   })
 }
+function delFile (data) {
+  return instance.get('/file/del', data)
+}
 
-export { postFile, getFileList, download }
+export { postFile, getFileList, download, delFile }

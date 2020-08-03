@@ -43,8 +43,18 @@
                   <td>{{ file.file_size / 1000 }} KBytes</td>
                   <td class="text-nowrap">
                     <button type="button" class="btn" @click="download(file.save_file_name, file.org_file_name)">다운로드</button>
+                    <button type="button" class="btn" @click="delFile(file.file_id, file.save_file_name, index)">삭제</button>
                   </td>
                 </tr>
+                <tr :key= "index" v-for= "(file, index ) in selectedFiles" >
+                  <td><span>{{ file.name }}</span></td>
+                  <td>{{ file.type }}</td>
+                  <td>{{ file.size / 1000 }} KBytes</td>
+                  <td class="text-nowrap">
+                    <button type="button" class="btn" @click="fileDel(index)"><i class="icon-delete"/>삭제</button>
+                  </td>
+                </tr>
+                <alert :dialog="isDialog" :sendData="alertContent" @close="isDialog=false"></alert>
               </tbody>
             </table>
           </div>
@@ -54,17 +64,25 @@
 </template>
 
 <script>
-import { getFileList, download } from '@/api/File.js'
+import { getFileList, download, delFile, postFile } from '@/api/File.js'
+import alert from '@/components/common/CompletePOP.vue'
 
 export default {
   name: 'FILEUPLOADForm.vue',
   components: {
-
+    alert
   },
   data: () => {
     return {
-      files: '',
-      postId: 'id'
+      files: [],
+      postId: 'id',
+      // alert
+      isDialog: false,
+      alertContent: '',
+      // file upload
+      selectedFiles: [],
+      temp: [],
+      currentFile: ''
     }
   },
   created () {
@@ -73,8 +91,12 @@ export default {
   methods: {
     selectFile () {
       console.log('select File 함수')
-      this.selectedFiles = this.$refs.fileTag.files
       console.log('selectFile << file >> : ', this.$refs.fileTag.files)
+      var files = this.$refs.fileTag.files
+      for (var i = 0, l = files.length; i < l; i++) {
+        console.dir(files[i])
+        this.selectedFiles.push(files[i])
+      }
     },
     async getList () {
       const a = {
@@ -83,7 +105,28 @@ export default {
         }
       }
       const { data } = await getFileList(a)
-      this.files = data
+      // this.files = data
+      for (var i = 0, l = data.length; i < l; i++) {
+        console.dir(data[i])
+        this.files.push(data[i])
+      }
+    },
+    fileDel (index) {
+      this.files.splice(index, 1)
+    },
+    async delFile (fileId, fileName, fileIndex) {
+      console.log('file delete ', fileId)
+      const da = {
+        params: {
+          fileId: fileId,
+          fileName: fileName
+        }
+      }
+      await delFile(da)
+      console.log('this.fileDel(fileIndex) : ', fileIndex)
+      this.alertContent = '파일이 삭제되었습니다.'
+      this.isDialog = true
+      this.fileDel(fileIndex)
     },
     async download (fileSName, fileOName) {
       console.log('file download', fileSName)
@@ -96,6 +139,23 @@ export default {
           document.body.appendChild(link)
           link.click()
         })
+    },
+    async upload (file) {
+      console.log('upload 함수')
+
+      this.currentFile = this.selectedFiles
+      console.log('this.currentFile', this.currentFile)
+      const formData = new FormData()
+
+      for (var i = 0, afile; (afile = this.selectedFiles[i]); i++) {
+        formData.append('attachFile', afile)
+      }
+      formData.append('post_id', 'id')
+      formData.append('post_type', 't')
+
+      console.log('myFile', formData)
+      const { data } = await postFile(formData)
+      alert(data + '개의 파일이 업로드 되었습니다.')
     }
   }
 }
