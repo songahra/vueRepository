@@ -118,14 +118,12 @@ export default {
   },
   mounted () {
     this.param = this.$route.params
-    console.log('답변 수정 answer_id : ', this.param.answer_id)
     const formData = {
       // questionId: this.param.question_id,
       answer_id: this.param.answer_id
     }
     getModifyDetail(formData)
       .then((res) => {
-        console.log('답변수정!! res.data', res.data)
         const data = res.data
         this.reg_userid_tq = data.reg_userid_tq
         this.answer_id = data.answer_id
@@ -143,7 +141,6 @@ export default {
   },
   methods: {
     async onSubmit () {
-      console.log('onSubmit')
       const data = {
         // 답변 정보
         answer_id: this.answer_id,
@@ -155,7 +152,6 @@ export default {
         reg_userid_tq: this.reg_userid_tq,
         do_type: 'M'
       }
-      console.log('POST DATA : ', data)
       await postAnswer(data)
       this.alertContent = '답변이 수정되었습니다.'
       this.isDialog = true

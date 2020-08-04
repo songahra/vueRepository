@@ -52,7 +52,6 @@ export default {
   },
   props: ['sendData'],
   created () {
-    console.log('0205 created!!', this.sendData)
     this.answerData = this.sendData
     this.score = this.answerData.score
     this.answer_id = this.answerData.answer_id
@@ -66,16 +65,12 @@ export default {
   },
   methods: {
     async getAnswerDetail () {
-      console.log('getAnswer function')
       const params = {
         params: {
           answer_id: this.answer_id
         }
       }
       const { data } = await getAnswer(params)
-      console.log(data)
-      //   this.lists = data
-      console.log('data!!', data)
       this.ansName = data[0].ansName + '(' + data[0].dept + ') 답변 ' + '(' + data[0].reg_date + ')'
       this.ansContent = data[0].content_a
       this.content_t = data[0].content_t
@@ -83,12 +78,9 @@ export default {
       if (data[0].upAnsName != null) {
         this.upAnsName = '└ ' + data[0].upAnsName + '(' + data[0].upDept + ') 수정 답변 ' + '(' + data[0].update_date + ')'
       }
-      console.log(this.ansName)
-      console.log(this.ansContent)
     },
     chkWriter () {
       this.userid = this.$store.state.userid
-      console.log(this.userid === this.reg_userid)
       if (this.userid === this.reg_userid) {
         return true
       } else {
@@ -110,10 +102,8 @@ export default {
           answer_id: this.answerData.answer_id,
           question_id: this.answerData.question_id
         }
-        console.log('modify!!', params)
         this.$router.push({ name: 'KAKNM02Modify', params: params })
       } else {
-        console.log('modify score check ', this.score === 0)
         this.alertContent = '평가가 완료된 답변은 수정할 수 없습니다.'
         this.fDialog = true
       }
@@ -123,17 +113,13 @@ export default {
         this.alertContent = '본인이 작성한 질문의 답변은 삭제할 수 없습니다.'
         this.fDialog = true
       } else if (this.score === 0) {
-        console.log('click Delete 실행!')
         this.isDialog = true
-        console.log('this.isDialog!', this.isDialog)
       } else {
-        console.log('delete score check ', this.score === 0)
         this.alertContent = '평가가 완료된 답변은 삭제할 수 없습니다.'
         this.fDialog = true
       }
     },
     async postDelete () {
-      console.log('postDelete 호출')
       const params = {
         params: {
           answer_id: this.answer_id

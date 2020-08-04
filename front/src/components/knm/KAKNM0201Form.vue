@@ -121,7 +121,6 @@ export default {
     }
   },
   mounted () {
-    console.log('<< 답변 작성 >> params => ' + this.$route.params.question_id)
     this.param = this.$route.params
     const formData = {
       question_id: this.param.question_id
@@ -142,20 +141,9 @@ export default {
         this.project_id = data.project_id
         this.solution_id = data.solution_id
       })
-    // this.question_id = this.param.question_id
-    // this.solution_name = this.param.solution_name
-    // this.solution_id = this.param.solution_id
-    // this.question_title = this.param.title
-    // this.project_name = this.param.project_name
-    // this.project_id = this.param.project_id
-    // this.tag = this.param.tag_tag
-    // this.err_c = this.param.tag_erc
-    // this.err_t = this.param.tag_ert
-    // this.question_content = this.param.content_q
   },
   methods: {
     async onSubmit () {
-      console.log('onSubmit', this.solution_id)
       const data = {
         // 질문 정보
         question_id: this.question_id,
@@ -171,7 +159,6 @@ export default {
         do_type: 'W'
       }
 
-      console.log('POST DATA : ', data)
       const response = await postAnswer(data)
       this.alertContent = '1개의 답변과 ' + response.data + '개의 태그가 등록되었습니다.'
       this.isDialog = true

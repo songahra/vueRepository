@@ -20,7 +20,6 @@
               <select class="form-control selectpicker" v-model="status" title="선택하세요">
                 <option value="">선택안함</option>
                 <option value="SS">완료</option>
-                <!-- <option value="NN">미완료</option> -->
                 <option value="RQ">재질문</option>
               </select>
             </label>
@@ -54,7 +53,7 @@ import { getDetail } from '@/api/knm/Question.js'
 import { AgGridVue } from 'ag-grid-vue'
 
 export default {
-  name: 'KAKNM0204From',
+  name: 'KAKNM0204Form',
   components: {
     AgGridVue
   },
@@ -109,9 +108,6 @@ export default {
       this.makeData()
     },
     async getList () {
-      console.log('get Answer List')
-      console.log('store ', this.$store)
-      console.log('user : ', this.$store.state.userid)
       const da = {
         params: {
           title: this.title,
@@ -125,7 +121,6 @@ export default {
     },
     makeData () {
       this.rowData = []
-      console.log('makeData << My Answer List >>')
       this.lists.forEach(e => {
         const value = {
           solution: e.solution_code,
@@ -144,7 +139,6 @@ export default {
       })
     },
     async onCellClicked (event) {
-      console.log('내가 답변한 질문 click!!')
       if (event.colDef.field === 'title') {
         const formData = {
           reg_userid: event.data.reg_userid,
@@ -154,14 +148,11 @@ export default {
         await getDetail(formData) /* 에러처리 확인필요!! */
           .then((res) => {
             if (res.status === 200) {
-              console.log('res => ', res)
               const params = res.data
-              console.log('params => ', params)
               this.$router.push({ name: 'KAKNM0104Detail', params: params })
             }
             return res
           })
-          // .then((res) => console.log(res))
           .catch(function (e) {
             const result = e.message
             if (e.message.indexOf('500')) {
@@ -177,7 +168,6 @@ export default {
     gridSizeFit (params) {
       // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정
       if (window.innerWidth > 800) { // 화면 가로가 800 px 이 넘을 경우
-        console.log('innerWidth')
         params.api.sizeColumnsToFit() // 가로 스크롤바가 생기지 않도록 컬럼 사이즈를 그리드에 꼭 맞게 조정
       } else {
       // 컬럼의 데이터값이 잘리지 않도록 조정

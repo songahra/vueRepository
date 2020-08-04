@@ -4,15 +4,16 @@
  <v-dialog
     v-model="dialog"
     persistent
-    max-width="50%"
+    max-width="70%"
   >
     <v-card>
       <v-card-title>
-        <v-spacer></v-spacer>
-      <a @click.prevent="onClose"
-        class="modal-default-button"
-        >&times;</a>
-      </v-card-title>
+          <div class="modal-header">
+            <h2 class="modal-title">지식포인트 ( {{ this.solution }} )</h2>
+          </div>
+            <v-spacer></v-spacer>
+            <button @click.prevent="onClose" type="button" class="btn-icon" data-dismiss="modal" aria-label="Close"><i class="icon-close"></i></button>
+        </v-card-title>
         <ag-grid-vue style="width: 100%; height:550px;"
                               class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
                               :columnDefs="columnDefs"
@@ -41,6 +42,7 @@ export default {
   data: () => {
     return {
       lists: '',
+      solution: '',
       columnDefs: null,
       rowData: [],
       gridOptions: null
@@ -104,6 +106,7 @@ export default {
     popupData (data) {
       console.log('popup : ', data)
       this.lists = data.data
+      this.solution = this.lists[0].solution
       this.makeData()
     }
   }

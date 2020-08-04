@@ -1,15 +1,15 @@
 <template>
-
-  <FileUpload></FileUpload>
-
+<div id="wrap">
+  <KAKND0104Form></KAKND0104Form>
+</div>
 </template>
 
 <script>
-import FileUpload from '@/components/common/FILEUPLOADForm.vue'
+import KAKND0104Form from '@/components/knd/KAKND0104Form.vue'
 
 export default {
   components: {
-    FileUpload
+    KAKND0104Form
   },
   data () {
     return {
