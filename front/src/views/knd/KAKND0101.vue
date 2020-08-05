@@ -1,19 +1,19 @@
 <template>
-<!-- <div id="wrap"> -->
-  <KAKND0102Form></KAKND0102Form>
-<!-- </div> -->
+<div id="wrap">
+  <KAKND0101Form></KAKND0101Form>
+</div>
 </template>
 
 <script>
-import KAKND0102Form from '@/components/knd/KAKND0102Form.vue'
+import KAKND0101Form from '@/components/knd/KAKND0101Form.vue'
 
 export default {
   components: {
-    KAKND0102Form
+    KAKND0101Form
   },
   created () {
     this.$store.commit('SET_DEPTH1', '지식자료실')
-    this.$store.commit('SET_DEPTH2', '자료작성')
+    this.$store.commit('SET_DEPTH2', ' ')
   },
   data () {
     return {

@@ -9,6 +9,10 @@ export default {
   components: {
     KAADM0401Form
   },
+  created () {
+    this.$store.commit('SET_DEPTH1', '설정')
+    this.$store.commit('SET_DEPTH2', '지식포인트')
+  },
   data () {
     return {
 

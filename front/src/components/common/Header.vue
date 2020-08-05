@@ -26,13 +26,13 @@
         홈
       </li>
       <li class="breadcrumb-item">
-        1Depth
+        {{ depth1 }}
       </li>
       <li
         class="breadcrumb-item active"
         aria-current="page"
       >
-        2Depth
+        {{ depth2 }}
       </li>
     </ul>
     <div class="hd-side">
@@ -41,7 +41,7 @@
         class="icon-info"
         title="수신함"
       />
-      <span class="text-dark small">포인트 {{ this.total_point }}</span>
+      <span class="text-dark small">포인트 {{ this.total_point }} </span>
 
       <a
         href="/profile"
@@ -59,13 +59,20 @@
 <script>
 import Modal from '@/components/log/KALOGPOP1.vue'
 import { selectTotalPoint } from '@/api/prm/Profile.js'
+import { mapState } from 'vuex'
 
 export default {
   components: {
     Modal
   },
   data: () => {
-    return { total_point: '' }
+    return {
+      total_point: '',
+      // depth1: '',
+      // depth2: '',
+      fullPath: '',
+      depth: []
+    }
   },
   // 회원 total 포인트 조회
   async created () {
@@ -75,9 +82,18 @@ export default {
     }
     console.log(userId)
     const { data } = await selectTotalPoint(userId)
-    console.log('data', data)
+    // console.log('data', data)
     this.total_point = data.total_point
-    console.log('this.total_point', this.total_point)
+    // console.log('this.total_point', this.total_point)
+  },
+  computed: {
+    ...mapState({
+      depth1: 'depth1',
+      depth2: 'depth2'
+    })
+  },
+  mounted () {
+
   }
 }
 </script>

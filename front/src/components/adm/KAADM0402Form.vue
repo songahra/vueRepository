@@ -32,6 +32,7 @@
                     :get-row-style="getRowStyle"
                     :grid-size-changed="gridSizeFit"
                     :grid-ready="gridSizeFit"
+                    :tooltipShowDelay="tooltipShowDelay"
                     @cell-clicked="onCellClicked"
                     @gridReady="gridSizeFit"
                     @gridSizeChanged="gridSizeFit">
@@ -215,6 +216,7 @@ export default {
     },
     makeData () {
       this.rowData = []
+      console.log('지식포인트 row Data', this.rowData)
       this.lists.forEach(e => {
         const value = {
           userName: e.userName,

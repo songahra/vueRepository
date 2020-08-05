@@ -1,11 +1,11 @@
 <template>
-<!-- 지식자료실 작성 -->
+<!-- 지식자료실 수정 -->
 <div id="ct">
     <section class="card">
       <header class="card-header" style="padding: 1.6rem 1rem;">
-          <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-text"></i></span>지식자료실 작성</h2>
+          <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-text"></i></span>지식자료실 수정</h2>
           <div class="btn-container">
-              <a href="manual" class="btn btn-primary"><span class="hide">목록</span></a>
+              <a href="../manual" class="btn btn-primary"><span class="hide">목록</span></a>
               <a href="" @click.prevent="upload" class="btn btn-primary"><span class="hide">저장</span></a>
           </div>
       </header>
@@ -22,18 +22,11 @@
                   </div>
                 <!-- <div class="filter no-gutters no-btn"> -->
             <div class="col">
-                      <label class="form-control-label label-select">
+                      <label class="form-control-label">
                           <b class="control-label">솔루션</b>
-                          <select class="form-control selectpicker" v-model="solution" title="선택하세요">
-                              <option v-for="(item, index) in items" :key="index" :value="item.codeId">
-                                  {{ item.codeContent }}
-                              </option>
-                              <option value="">선택안함</option>
-                          </select>
+                          <input class="form-control" v-model="solution" title="선택하세요" readonly/>
                       </label>
                   </div>
-
-                <!-- </div> -->
                   <div class="col">
                       <label class="form-control-label">
                           <b class="control-label">버전</b>
@@ -45,10 +38,10 @@
       </div>
       <div class="ct-content" >
         <div class="form-group form-group-editor">
-          <textarea name="content" style="display: none;"></textarea>
-          <div id="summernote" class="well"></div>
+          <textarea name="content" style="display:none;"></textarea>
+          <div id="summernote" class="well" v-html="content"></div>
         </div>
-      </div>
+
       <div class="form-group">
           <div class="sub-bar">
               <i class="icon-right text-danger"></i><p class="font-weight-bold">첨부파일</p>
@@ -76,7 +69,7 @@
                 </tr>
               </thead>
               <tbody>
-                  <tr v-if="selectedFiles == ''">
+                  <tr v-if="selectedFiles == '' && files == ''">
                     <td><span class="placeholder">첨부할 파일을 선택해 주세요.</span></td>
                     <td></td>
                     <td>0kbytes</td>
@@ -84,13 +77,21 @@
                       <!-- <button type="button" class="btn" :disabled="!selectedFiles.length"><i class="icon-delete"/>삭제</button> -->
                     </td>
                   </tr>
+                  <tr :key= "index" v-for= "(file, index ) in files" >
+                    <td><span>{{ file.org_file_name }}</span></td>
+                    <td>{{ file.file_ext_name }}</td>
+                    <td>{{ file.file_size / 1000 }} KBytes</td>
+                    <td class="text-nowrap">
+                        <button type="button" class="btn" @click="delFile(file.file_id, file.save_file_name, index)">삭제</button>
+                    </td>
+                </tr>
                 <tr :key= "index" v-for= "(file, index ) in selectedFiles" >
-                  <td><span>{{ file.name }}</span></td>
-                  <td>{{ file.type }}</td>
-                  <td>{{ file.size / 1000 }} KBytes</td>
-                  <td class="text-nowrap">
-                    <button type="button" class="btn" @click="fileDel(index)"><i class="icon-delete"/>삭제</button>
-                  </td>
+                    <td><span>{{ file.name }}</span></td>
+                    <td>{{ file.type }}</td>
+                    <td>{{ file.size / 1000 }} KBytes</td>
+                    <td class="text-nowrap">
+                        <button type="button" class="btn" @click="fileDel(index, 'selectedFiles')"><i class="icon-delete"/>삭제</button>
+                    </td>
                 </tr>
               </tbody>
             </table>
@@ -98,6 +99,7 @@
           <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
           <failAlert :dialog="failDialog" :sendData="alertContent" @close="failDialog=false"></failAlert>
         </div>
+         </div>
     </section>
   </div>
 </template>
@@ -105,9 +107,10 @@
 <script>
 import { common } from '@/assets/js/common.js'
 import { getSolution } from '@/api/log/Login.js'
-import { postManual } from '@/api/knd/Manual.js'
+import { postManual, getDetail } from '@/api/knd/Manual.js'
 import alert from '@/components/common/CompletePOP.vue'
 import failAlert from '@/components/common/FailPOP.vue'
+import { getFileList, delFile } from '@/api/File.js'
 
 /* jquery */
 global.jQuery = require('jquery')
@@ -123,25 +126,43 @@ export default {
   data: () => {
     return {
       items: [],
+      manual_id: '',
       title: '',
       solution: '',
       content: '',
       version: '',
-      // 첨부 파일
+      // 기존 첨부 파일
+      files: [],
+      // 새로 업로드할 첨부 파일
       selectedFiles: [],
       temp: [],
       currentFile: '',
       // alert
       isDialog: false,
       alertContent: '',
-      failDialog: false
+      failDialog: false,
+      alertType: ''
     }
   },
   created () {
-    this.$store.commit('SET_FULLPATH', 'knd/write')
+    this.$store.commit('SET_FULLPATH', this.$route.fullPath)
     this.getSolution()
   },
-  mounted () {
+  async mounted () {
+    this.param = this.$route.params
+    const formData = {
+      params: {
+        type: '',
+        manual_id: this.param.manual_id
+      }
+    }
+    const { data } = await getDetail(formData)
+    this.manual_id = data.manual_id
+    this.title = data.title
+    this.content = data.content
+    this.solution = data.solution
+    this.version = data.version
+    this.getFileList()
     common.panelOpen('detail')
     $(function () {
       $('#summernote').summernote({
@@ -170,20 +191,24 @@ export default {
           formData.append('attachFile', afile)
         }
       }
+      formData.append('manual_id', this.manual_id)
+      formData.append('do_type', 'M')
       formData.append('content', this.content)
-      formData.append('do_type', 'W')
-      formData.append('reg_userid', this.$store.state.userid)
+      formData.append('update_userid', this.$store.state.userid)
       formData.append('version', this.version)
       formData.append('solution', this.solution)
       formData.append('title', this.title)
 
       await postManual(formData)
       this.isDialog = true
-      this.alertContent = '매뉴얼 등록이 완료되었습니다.'
+      this.alertType = 'submit'
+      this.alertContent = '매뉴얼 수정이 완료되었습니다.'
     },
     close () {
       this.isDialog = false
-      this.$router.push({ name: 'KAKND01List' })
+      if (this.alertType === 'submit') {
+        this.$router.push({ name: 'KAKND01List' })
+      }
     },
     async getSolution () {
       const { data } = await getSolution()
@@ -200,8 +225,37 @@ export default {
         }
       }
     },
-    fileDel (index) {
-      this.selectedFiles.splice(index, 1)
+    fileDel (index, type) {
+      if (type === 'files') {
+        this.files.splice(index, 1)
+      } else {
+        this.selectedFiles.splice(index, 1)
+      }
+    },
+    async delFile (fileId, fileName, fileIndex) {
+      const da = {
+        params: {
+          fileId: fileId,
+          fileName: fileName
+        }
+      }
+      await delFile(da)
+      this.fileDel(fileIndex, 'files')
+      this.alertContent = '파일이 삭제되었습니다.'
+      this.alertType = 'file'
+      this.isDialog = true
+    },
+    async getFileList () {
+      const a = {
+        params: {
+          postId: this.manual_id
+        }
+      }
+      const { data } = await getFileList(a)
+      for (var i = 0, l = data.length; i < l; i++) {
+        console.dir(data[i])
+        this.files.push(data[i])
+      }
     }
   }
 

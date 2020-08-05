@@ -15,7 +15,11 @@ export default new Vuex.Store({
     exp: '',
     dept: '',
     // 나중에 분리
-    isDisabled: ''
+    isDisabled: '',
+    // header Navigation
+    depth1: '',
+    depth2: '',
+    fullPath: ''
   },
   mutations: {
     SET_TOKEN (state, token) {
@@ -54,7 +58,14 @@ export default new Vuex.Store({
     SET_EXP (state, exp) {
       state.exp = exp
       console.log(state.exp)
+    },
+    SET_DEPTH1 (state, depth1) {
+      state.depth1 = depth1
+    },
+    SET_DEPTH2 (state, depth2) {
+      state.depth2 = depth2
     }
+
   },
   actions: {},
   modules: {},
