@@ -5,15 +5,15 @@
           <input type="hidden" v-model="term"/>
             <header class="card-header" style="padding: 1.6rem 1rem;">
                 <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-check"></i></span>{{title}}</h2>
-                <div class="btn-container">
+                <div class="btn-container" style="width:300px;">
                     <div v-if = "chkUserType()&&!chkWriter()">
-                       <a class="btn btn-m" @click="movePage('btnAnswer')"><span class="hide">답변하기</span></a>
+                       <a class="btn btn-m" @click="movePage('btnAnswer')" style="float:right;"><span class="hide">답변하기</span></a>
                     </div>
                     <div v-if = "chkWriter()">
-                       <a class="btn btn-m" type="submit" @click.prevent="btnDelete"><span class="hide">삭제</span></a>
-                       <a class="btn btn-m" type="submit" @click.prevent="movePage('btnModify')"><span class="hide">수정</span></a>
+                       <a class="btn btn-m" type="submit" @click.prevent="btnDelete" style="float:right;"><span class="hide">삭제</span></a>
+                       <a class="btn btn-m" type="submit" @click.prevent="movePage('btnModify')" style="float:right;"><span class="hide">수정</span></a>
                     </div>
-                    <a class="btn btn-m" @click="() => this.$router.push({ name: 'KAKNM0101List' })"><span class="hide">목록보기</span></a>
+                    <a class="btn btn-m" @click="() => this.$router.push({ name: 'KAKNM0101List' })" style="float:right; "><span class="hide">목록보기</span></a>
                 </div>
             </header>
             <div class="ct-header">
@@ -87,9 +87,9 @@
                  <div v-if = "chkWriter()&&chkAnswerId()">
                  <div class="sub-bar">
 
-                    <div class="ml-auto form-inline m-full">
-                      <div v-show = "chkScore()">
-                      <p href="" style="padding-top: 8px;">
+                   <div class="ml-auto form-inline m-full">
+                      <div v-show = "chkScore()" >
+                      <div style="float:left;">
                       <v-rating
                         @input="addRating($event, rating)"
                         :value="rating"
@@ -100,10 +100,12 @@
                          size="20"
                         :id="rating"
                        ></v-rating>
-                       </p>
-                         <a href="" class="btn btn-m" @click.prevent="estimateAn()"><span class="hide">평가하기</span></a>
                        </div>
-                       <a href="" class="btn btn-primary" @click.prevent="writeFrom()"><i class="icon-message text-light"></i><span class="hide">질문하기</span></a>
+                       <div style="float:right;">
+                         <a href="" class="btn btn-m"  style="float:right;" @click.prevent="estimateAn()"><span class="hide">평가하기</span></a>
+                       </div>
+                       </div>
+                       <a href="" class="btn btn-primary"  @click.prevent="writeFrom()"><i class="icon-message text-light"></i><span class="hide">질문하기</span></a>
                     </div>
                 </div>
               </div>

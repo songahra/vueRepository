@@ -1,11 +1,15 @@
+<!-- 코드관리 리스트 Form -->
 <template>
 <div>
-<header class="card-header">
-                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-set"></i></span>코드관리</h2>
+
+             <div class="form-group" >
+            <header class="card-header" style="padding: 1.6rem 1rem;">
+                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-std-code"></i></span>코드관리</h2>
                 <div class="btn-container">
-                    <a href="" class="btn btn-m"  @click.prevent="deleteUserInfo()"><span class="hide">삭제</span></a>
-                    <a href="" class="btn btn-m"  @click.prevent="writeUserInfo()"><span class="hide">등록</span></a>
-                    <a href="" class="btn btn-primary" @click.prevent="modifyCodeInfo()"><span class="hide">저장</span></a>
+                    <a href="" class="btn btn-primary" type="submit" @click.prevent="writeUserInfo"><span class="hide">등록</span></a>
+                    <a href="" class="btn btn-primary" type="submit" @click.prevent="modifyCodeInfo"><span class="hide">수정</span></a>
+                    <a href="" class="btn btn-primary" type="submit" @click.prevent="deleteCodeInfo"><span class="hide">삭제</span></a>
+                    <a href="" class="btn"  @click="() => this.$router.push({ name: 'KAADM0301List' })" ><span class="hide">목록보기</span></a>
                 </div>
             </header>
             <div class="ct-header">
@@ -27,23 +31,46 @@
                         <div class="col">
                             <label class="form-control-label">
                                 <b class="control-label">코드값</b>
-                                <input type="text" class="form-control" placeholder="코드값을 입력해주세요." v-model="code_cotent">
+                                <input type="text" class="form-control" placeholder="코드값을 입력해주세요." v-model="code_content">
                             </label>
                         </div>
                         <div class="col-auto">
-                            <button type="submit" class="btn btn-primary" @click.prevent="onSearch" ><i class="icon-srch"></i>조회</button>
+                            <button type="button" class="btn" @click.prevent="onSearch"><i class="icon-srch"></i>전체조회</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <div>
+            <div class="col-lg-3">
+                     <div class="form-group">
+                        <v-treeview
+                          v-model="selection"
+                          :items="items"
+                          item-key="id"
+                          selectable
+                          selected-color="red"
+                          selection-type="leaf"
+                          return-object
+                          open-all
+                          open-on-click
+                          @input="selectCode"
+                        ></v-treeview>
+                     </div>
+              </div>
+              <div style="float:left;">
+              <div class="table-line"></div>
+              <div class="table-responsive">
             <div class="ct-content">
                 <div class="table-responsive">
                     <table class="table">
-                        <ag-grid-vue style="width: 100%; height: 650px;"
+                        <ag-grid-vue style="width: 100%; height: 520px;"
                                       class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
                                       :columnDefs="columnDefs"
+                                      :columnTypes="columnTypes"
                                       :rowData="rowData"
                                       :gridOptions="gridOptions"
+                                      :getRowHeight="getRowHeight"
+                                      :modules="modules"
                                       @cellEditorSelector="cellEditorSelector"
                                       @onCellEditingStarted="onCellEditingStarted"
                                       @onCellEditingStopped="onCellEditingStopped"
@@ -57,6 +84,11 @@
                     </table>
                 </div>
                  <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
+                 <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
+            </div>
+                </div>
+              </div>
+             </div>
             </div>
 </div>
 </template>
@@ -67,20 +99,25 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model'
 import { AgGridVue } from 'ag-grid-vue'
+
 import alert from '@/components/common/CompletePOP.vue'
-import { codeList, srchCodeList, modifyCodeInfo, deleteCodeInfo, writeCodeInfo } from '@/api/adm/Code.js'
+import failAlert from '@/components/common/FailPOP.vue'
+import { codeList, srchCodeList, modifyCodeInfo } from '@/api/adm/Code.js'
 // import { extractValuestest } from './util'
 
 export default {
   name: 'KAKNM0103From',
   components: {
     AgGridVue,
-    alert
+    alert,
+    failAlert
   },
   data: () => {
     return {
       // gridOptions
       columnDefs: null,
+      columnTypes: null,
+      getRowHeight: null,
       lists: [],
       rowData: [],
       modules: [ClientSideRowModelModule, AllCommunityModules],
@@ -91,20 +128,22 @@ export default {
       code_name: '',
       code_id: '',
       code_type: '',
-      company: '',
-      user_type: '',
-      code_cotent: '',
+      code_content: '',
       code_explain: '',
-      ode_up_id: '',
+      code_up_id: '',
       code_order: '',
       code_display_yn: '',
       update_date: '',
       rows: [],
+      selection: [],
       isDialog: false,
+      fDialog: false,
+      selectedCodes: '',
       alertContent: '',
+      coList: [],
+      codeList: [],
       items: [],
-      gridSelectKeys: [],
-      settings: {}
+      item: []
     }
   },
   beforeMount () {
@@ -115,6 +154,7 @@ export default {
       // animateRows: false,
       rowSelection: 'multiple',
       //   editable: true,
+      autoHeight: true,
       treeData: true,
       pagination: true,
       paginationPageSize: 10,
@@ -132,11 +172,18 @@ export default {
       { headerName: '선택', checkboxSelection: true },
       { headerName: '코드명', field: 'code_name', sortable: true, filter: true },
       { headerName: '코드ID', field: 'code_id', sortable: true, filter: true },
-      { headerName: '유형', field: 'code_type', sortable: true, filter: true },
+      { headerName: '유형', field: 'code_type', sortable: true, filter: true, editable: true },
       { headerName: '코드값', field: 'code_content', sortable: true, filter: true, editable: true },
       { headerName: '코드값 내용', field: 'code_explain', sortable: true, filter: true, editable: true },
-      { headerName: '상위코드 ID', field: 'code_up_id', sortable: true, filter: true, editable: true },
-      { headerName: '정렬순서', field: 'code_order', sortable: true, filter: true, editable: true },
+      { headerName: '상위코드 ID', field: 'code_up_id', sortable: true, filter: true },
+      {
+        headerName: '정렬순서',
+        field: 'code_order',
+        sortable: true,
+        type: 'numberColumn',
+        filter: true,
+        editable: true
+      },
       {
         headerName: '사용여부',
         field: 'code_display_yn',
@@ -147,25 +194,78 @@ export default {
         cellEditorParams: { values: ['Y', 'N'] },
         refData: { Y: 'Y', N: 'N' }
       },
-      { headerName: '수정일시', field: 'update_date', sortable: true, filter: true }
+      { headerName: '수정일시', field: 'update_date', sortable: true, filter: true, type: ['dateColumn', 'nonEditableColumn'] }
     ]
+    this.columnTypes = {
+      numberColumn: {
+        width: 130,
+        filter: 'agNumberColumnFilter'
+      },
+      medalColumn: {
+        width: 100,
+        columnGroupShow: 'open',
+        filter: false
+      },
+      nonEditableColumn: { editable: false },
+      dateColumn: {
+        filter: 'agDateColumnFilter',
+        filterParams: {
+          comparator: (filterLocalDateAtMidnight, cellValue) => {
+            var dateParts = cellValue.split('/')
+            var day = Number(dateParts[0])
+            var month = Number(dateParts[1]) - 1
+            var year = Number(dateParts[2])
+            var cellDate = new Date(year, month, day)
+            if (cellDate < filterLocalDateAtMidnight) {
+              return -1
+            } else if (cellDate > filterLocalDateAtMidnight) {
+              return 1
+            } else {
+              return 0
+            }
+          }
+        }
+      }
+    }
   },
   created () {
   },
   mounted () {
     console.log('mounted!!')
-    const test = this.gridOptions.api.getModel()
-    console.log('tewsttttt', test)
+
     // 서버요청
     codeList()
       .then((res) => {
         console.log('ddd', res.data)
         this.lists = res.data
-        this.makeData()
-        return res
+        const list = this.lists
+        // const codeList = this.convert_codeId(list)
+
+        list.forEach(item => {
+          for (let i = 0; i < list.length; i++) {
+            if (item.code_up_id === list[i].code_id) {
+              item.code_up_id = list[i].code_id
+              break
+            }
+          }
+        })
+        console.log('foreach list', list)
+
+        let myTree = null
+        list.forEach(item => {
+          if (myTree === null) {
+            myTree = { id: item.code_id, name: item.code_type }
+            console.log(';', myTree)
+          } else {
+            this.Recursive(item, myTree)
+          }
+        })
+
+        const treeArr = []
+        treeArr.push(myTree)
+        this.items = treeArr
+        this.myTree = myTree
       })
-      .then((res) => console.log(res))
-      .catch(console.error())
   },
   computed: {
     chg_userid () {
@@ -173,82 +273,113 @@ export default {
     }
   },
   methods: {
-    // sortChanged () {
-    //   console.log('sortChanged')
-    // },
-    paginationChanged () {
-      console.log('paginationChanged')
-      console.log('search option ')
-      // console.log(this.gridOptions.api.paginationSetPageSize(Number(15)))
-      // this.gridOptions.api.
-    },
-    cellValueChanged () {
-      console.log('gggg', this.rowData)
-    },
     // 조회
+    Recursive (item, tree) {
+      // tree Id 와 item parentId가 같다면
+      if (tree.id === item.code_up_id) {
+        if (typeof tree.children === 'undefined') { // tree에 children이 없다면
+          tree.children = []
+          tree.children.push({ id: item.code_id, name: item.code_type })
+        } else { // tree에 children이 있다.
+          tree.children.push({ id: item.code_id, name: item.code_type })
+        }
+      } else { // tree Id와 item parentId가 다름
+        if (typeof tree.children === 'undefined') { // tree에 children이 없다면
+
+        } else { // tree에 children이 있다면
+          tree.children.forEach(child => {
+            this.Recursive(item, child)
+          })
+        }
+      }
+    },
+    selectCode () {
+      // console.log('들어왓니..', items)
+      this.selectedCodes = [] // 배열생성
+      for (let i = 0; i < this.selection.length; i++) {
+        const codes = this.lists.find(item => {
+          return item.code_id === this.selection[i].id
+        })
+        this.selectedCodes.push(codes)
+      }
+
+      this.makeData()
+
+      // this.FATCH_USERLIST(selectedDept)
+    },
     onSearch () {
-      this.lists = []
-      this.rowData = []
       const srchData = {
         code_name: this.code_name,
         code_id: this.code_id,
-        code_cotent: this.code_cotent
+        code_content: this.code_content
       }
       console.log('srchData', srchData)
       // 서버요청
       srchCodeList(srchData)
         .then((res) => {
-          console.log('2. rowData : ', this.rowData)
-          this.lists = res.data
-          console.log('2. this.lists : ', this.lists)
+          this.selectedCodes = res.data
           this.makeData()
           return res
         })
         .then((res) => console.log(res))
         .catch(console.error())
     },
+    paginationChanged () {
+      console.log('paginationChanged')
+      console.log('search option ')
+    },
+    cellValueChanged () {
+      console.log('gggg', this.rowData)
+    },
     cellEditorSelector: function (params) {
       console.log(params)
       const data = params.data
       console.log('data=>', data)
       const fieldName = params.colDef.field
-      if (fieldName === 'company') {
-        console.log("fieldName === 'company'")
+      if (fieldName === 'code_name') {
+        console.log("fieldName === 'code_name'")
         return {
           params: {
-            values: data.company
+            values: data.code_name
           }
         }
       }
-      if (fieldName === 'solution') {
+      if (fieldName === 'code_id') {
         return {
-          component: 'agSelectCellEditor',
           params: {
-            values: data.solution
+            values: data.code_id
           }
         }
       }
-      if (fieldName === 'dept') {
-        console.log("fieldName === 'dept'")
+      if (fieldName === 'code_type') {
+        console.log("fieldName === 'code_type'")
         return {
           params: {
-            values: data.dept
+            values: data.code_type
           }
         }
       }
-      if (fieldName === 'user_type') {
-        console.log("fieldName === 'user_type'")
+      if (fieldName === 'code_content') {
+        console.log("fieldName === 'code_content'")
         return {
           params: {
-            values: data.user_type
+            values: data.code_content
           }
         }
       }
-      if (fieldName === 'login_cnt') {
-        console.log("fieldName === 'login_cnt'")
+      if (fieldName === 'code_explain') {
+        console.log("fieldName === 'code_explain'")
         return {
           params: {
-            values: data.login_cnt
+            values: data.code_explain
+          }
+        }
+      }
+      if (fieldName === 'code_order') {
+        console.log("fieldName === 'code_order'")
+        return {
+          params: {
+            values: data.code_order
           }
         }
       }
@@ -267,10 +398,8 @@ export default {
     },
     // rowData에 리스트 매핑
     makeData () {
-      console.log('makeData')
-      console.log('makeData.this.lists', this.lists)
-      console.log('makeData.this.rowData', this.rowData)
-      this.lists.forEach(e => {
+      this.rowData = []
+      this.selectedCodes.forEach(e => {
         const value = {
           code_name: e.code_name,
           code_id: e.code_id, // 트리구조
@@ -300,28 +429,38 @@ export default {
         this.gridOptions.columnApi.autoSizeColumns(allColumnIds)
       }
     },
+    setGroupHeight (height) {
+      this.groupHeight = height
+      this.gridApi.resetRowHeights()
+    },
     getRowStyle: function (param) {
       return { 'text-align': 'center' }
     },
     // 수정
     modifyCodeInfo () {
-      console.log('setdata', this.rowData)
-      console.log('saveUserInfo...')
-
-      var formData = []
+      console.log('modifyCodeInfo...')
+      const formData = []
       this.rows = this.gridOptions.api.getSelectedRows()
+
       console.log('rows', this.rows)
+      if (this.rows.length === 0) {
+        this.alertContent = '체크박스를 선택해주세요.'
+        this.fDialog = true
+      }
 
       for (let i = 0; i < this.rows.length; i++) {
         const e = this.rows[i]
         const value = {
+          userid: this.$store.state.userid,
           code_name: e.code_name,
           code_id: e.code_id,
-          code_type: e.code_type,
           code_up_id: e.code_up_id,
+          code_type: e.code_type,
           code_order: e.code_order,
+          code_content: e.code_content,
+          code_explain: e.code_explain,
           code_display_yn: e.code_display_yn,
-          userid: this.userid
+          flag: 'M'
         }
         formData.push(value)
       }
@@ -331,73 +470,59 @@ export default {
       modifyCodeInfo(formData)
         .then((res) => {
           console.log('res=>>', res)
-          this.alertContent = this.rows + '수정되었습니다.'
+          this.alertContent = '수정되었습니다.'
           this.isDialog = true
-          this.$router.push('/adm/codeList')
+          this.$router.go(this.$router.currentRoute)
         })
         .catch(console.error())
     },
+    // 삭제
     deleteCodeInfo () {
-      var formData = []
+      console.log('modifyCodeInfo...')
+      if (this.rows.length === 0) {
+        this.alertContent = '체크박스를 선택해주세요.'
+        this.fDialog = true
+      }
+      const formData = []
       this.rows = this.gridOptions.api.getSelectedRows()
       console.log('rows', this.rows)
 
       for (let i = 0; i < this.rows.length; i++) {
         const e = this.rows[i]
         const value = {
-          update_userid: this.userid,
-          code_id: e.code_id
+          code_id: e.code_id,
+          flag: 'D'
         }
         formData.push(value)
       }
-      // 서버요청
-      deleteCodeInfo(formData)
+      modifyCodeInfo(formData)
         .then((res) => {
           console.log('res=>>', res)
-          this.alertContent = this.rows + '삭제되었습니다.'
+          this.alertContent = '삭제되었습니다.'
           this.isDialog = true
-          this.$router.push('/adm/codeList')
+          this.$router.go(this.$router.currentRoute)
         })
         .catch(console.error())
     },
+    // 등록
     writeUserInfo () {
-      var formData = []
-      this.rows = this.gridOptions.api.getSelectedRows()
-      console.log('rows', this.rows)
-
-      for (let i = 0; i < this.rows.length; i++) {
-        const e = this.rows[i]
-        const value = {
-          code_name: e.code_name,
-          code_id: e.code_id,
-          code_type: e.code_type,
-          code_cotent: e.code_cotent,
-          code_explain: e.code_explain,
-          code_up_id: e.code_up_id,
-          code_order: e.code_order,
-          code_display_yn: e.code_display_yn,
-          userid: this.userid
-        }
-        formData.push(value)
-      }
-      // 서버요청
-      writeCodeInfo(formData)
-        .then((res) => {
-          console.log('res=>>', res)
-          this.alertContent = '등록되었습니다.'
-          this.isDialog = true
-          this.$router.push('/adm/codeList')
-        })
-        .catch(console.error())
+      this.$router.push({ name: 'KAADM0302Wirte' })
     },
     // 팝업창 닫기
     close () {
       this.isDialog = !this.isDialog
+      this.fDialog = !this.fDialog
     }
   }
 }
 </script>
 
-<style>
-
-</style>
+<style lang="scss" scoped>
+.col-lg-3 {
+  width: 300px;
+  float: left;
+}
+.table-responsive {
+  width: 1320px;
+}
+</style>>

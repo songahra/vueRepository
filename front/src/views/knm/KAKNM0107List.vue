@@ -28,6 +28,8 @@ export default {
     console.log('뷰 created ')
     console.log('flag  ', this.flag)
     // this.myList()
+    this.$store.commit('SET_DEPTH1', '지식관리')
+    this.$store.commit('SET_DEPTH2', '내가 문의한 질문')
   },
   methods: {
     /* 지식관리 리스트 조회 */

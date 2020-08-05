@@ -22,6 +22,10 @@ export default {
       srchData: ''
     }
   },
+  created () {
+    this.$store.commit('SET_DEPTH1', '지식관리')
+    this.$store.commit('SET_DEPTH2', '지식관리')
+  },
   methods: {
     srchList (data) {
       console.log('view srchList : ', data)

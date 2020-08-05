@@ -17,6 +17,10 @@ export default {
     return {
 
     }
+  },
+  created () {
+    this.$store.commit('SET_DEPTH1', '대시보드')
+    this.$store.commit('SET_DEPTH2', ' ')
   }
 }
 </script>

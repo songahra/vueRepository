@@ -25,6 +25,9 @@ export default {
     // this.userid = this.$store.state.userid
     // this.paramData = this.$route.params
     console.log('2. created dd', this.paramData)
+
+    this.$store.commit('SET_DEPTH1', '지식관리')
+    this.$store.commit('SET_DEPTH2', ' ')
   },
   computed: {
     useri_id: function () {

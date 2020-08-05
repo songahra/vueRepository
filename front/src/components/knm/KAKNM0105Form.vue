@@ -24,9 +24,9 @@
                             <label class="form-control-label" data-toggle="modal" data-target="#">
                                 <b class="control-label">프로젝트</b>
                                 <input type="text" class="form-control" placeholder="프로젝트명을 입력하세요" v-model="project_name" disabled>
-                                <button type="submit" @click.prevent="btnSearch" @close="isDialog=false"><i class="icon-srch"></i>찾기</button>
                             </label>
                         </div>
+                          <button type="submit" class="btn btn-m" @click.prevent="btnSearch" @close="pjDialog=false"><i class="icon-srch"></i>찾기</button>
                     </div>
                     <div class="filter no-gutters no-btn">
                         <div class="col">

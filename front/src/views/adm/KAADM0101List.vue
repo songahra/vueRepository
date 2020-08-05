@@ -17,6 +17,10 @@ export default {
     return {
 
     }
+  },
+  created () {
+    this.$store.commit('SET_DEPTH1', '설정')
+    this.$store.commit('SET_DEPTH2', '프로젝트')
   }
 }
 </script>

@@ -20,6 +20,10 @@ export default {
 
     }
   },
+  created () {
+    this.$store.commit('SET_DEPTH1', '지식관리')
+    this.$store.commit('SET_DEPTH2', ' ')
+  },
   computed: {
     user_id: function () {
       console.log(' computed userid ', this.$store.state.userid)

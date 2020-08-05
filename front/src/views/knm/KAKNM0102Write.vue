@@ -18,6 +18,10 @@ export default {
     return {
 
     }
+  },
+  created () {
+    this.$store.commit('SET_DEPTH1', '지식관리')
+    this.$store.commit('SET_DEPTH2', ' ')
   }
 }
 </script>

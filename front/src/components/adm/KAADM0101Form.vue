@@ -23,17 +23,7 @@
                         <div class="col">
                             <label class="form-control-label">
                                 <b class="control-label">기간</b>
-                                  <v-row>
-                                    <date-picker
-                                       v-model="range"
-                                        style="padding-top: 10px;"
-                                        :lang="lang"
-                                        range
-                                         type="date"
-                                       format="YYYY-MM-DD"
-                                        width="500"
-                                     />
-                                  </v-row>
+                                <input id="datePicker" type="text" class="form-control input-daterange">
                             </label>
                         </div>
                         <div class="col-auto">
@@ -55,13 +45,24 @@
             </div>
     </div>
 </template>
-<!-- Bootstrap CDN -->
 <script>
+/* AgGridVue */
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+import { AgGridVue } from 'ag-grid-vue'
+
+/* daterangepicker */
+import '@/assets/vendor/daterangepicker/daterangepicker.min.js'
+import '@/assets/vendor/daterangepicker/daterangepicker.min.css'
+import '@/assets/vendor/daterangepicker/moment.min.js'
+
 import { getPjList, srchPjList } from '@/api/adm/Project.js'
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
-import { AgGridVue } from 'ag-grid-vue'
+
+/* jQuery 사용 */
+global.jQuery = require('jquery')
+var $ = global.jQuery
+window.$ = $
 
 export default {
   name: 'KAKNM0103From',
@@ -86,7 +87,13 @@ export default {
       reg_date: '',
       reg_date_st: '',
       reg_date_ed: '',
-      checked: false // 체크박스
+      checked: false, // 체크박스
+
+      // date picker
+      startDate: '',
+      endDate: '',
+      range: '',
+      now: ''
     }
   },
   beforeMount () {
@@ -105,6 +112,13 @@ export default {
       { headerName: '프로젝트 기간', field: 'term', sortable: true, filter: true }
     ]
   },
+  created () {
+    this.time()
+    var moment = require('moment')
+    moment.locale('ko') // 언어팩 변경
+    this.now = moment().format('YYYY-MM-DD HH:mm') // 현재 시간
+    this.month = moment().format('MM') // 현재 월
+  },
   mounted () {
     console.log('mounted!!')
 
@@ -117,6 +131,64 @@ export default {
       })
       .then((res) => console.log(res))
       .catch(console.error())
+    $('#demo').daterangepicker({
+      locale: {
+        format: 'MM/DD/YYYY',
+        separator: ' - ',
+        applyLabel: 'Apply',
+        cancelLabel: 'Cancel',
+        fromLabel: 'From',
+        toLabel: 'To',
+        customRangeLabel: 'Custom',
+        weekLabel: 'W',
+        daysOfWeek: [
+          'Su',
+          'Mo',
+          'Tu',
+          'We',
+          'Th',
+          'Fr',
+          'Sa'
+        ],
+        monthNames: [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December'
+        ],
+        firstDay: 1
+      },
+      startDate: '12/01/2016',
+      endDate: '12/07/2016'
+    }, function (start, end, label) {
+    })
+    $(() => {
+      $('#datePicker').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        autoApply: true,
+        locale: {
+          format: 'YYYY.MM.DD HH:mm:ss',
+          separator: ' ~ ',
+          daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+          monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+        }
+      }, (start, end) => {
+        this.startDate = start.format('YYYY-MM-DD')
+        this.endDate = end.format('YYYY-MM-DD')
+        console.log('this.startDate', this.startDate) // datePicker시작 날짜
+        console.log('this.endDate', this.endDate) //  datePicker끝 날짜
+      })
+    })
   },
   methods: {
     // 조회
@@ -126,7 +198,9 @@ export default {
       const srchData = {
         project_id: this.project_id,
         project_name: this.project_name,
-        customer: this.customer
+        customer: this.customer,
+        startDate: this.startDate,
+        endDate: this.endDate
       }
       console.log('srchData', srchData)
 
@@ -158,6 +232,7 @@ export default {
         this.rowData.push(value)
       })
     },
+    // 그리드 사이즈
     gridSizeFit (params) {
       console.log('gridSizeFit')
       // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정

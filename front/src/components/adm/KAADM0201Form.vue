@@ -1,3 +1,4 @@
+<!-- 권한관리 리스트 Form -->
 <template>
 <div>
     <header class="card-header">
@@ -82,6 +83,7 @@ export default {
       rowData: [],
       modules: AllCommunityModules,
       gridOptions: null,
+
       // form id
       userid: '', // 로그인 유저
       update_userid: '',
@@ -352,9 +354,14 @@ export default {
       //   params.api.setRowData(data.slice(0, 50))
       // }
       // console.log('updateData', updateData)
+
       var formData = []
       this.rows = this.gridOptions.api.getSelectedRows()
       console.log('rows', this.rows)
+      if (!this.rows) {
+        this.alertContent = '체크박스를 선택해주세요.'
+        this.isDialog = true
+      }
 
       for (let i = 0; i < this.rows.length; i++) {
         const e = this.rows[i]

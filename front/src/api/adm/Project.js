@@ -5,11 +5,11 @@ const instance = axios.create({
 })
 
 function getPjList () {
-  return instance.get('knm/getPjList')
+  return instance.get('adm/getPjList')
 }
 
 function srchPjList (srchData) {
-  return instance.get('knm/srchPjList', srchData)
+  return instance.get('adm/srchPjList', srchData)
 }
 
 export { getPjList, srchPjList }
