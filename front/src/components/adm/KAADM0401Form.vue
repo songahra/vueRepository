@@ -17,7 +17,7 @@
                             </label>
                         </div>
                         <div class="col-auto">
-                            <button type="button" class="btn btn-primary" @click="onSubmit"><i class="icon-srch"></i>조회</button>
+                            <button type="button" class="btn btn-primary" style="margin-left: 10px;" @click="onSubmit"><i class="icon-srch"></i>조회</button>
                         </div>
                     </div>
                 </div>

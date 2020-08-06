@@ -5,9 +5,14 @@
       <header class="card-header" style="padding: 1.6rem 1rem;">
           <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-file-text"></i></span>지식자료실</h2>
           <div class="btn-container">
-              <a href="" @click.prevent="clickModify" class="btn btn-primary"><span class="hide">수정</span></a>
-              <a href="" @click.prevent="clickDelete" class="btn btn-primary"><span class="hide">삭제</span></a>
+            <div v-if = "chkUserType()">
+              <a href="" @click.prevent="clickModify" class="btn btn-m"><span class="hide">수정</span></a>
+              <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
               <a href="../manual" class="btn btn-primary"><span class="hide">목록</span></a>
+            </div>
+            <div v-else>
+              <a href="../manual" class="btn btn-primary"><span class="hide">목록</span></a>
+            </div>
           </div>
       </header>
 
@@ -186,6 +191,12 @@ export default {
       await delManual(data)
       this.isDialog = false
       this.$router.push({ name: 'KAKND01List' })
+    },
+    chkUserType () {
+      this.userType = this.$store.state.usertype
+      if (this.userType === 'A' || this.userType === 'O') {
+        return true
+      }
     }
   }
 }
