@@ -25,15 +25,23 @@
       <li class="breadcrumb-item">
         홈
       </li>
-      <li class="breadcrumb-item">
-        {{ depth1 }}
-      </li>
-      <li
-        class="breadcrumb-item active"
-        aria-current="page"
-      >
-        {{ depth2 }}
-      </li>
+      <template v-if="this.$store.state.depth2 === ' '">
+        <li class="breadcrumb-item active">
+          {{ depth1 }}
+        </li>
+      </template>
+
+      <template v-else>
+        <li class="breadcrumb-item">
+          {{ depth1 }}
+        </li>
+        <li
+          class="breadcrumb-item active"
+          aria-current="page"
+        >
+          {{ depth2 }}
+        </li>
+      </template>
     </ul>
     <div class="hd-side">
       <a

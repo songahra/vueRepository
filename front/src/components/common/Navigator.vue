@@ -45,8 +45,8 @@
             </li>
           </ul>
           <a
+            href="/knd/manual"
             class="menu-collapse-link collapsed"
-            data-toggle="collapse"
           ><i class="icon-arrange text-dark" />지식 자료실</a>
           <a
             class="menu-collapse-link collapsed"

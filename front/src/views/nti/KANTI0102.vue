@@ -1,167 +1,163 @@
 <template>
   <!-- 공지사항 글쓰기 -->
- <div id="ct">
+  <div id="ct">
     <section class="card">
-          <header class="card-header">
-          <h2 class="card-title">
-            <span class="i-rounded bg-danger"><i class="icon-alarm" /></span>공지사항 글쓰기
-          </h2>
-          </header>
+      <header class="card-header">
+        <h2 class="card-title">
+          <span class="i-rounded bg-danger"><i class="icon-alarm" /></span>공지사항 글쓰기
+        </h2>
+      </header>
 
-            <div class="ct-header">
-              <button
-                type="button"
-                class="btn-filter collapsed d-xl-none"
-                data-toggle="collapse"
-                data-target="#collapse-filter"
-              >
-                검색 필터<i class="icon-down" />
-              </button>
-              <div
-                id="collapse-filter"
-                class="collapse collapse-filter "
-              >
-                <div class="filter no-gutters no-btn">
-                  <div
-                    class="col"
-                    style="min-width: 70%;"
+      <div class="ct-header">
+        <button
+          type="button"
+          class="btn-filter collapsed d-xl-none"
+          data-toggle="collapse"
+          data-target="#collapse-filter"
+        >
+          검색 필터<i class="icon-down" />
+        </button>
+        <div
+          id="collapse-filter"
+          class="collapse collapse-filter "
+        >
+          <div class="filter no-gutters no-btn">
+            <div
+              class="col"
+              style="min-width: 70%;"
+            >
+              <label class="form-control-label">
+                <b class="control-label">공지</b>
+                <input
+                  v-model="title"
+                  type="text"
+                  class="form-control"
+                  placeholder="공지제목을 입력하세요."
+                >
+              </label>
+            </div>
+            <div
+              class="col"
+              style="min-width: 30%;"
+            >
+              <label class="form-control-label">
+                <b class="control-label">제품명</b>
+                <select
+                  v-model="solution"
+                  class="form-control selectpicker"
+                  title="선택하세요"
+                  readonly
+                >
+                  <option
+                    v-for="(item,index) in items"
+                    :key="index"
+                    :value="item.codeId"
                   >
-                    <label class="form-control-label">
-                      <b class="control-label">공지</b>
-                      <input
-                        v-model="title"
-                        type="text"
-                        class="form-control"
-                        placeholder="공지제목을 입력하세요."
-                      >
-                    </label>
-                  </div>
-                  <div
-                    class="col"
-                    style="min-width: 30%;"
-                  >
-                    <label class="form-control-label">
-                      <b class="control-label">제품명</b>
-                      <select
-                        v-model="solution"
-                        class="form-control selectpicker"
-                        title="선택하세요"
-                        readonly
-                      >
-                        <option
-                          v-for="(item,index) in items"
-                          :key="index"
-                          :value="item.codeId"
-                        >
-                          {{ item.codeContent }}
-                        </option>
-                      </select>
-                    </label>
-                  </div>
-                </div>
-              </div>
+                    {{ item.codeContent }}
+                  </option>
+                </select>
+              </label>
             </div>
-
-            <div class="ct-content">
-            <div class="form-group form-group-editor">
-              <textarea name="content" style="display: none;" ></textarea>
-              <div
-                id="summernote"
-                class="well"
-              >
-              </div>
-
-            </div>
-            <div class="form-group">
-              <div class="sub-bar">
-                <i class="icon-right text-danger" /><p class="font-weight-bold">
-                  첨부파일
-                </p>
-                <div class="ml-auto form-inline m-full">
-                  <label>
-                     <input
-                type="file"
-                class="sr-only"
-                multiple="multiple"
-                @change="selectFile()"
-              >
-                    <span
-                      class="btn"
-                    >파일 선택</span>
-                    <button
-                      type="button"
-                      class="btn"
-
-                    >
-                      업로드
-                    </button>
-                  </label>
-                </div>
-              </div>
-
-              <div class="table-responsive">
-                <table class="table">
-                  <colgroup>
-                    <col style="width: 25%">
-                    <col style="width: 40%">
-                    <col>
-                    <col style="width: 1%">
-                  </colgroup>
-                  <thead>
-                    <tr>
-                      <th scope="col">
-                        이름
-                      </th>
-                      <th scope="col">
-                        타입
-                      </th>
-                      <th scope="col">
-                        크기
-                      </th>
-                      <th scope="col" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-if="selectedFiles == ''">
-                      <td><span class="placeholder">첨부할 파일을 선택해 주세요.</span></td>
-                      <td />
-                      <td>0kbytes</td>
-                      <td class="text-nowrap">
-
-                      </td>
-                    </tr>
-                    <tr
-                      v-for="(file, index ) in selectedFiles"
-                      :key="index"
-                    >
-                      <td><span>{{ file.name }}</span></td>
-                      <td>{{ file.type }}</td>
-                      <td>{{ file.size / 1000 }} KBytes</td>
-                      <td class="text-nowrap">
-
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          <footer class="panel-footer sub-bar">
-            <div class="ml-auto">
-              <a
-                href=""
-                class="btn btn-primary"
-                @click.prevent="upload"
-              >등록</a>
-            </div>
-          </footer>
           </div>
-        <Alert
+        </div>
+      </div>
+
+      <div class="ct-content">
+        <div class="form-group form-group-editor">
+          <textarea
+            name="content"
+            style="display: none;"
+          />
+          <div
+            id="summernote"
+            class="well"
+          />
+        </div>
+        <div class="form-group">
+          <div class="sub-bar">
+            <i class="icon-right text-danger" /><p class="font-weight-bold">
+              첨부파일
+            </p>
+            <div class="ml-auto form-inline m-full">
+              <label>
+                <input
+                  type="file"
+                  class="sr-only"
+                  multiple="multiple"
+                  @change="selectFile()"
+                >
+                <span
+                  class="btn"
+                >파일 선택</span>
+                <button
+                  type="button"
+                  class="btn"
+                >
+                  업로드
+                </button>
+              </label>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table">
+              <colgroup>
+                <col style="width: 25%">
+                <col style="width: 40%">
+                <col>
+                <col style="width: 1%">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">
+                    이름
+                  </th>
+                  <th scope="col">
+                    타입
+                  </th>
+                  <th scope="col">
+                    크기
+                  </th>
+                  <th scope="col" />
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="selectedFiles == ''">
+                  <td><span class="placeholder">첨부할 파일을 선택해 주세요.</span></td>
+                  <td />
+                  <td>0kbytes</td>
+                  <td class="text-nowrap" />
+                </tr>
+                <tr
+                  v-for="(file, index ) in selectedFiles"
+                  :key="index"
+                >
+                  <td><span>{{ file.name }}</span></td>
+                  <td>{{ file.type }}</td>
+                  <td>{{ file.size / 1000 }} KBytes</td>
+                  <td class="text-nowrap" />
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <footer class="panel-footer sub-bar">
+          <div class="ml-auto">
+            <a
+              href=""
+              class="btn btn-primary"
+              @click.prevent="upload"
+            >등록</a>
+          </div>
+        </footer>
+      </div>
+      <Alert
         :dialog="completeAlert"
         :send-data="alertContent"
         @close="close()"
       />
     </section>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -197,6 +193,9 @@ export default {
     }
   },
   async created () {
+    this.$store.commit('SET_DEPTH1', '공지사항')
+    this.$store.commit('SET_DEPTH2', '작성')
+
     const { data } = await getSolution() // 솔루션 목록 가져오기
     this.items = data
     console.log('this.items?', this.items)

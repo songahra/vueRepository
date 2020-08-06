@@ -103,7 +103,7 @@
 
 <script>
 import { loginUser } from '@/api/log/Login.js'
-import Modal3 from '@/views/log/KALOG0104MODAL.vue'
+import Modal3 from '@/components/log/KALOG0103.vue'
 import Modal from '@/components/log/KALOGPOP2.vue'
 
 import '@/assets/css/common.css'
@@ -198,7 +198,7 @@ export default {
 
           localStorage.setItem('token', data.token)
           console.log(this.$store.state.token)
-          this.$router.push('/home')
+          this.$router.push('/')
         }
       } catch (error) {
         // 에러 핸들링할 코드

@@ -35,10 +35,10 @@
                 <label class="form-control-label">
                   <b class="control-label">제목</b>
                   <input
+                    v-model="search_title"
                     type="text"
                     class="form-control"
                     placeholder="제목을 입력하세요."
-                    v-model="search_title"
                   >
                 </label>
               </div>
@@ -73,17 +73,17 @@
           <div class="table-responsive">
             <table class="table">
               <ag-grid-vue
-              style="width: 100%; height: 550px;"
-              class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-              :column-defs="columnDefs"
-              :row-data="rowData"
-              :grid-ready="gridSizeFit"
-              :grid-size-changed="gridSizeFit"
-              :grid-options="gridOptions"
-              :get-row-style="getRowStyle"
-              @gridSizeChanged="gridSizeFit"
-              @cell-clicked="onCellClicked"
-            />
+                style="width: 100%; height: 520px;"
+                class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                :column-defs="columnDefs"
+                :row-data="rowData"
+                :grid-ready="gridSizeFit"
+                :grid-size-changed="gridSizeFit"
+                :grid-options="gridOptions"
+                :get-row-style="getRowStyle"
+                @gridSizeChanged="gridSizeFit"
+                @cell-clicked="onCellClicked"
+              />
             </table>
           </div>
         </div>
@@ -122,6 +122,8 @@ export default {
     }
   },
   async created () {
+    this.$store.commit('SET_DEPTH1', '공지사항')
+    this.$store.commit('SET_DEPTH2', ' ')
     // console.log(param)
     const { data } = await selectNotice()
     console.log('리스트는?', data)
@@ -138,6 +140,36 @@ export default {
       }
       this.rowData.push(value)
     })
+  },
+  beforeMount () {
+    this.gridOptions = {
+      enableColResize: true,
+      enableSorting: true,
+      enableFilter: true,
+      animateRows: false,
+      pagination: true,
+      paginationPageSize: 10,
+      cellClass: 'grid-cell-centered'
+    }
+
+    this.columnDefs = [
+      { headerName: '글번호', colId: 0, valueGetter: (params) => { return params.node.rowIndex + 1 } },
+      { headerName: '제목', field: 'title', sortable: true, filter: true },
+      { headerName: '솔루션', field: 'solution_code', sortable: true, filter: true },
+      { headerName: '작성자', field: 'user_name', sortable: true, filter: true },
+      {
+        headerName: '첨부',
+        field: 'file_count',
+        sortable: true,
+        filter: true,
+        cellRenderer: function (params) { // 첨부파일 아이콘 ( 첨부파일 수 ) 표시
+          console.log('params', params.data.file_count)
+          return '<span><i class="icon-link"></i>(' + (params.data.file_count) + ')</span>'
+        }
+      },
+      { headerName: '작성일', field: 'reg_date', sortable: true, filter: true },
+      { headerName: '조회수', field: 'hit', sortable: true, filter: true }
+    ]
   },
   methods: {
     gridSizeFit (params) {
@@ -197,36 +229,6 @@ export default {
         this.rowData.push(value)
       })
     }
-  },
-  beforeMount () {
-    this.gridOptions = {
-      enableColResize: true,
-      enableSorting: true,
-      enableFilter: true,
-      animateRows: false,
-      pagination: true,
-      paginationPageSize: 10,
-      cellClass: 'grid-cell-centered'
-    }
-
-    this.columnDefs = [
-      { headerName: '글번호', colId: 0, valueGetter: (params) => { return params.node.rowIndex + 1 } },
-      { headerName: '제목', field: 'title', sortable: true, filter: true },
-      { headerName: '솔루션', field: 'solution_code', sortable: true, filter: true },
-      { headerName: '작성자', field: 'user_name', sortable: true, filter: true },
-      {
-        headerName: '첨부',
-        field: 'file_count',
-        sortable: true,
-        filter: true,
-        cellRenderer: function (params) { // 첨부파일 아이콘 ( 첨부파일 수 ) 표시
-          console.log('params', params.data.file_count)
-          return '<span><i class="icon-link"></i>(' + (params.data.file_count) + ')</span>'
-        }
-      },
-      { headerName: '작성일', field: 'reg_date', sortable: true, filter: true },
-      { headerName: '조회수', field: 'hit', sortable: true, filter: true }
-    ]
   }
 
 }

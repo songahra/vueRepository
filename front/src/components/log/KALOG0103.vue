@@ -1,191 +1,275 @@
 <template lang="html">
   <v-app id="app">
-    <form
-      @submit.prevent="submitForm"
+    <v-dialog
+      v-model="dialog"
+      persistent
     >
-      <div class="modal-content">
-        <div class="modal-body modal-body-ct">
-          <div
-            id="base-info"
-            class="tab-pane active"
-          >
-            <div class="row frm-row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label
-                    class="control-label"
-                  >이메일
-                    <!-- <span class="text-notice-1">*이메일 형식이 올바르지 않습니다.</span> -->
-                  </label>
-                  <div style="position: relative">
-                    <v-text-field
-                      v-model="user_id"
-                      :rules="emailRules"
-                      class="form-control compact-form"
-                      dense
-                      solo
-                    />
+      <form
+        @submit.prevent="submitForm"
+      >
+        <div
+          id="modal_membership"
+          class="modal fade show"
+          tabindex="-1"
+          style="display: block;"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2 class="modal-title">
+                  회원정보 입력
+                </h2>
+                <button
+                  type="button"
+                  class="btn-icon"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  @click.prevent="onClose"
+                >
+                  <i class="icon-close" />
+                </button>
+              </div>
+              <div class="modal-body modal-body-ct">
+                <div
+                  id="base-info"
+                  class="tab-pane active"
+                >
+                  <div class="row frm-row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label
+                          class="control-label"
+                        >이메일
+                          <span
+                            v-if="emailValid === 'notValid'"
+                            class="text-notice-1"
+                          >*이메일 형식이 올바르지 않습니다.</span>
+                          <span
+                            v-if="emailValid === 'space'"
+                            class="text-notice-1"
+                          >*이메일을 입력하세요 </span>
+                        </label>
+                        <div style="width: 352px;">
+                          <span>
+                            <v-text-field
+                              v-model="user_id"
+                              style="display: inline-block"
+                              class="form-control compact-form"
+                              dense
+                              solo
+                              @keyup="emailValidate($event.target.value)"
+                            />
+                            <button
+                              id="idChkbtn"
+                              type="button"
+                              color="white"
+                              class="btn btn-primary"
+                              data-dismiss="modal"
+                              style="position:absolute; margin-top: 0px; margin-left: 5px;"
+                              :disabled="emailDisabled"
+                              @click.prevent="chkBtn"
+                            >
+                              아이디 중복 확인
+                            </button>
+                            <!-- <input
+                              type="button"
+                              style="position:absolute"
+                              value="dkdkdkdk"
+                            > -->
+                          </span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label">소속회사</label>
+                        <v-text-field
+                          v-model="company"
+                          class="form-control compact-form"
+                          dense
+                          solo
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label">솔루션명</label>
+                        <v-select
+                          v-model="solution"
+                          class="form-control compact-form"
+                          :items="items"
+                          :rules="[v => !!v || '솔루션을 선택하세요']"
+                          clearable
+                          dense
+                          solo
+                          required
+                          item-text="codeContent"
+                          item-value="codeId"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label">비밀번호
+                          <div class="dodo">
+                            <span
+                              v-for="(data,index) in passValid"
+                              :key="index"
+                              class="text-notice-1"
+                              style="position:relative; margin-right: 5px;"
+                            >{{ data }} </span></div>
+                        </label>
 
-                    <!-- <img
-                  src="@/assets/img/danger.svg"
-                  alt=""
-                > -->
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >소속회사</label>
-                  <v-text-field
-                    class="form-control compact-form"
-                    dense
-                    solo
-                  />
-                </div>
-                <div>
-                  <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >솔루션명</label>
-                  <v-select
-                    v-model="solution"
-                    class="form-control compact-form"
-                    :items="items"
-                    :rules="[v => !!v || '솔루션을 선택하세요']"
-                    clearable
-                    dense
-                    solo
-                    required
-                    item-text="codeContent"
-                    item-value="codeId"
-                  />
-                </div>
-                <div class="form-group">
-                  <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >비밀번호
-                    <!-- <span class="text-notice-2">영문대문자 포함 | 영문소문자 포함 | 숫자포함 | 10자 이상</span> -->
-                  </label>
-                  <div style="position: relative">
-                    <!-- <img
-                  src="@/assets/img/complete.svg"
-                  alt=""
-                > -->
-                    <v-text-field
-                      class="form-control compact-form"
-                      dense
-                      solo
-                    />
+                        <div style="position: relative">
+                          <img
+                            class="input-img"
+                            src="img/complete.svg"
+                            alt=""
+                          >
+                          <v-text-field
+                            v-model="user_pw"
+                            class="form-control compact-form"
+                            dense
+                            solo
+                            :type="show1 ? 'text' : 'password'"
+                            @keyup="passValidation($event.target.value)"
+                          />
+                          <template v-if="show1 === false">
+                            <img
+                              class="input-icon"
+                              src="@/assets/img/eye-closed.png"
+                              @click="()=>{show1 = true }"
+                            >
+                          </template>
+                          <template v-else>
+                            <i
+                              class="icon-eye input-icon"
+                              @click="()=>{show1 = false }"
+                            />
+                          </template>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="control-label">이름</label>
+                        <v-text-field
+                          v-model="user_name"
+                          class="form-control compact-form"
+                          dense
+                          solo
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label">부서</label>
+                        <v-text-field
+                          v-model="dept"
+                          class="form-control compact-form"
+                          dense
+                          solo
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label">담당</label>
+                        <v-combobox
+                          v-model="user_type"
+                          class="form-control compact-form"
+                          :items="items2"
+                          :rules="[v => !!v || '담당을 선택하세요']"
+                          clearable
+                          dense
+                          solo
+                          required
+                          item-text="name"
+                          item-value="code"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label">비밀번호 확인
+                          <span
+                            v-if="chkPwd === true"
+                            class="text-notice-1"
+                          >*비밀번호가 서로 일치하지 않습니다.</span>
+                        </label>
+                        <div style="position: relative">
+                          <v-text-field
+                            v-model="user_pw2"
+                            class="form-control compact-form"
+                            dense
+                            solo
+                            :type="show2 ? 'text' : 'password'"
+                            @keyup="pwdConfirm($event.target.value)"
+                          />
+                          <div v-if="show2 === false">
+                            <img
+                              class="input-icon"
+                              src="@/assets/img/eye-closed.png"
+                              @click="()=>{show2 = true }"
+                            >
+                          </div>
+                          <div v-else>
+                            <i
+                              class="icon-eye input-icon"
+                              @click="()=>{show2 = false }"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label
-                    class="control-label"
-                  >이름</label>
-                  <v-text-field
-                    class="form-control compact-form"
-                    dense
-                    solo
-                  />
-                </div>
-                <div class="form-group">
-                  <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >부서</label>
-                  <v-text-field
-                    class="form-control compact-form"
-                    dense
-                    solo
-                  />
-                </div>
-                <div>
-                  <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >담당</label>
-                  <v-combobox
-                    v-model="user_type"
-                    class="form-control compact-form"
-                    :items="items2"
-                    :rules="[v => !!v || '담당을 선택하세요']"
-                    clearable
-                    dense
-                    solo
-                    required
-                    item-text="name"
-                    item-value="code"
-                  />
-                </div>
-                <div class="form-group">
-                  <label
-                    class="control-label"
-                    style="
-    padding-top: 30px;
-"
-                  >비밀번호 확인
-                  <!-- <span class="text-notice-1">*비밀번호가 서로 일치하지 않습니다.</span> -->
-                  </label>
-                  <div style="position: relative">
-                    <v-text-field
-                      class="form-control compact-form"
-                      dense
-                      solo
-                    />
-                    <i class="icon-lock" />
-                  </div>
-                </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn"
+                  data-dismiss="modal"
+                  @click.prevent="onClose"
+                >
+                  취소
+                </button>
+                <button
+                  text
+                  color="white"
+                  class="btn btn-primary"
+                  type="submit"
+                >
+                  회원가입
+                </button>
               </div>
             </div>
           </div>
+          <Alert
+            :dialog="isDialog"
+            :send-data="alertContent"
+            @close="close"
+          />
+          <failAlert
+            :dialog="failDialog"
+            :send-data="alertContent"
+            @close="close"
+          />
         </div>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn"
-          data-dismiss="modal"
-          @click.prevent="onClose"
-        >
-          취소
-        </button>
-        <button
-          text
-          color="white"
-          class="btn btn-primary"
-          type="submit"
-        >
-          회원가입
-        </button>
-      </div>
-    </form>
+      </form>
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
 import { signupUser } from '@/api/log/Signup.js'
 import { getSolution, idChk } from '@/api/log/Login.js'
+import Alert from '@/components/common/CompletePOP.vue'
+import failAlert from '@/components/common/FailPOP.vue'
 
 export default {
   components: {
-
+    Alert,
+    failAlert
   },
+  props: ['dialog'],
   data () {
     return {
+      emailDisabled: true,
+      isDialog: false,
+      failDialog: false,
+      alertContent: '',
+      show: true,
       emailRulestext: [],
       errorAlert: false, // alert창은 처음에 안보이게 설정
       successAlert: false,
@@ -196,22 +280,14 @@ export default {
         v => (v && v.length <= 10) || 'Name must be less than 10 characters'
       ],
       user_id: '',
-      emailRules: [
-        v => !!v || '이메일을 입력하세요!.',
-        v => /.+@.+\..+/.test(v) || '이메일 형식이 올바르지 않습니다.'
-      ],
-      pwdConfirm: [v => !!v || '비밀번호를 확인해 주세요.', v => v === this.user_pw || '비밀번호가 서로 일치하지 않습니다.'],
+
+      emailValid: '',
+      passValid: ['영문대문자 포함 ', '영문소문자 포함 ', '숫자포함 ', '10자 이상 '],
       user_pw2: '',
       show1: false,
       show2: false,
       user_pw: '',
-      rules: {
-        required: value => !!value || '비밀번호를 입력하세요!',
-        min: v => v.length >= 10 || '10자 이상',
-        chk1: v => /[A-Z]/.test(v) || ' 영어 대문자 포함',
-        chk2: v => /[a-z]/.test(v) || '영어 소문자 포함',
-        chk3: v => /[0-9]/.test(v) || '숫자 포함'
-      },
+
       minRules: {
         min: v => v.length >= 10 || '10자 이상'
       },
@@ -231,7 +307,9 @@ export default {
       items: [
       ],
       user_name: '',
-      company: ''
+      company: '',
+      type: '',
+      chkPwd: true
     }
   }, // data
   async created () {
@@ -239,8 +317,6 @@ export default {
 
     console.log('data뭐있지?', data)
     this.items = data
-    console.log('emailRules', this.emailRules[0].value)
-    console.log('emailRules', this.emailRules)
   },
   methods: {
     // 회원가입
@@ -261,16 +337,19 @@ export default {
         console.log(userData)
         const res = await signupUser(userData)
         if (res.status === 200) {
-          alert(res.data)
-          this.$router.push('/home').catch(() => {})
+          this.type = 'move'
+          this.isDialog = true
+          this.alertContent = '회원가입 성공'
+
+          // this.
+          // this.$router.push('/home').catch(() => {})
         } else {
-          alert('회원가입 실패')
-          this.$router.push('login')
+          this.failDialog = true
+          this.alertContent = '회원가입 실패'
         }
       } catch (error) {
 
       } finally {
-
       }
     },
     async chkBtn () {
@@ -280,16 +359,66 @@ export default {
       console.log(data)
       if (data === 1) {
         // 1 : 아이디가 중복되는 문구 보여주기
-        this.errorAlert = true
-        this.successAlert = false
-      } else {
-        this.successAlert = true
-        this.errorAlert = false
+        this.failDialog = true
+        this.alertContent = '중복되는 아이디 입니다.'
+        // close() => {'          this.$router.push()'}
+      } else { // 1이 아니면 중복되는게 아님
+        this.isDialog = true
+        this.alertContent = '가입 가능한 아이디 입니다'
       }
     },
     onClose () {
-      console.log('test1')
-      this.$emit('child-close')
+      this.$emit('close')
+    },
+    emailValidate (e) {
+      if (e.length === 0) {
+        console.log('1')
+        this.emailDisabled = true
+        this.emailValid = 'space'
+      } else if (!/.+@.+\..+/.test(e)) {
+        console.log('2')
+        this.emailDisabled = true
+        this.emailValid = 'notValid'
+      } else if (/.+@.+\..+/.test(e)) {
+        console.log('3')
+        this.emailDisabled = false
+        // var x = document.getElementById('idChkbtn')
+        // x.style.color = 'green'
+        this.emailValid = 'valid'
+      }
+    },
+    passValidation (e) {
+      this.passValid = ['영문대문자 포함', '영문소문자 포함', '숫자포함', '10자 이상']
+
+      if (/[A-Z]/.test(e)) {
+        this.passValid.splice(this.passValid.indexOf('영문대문자 포함'), 1)
+      }
+
+      if (/[a-z]/.test(e)) {
+        this.passValid.splice(this.passValid.indexOf('영문소문자 포함'), 1)
+      }
+
+      if (/[0-9]/.test(e)) {
+        this.passValid.splice(this.passValid.indexOf('숫자포함'), 1)
+      }
+
+      if (e.length >= 10) {
+        this.passValid.splice(this.passValid.indexOf('10자 이상'), 1)
+      }
+    },
+    pwdConfirm (v) { // 비밀번호 확인 함수
+      if (v === this.user_pw) {
+        this.chkPwd = false
+      } else {
+        this.chkPwd = true
+      }
+    },
+    close () {
+      if (this.type === 'move') {
+        this.$router.push('/home')
+      }
+      this.isDialog = false
+      this.failDialog = false
     }
 
   }
@@ -299,5 +428,8 @@ export default {
 <style>
 .v-input__control{
   min-height: 30px !important;
+}
+.dodo{
+    margin-left: 150px;
 }
 </style>
