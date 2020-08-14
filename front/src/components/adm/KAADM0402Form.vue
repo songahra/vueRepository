@@ -2,54 +2,90 @@
   <div id="ct">
     <section class="card">
       <header class="card-header">
-                <h2 class="card-title text-tertiary"><span class="i-rounded bg-danger"><i class="icon-set"></i></span><a href="solList">솔루션</a></h2>
-                <h2 class="card-title text-pad">|</h2>
-                <h2 class="card-title">사용자</h2>
-            </header>
+        <h2 class="card-title text-tertiary">
+          <span class="i-rounded bg-danger"><i class="icon-set" /></span><a href="solList">솔루션</a>
+        </h2>
+        <h2 class="card-title text-pad">
+          |
+        </h2>
+        <h2 class="card-title">
+          사용자
+        </h2>
+      </header>
       <div class="ct-header">
-          <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-          <div id="collapse-filter" class="collapse collapse-filter">
-              <div class="filter no-gutters">
-                  <div class="col">
-                      <label class="form-control-label">
-                          <b class="control-label">등록기간</b>
-                          <input id="datePicker" type="text" class="form-control input-daterange">
-                      </label>
-                  </div>
-                  <div class="col-auto">
-                      <button type="button" class="btn btn-primary" style="margin-left: 10px;" @click="onSubmit"><i class="icon-srch"></i>조회</button>
-                  </div>
-              </div>
+        <button
+          type="button"
+          class="btn-filter collapsed d-xl-none"
+          data-toggle="collapse"
+          data-target="#collapse-filter"
+        >
+          검색 필터<i class="icon-down" />
+        </button>
+        <div
+          id="collapse-filter"
+          class="collapse collapse-filter"
+        >
+          <div class="filter no-gutters">
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">등록기간</b>
+                <input
+                  id="datePicker"
+                  type="text"
+                  class="form-control input-daterange"
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">이름</b>
+                <input
+                  v-model="selName"
+                  type="text"
+                  class="form-control"
+                  placeholder="이름을 입력하세요"
+                >
+              </label>
+            </div>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn btn-primary"
+                style="margin-left: 10px;"
+                @click="onSubmit"
+              >
+                <i class="icon-srch" />조회
+              </button>
+            </div>
           </div>
+        </div>
       </div>
       <div class="ct-content">
         <v-app id="app">
-        <ag-grid-vue style="width: 100%; height:550px;"
-                    class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                    :columnDefs="columnDefs"
-                    :rowData="rowData"
-                    :grid-options="gridOptions"
-                    :get-row-style="getRowStyle"
-                    :grid-size-changed="gridSizeFit"
-                    :grid-ready="gridSizeFit"
-                    :tooltipShowDelay="tooltipShowDelay"
-                    @cell-clicked="onCellClicked"
-                    @gridReady="gridSizeFit"
-                    @gridSizeChanged="gridSizeFit">
-        </ag-grid-vue>
-        <Modal2
-        :dialog="isDialog"
-        :propsdata="params"
-        ref="popup"
-        @close="isDialog=false"
-        />
+          <ag-grid-vue
+            style="width: 100%; height:250px;"
+            class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+            :column-defs="columnDefs"
+            :row-data="rowData"
+            :grid-options="gridOptions"
+            :get-row-style="getRowStyle"
+            :grid-size-changed="gridSizeFit"
+            :grid-ready="gridSizeFit"
+            :tooltip-show-delay="tooltipShowDelay"
+            @cell-clicked="onCellClicked"
+            @gridReady="gridSizeFit"
+            @gridSizeChanged="gridSizeFit"
+          />
+          <Modal2
+            ref="popup"
+            :dialog="isDialog"
+            :propsdata="params"
+            @close="isDialog=false"
+          />
         </v-app>
       </div>
-
     </section>
-
   </div>
-
 </template>
 
 <script>
@@ -70,15 +106,16 @@ var $ = global.jQuery
 window.$ = $
 
 export default {
+  name: 'KAADM0402From',
   components: {
     Modal2,
     AgGridVue
   },
-  name: 'KAADM0402From',
   data: () => {
     return {
       lists: '',
       userid: '',
+      selName: null,
       // grid
       columnDefs: null,
       rowData: [],
@@ -217,21 +254,42 @@ export default {
     makeData () {
       this.rowData = []
       console.log('지식포인트 row Data', this.rowData)
-      this.lists.forEach(e => {
-        const value = {
-          userName: e.userName,
-          question: e.question,
-          answer: e.answer,
-          scoreCount: e.scoreCount,
-          avgScore: e.avgScore,
-          dueDate: e.dueDate,
-          point: e.point,
-          userid: e.user_id,
-          userDept: e.userDept,
-          userInfo: '아이디 : ' + e.user_id + ' / 부서 : ' + e.userDept
-        }
-        this.rowData.push(value)
-      })
+      if (this.selName != null) {
+        console.log('선택된 이름은? ', this.selName)
+        this.lists.forEach(e => {
+          if (e.userName.includes(this.selName)) {
+            const value = {
+              userName: e.userName,
+              question: e.question,
+              answer: e.answer,
+              scoreCount: e.scoreCount,
+              avgScore: e.avgScore,
+              dueDate: e.dueDate,
+              point: e.point,
+              userid: e.user_id,
+              userDept: e.userDept,
+              userInfo: '아이디 : ' + e.user_id + ' / 부서 : ' + e.userDept
+            }
+            this.rowData.push(value)
+          }
+        })
+      } else {
+        this.lists.forEach(e => {
+          const value = {
+            userName: e.userName,
+            question: e.question,
+            answer: e.answer,
+            scoreCount: e.scoreCount,
+            avgScore: e.avgScore,
+            dueDate: e.dueDate,
+            point: e.point,
+            userid: e.user_id,
+            userDept: e.userDept,
+            userInfo: '아이디 : ' + e.user_id + ' / 부서 : ' + e.userDept
+          }
+          this.rowData.push(value)
+        })
+      }
     },
     gridSizeFit (params) {
       // 모니터나 브라우저 크기에 따라 반응하여 그리드 컬럼 사이즈를 조정

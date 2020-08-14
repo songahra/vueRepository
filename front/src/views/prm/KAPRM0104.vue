@@ -142,6 +142,9 @@ export default {
     ]
   },
   async created () {
+    this.$store.commit('SET_DEPTH1', '프로필관리')
+    this.$store.commit('SET_DEPTH2', '지식포인트')
+
     this.time()
     var moment = require('moment')
     moment.locale('ko') // 언어팩 변경

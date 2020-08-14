@@ -1,73 +1,124 @@
 <!-- 권한관리 리스트 Form -->
 <template>
-<div>
+  <div>
     <header class="card-header">
-        <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-set"></i></span>사용자 정보</h2>
-        <div class="btn-container">
-          <p>{{rows}}</p>
-            <a href="" class="btn btn-m" @click="deleteUserInfo()"><span class="hide">삭제</span></a>
-            <a href="" class="btn btn-primary" @click.prevent="saveUserInfo()"><span class="hide">저장</span></a>
-        </div>
+      <h2 class="card-title">
+        <span class="i-rounded bg-danger"><i class="icon-set" /></span>사용자 정보
+      </h2>
+      <div class="btn-container">
+        <a
+          class="btn btn-m"
+          @click.prevent="deleteUserInfo()"
+        ><span class="hide">삭제</span></a>
+        <a
+          href=""
+          class="btn btn-primary"
+          @click.prevent="saveUserInfo()"
+        ><span class="hide">저장</span></a>
+      </div>
     </header>
     <div class="ct-header">
-        <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-        <div id="collapse-filter" class="collapse collapse-filter">
-            <div class="filter no-gutters">
-                <div class="col">
-                    <label class="form-control-label">
-                        <b class="control-label">사용자ID</b>
-                        <input type="text" class="form-control" placeholder="사용자ID를 입력해주세요." v-model="user_id">
-                    </label>
-                </div>
-                <div class="col">
-                    <label class="form-control-label">
-                        <b class="control-label">사용자명</b>
-                        <input type="text" class="form-control" placeholder="사용자명를 입력해주세요." v-model="user_name">
-                    </label>
-                </div>
-                <div class="col">
-                    <label class="form-control-label">
-                        <b class="control-label">소속회사명</b>
-                        <input type="text" class="form-control" placeholder="소속회사명을 입력해주세요." v-model="company">
-                    </label>
-                </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-primary" @click="onSubmit"><i class="icon-srch"></i>조회</button>
-                </div>
-            </div>
+      <button
+        type="button"
+        class="btn-filter collapsed d-xl-none"
+        data-toggle="collapse"
+        data-target="#collapse-filter"
+      >
+        검색 필터<i class="icon-down" />
+      </button>
+      <div
+        id="collapse-filter"
+        class="collapse collapse-filter"
+      >
+        <div class="filter no-gutters">
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">사용자ID</b>
+              <input
+                v-model="user_id"
+                type="text"
+                class="form-control"
+                placeholder="사용자ID를 입력해주세요."
+              >
+            </label>
+          </div>
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">사용자명</b>
+              <input
+                v-model="user_name"
+                type="text"
+                class="form-control"
+                placeholder="사용자명를 입력해주세요."
+              >
+            </label>
+          </div>
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">소속회사명</b>
+              <input
+                v-model="company"
+                type="text"
+                class="form-control"
+                placeholder="소속회사명을 입력해주세요."
+              >
+            </label>
+          </div>
+          <div class="col-auto">
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="onSubmit"
+            >
+              <i class="icon-srch" />조회
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+    <button
+      type="button"
+      class="cc"
+      @click="onSubmit"
+    />
+    <button class="test" />
     <div class="ct-content">
-       <div class="table-responsive">
-            <ag-grid-vue style="width: 100%; height: 650px;"
-                          class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                          :columnDefs="columnDefs"
-                          :rowData="rowData"
-                          :gridOptions="gridOptions"
-                          @cellEditorSelector="cellEditorSelector"
-                          @onCellEditingStarted="onCellEditingStarted"
-                          @onCellEditingStopped="onCellEditingStopped"
-                          @getRowStyle="getRowStyle"
-                          @gridReady="gridSizeFit"
-                          @gridSizeChanged="gridSizeFit"
-                          @cellValueChanged="cellValueChanged"
-                          @paginationChanged="paginationChanged"
-                          >
-            </ag-grid-vue>
-        </div>
-        <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
+      <div class="table-responsive">
+        <ag-grid-vue
+          style="width: 100%; height: 650px;"
+          class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+          :column-defs="columnDefs"
+          :row-data="rowData"
+          :grid-options="gridOptions"
+          @cellEditorSelector="cellEditorSelector"
+          @onCellEditingStarted="onCellEditingStarted"
+          @onCellEditingStopped="onCellEditingStopped"
+          @getRowStyle="getRowStyle"
+          @gridReady="gridSizeFit"
+          @gridSizeChanged="gridSizeFit"
+          @cellValueChanged="cellValueChanged"
+          @paginationChanged="paginationChanged"
+        />
+      </div>
+      <alert
+        :dialog="isDialog"
+        :send-data="alertContent"
+        @close="close()"
+      />
     </div>
-</div>
+  </div>
 </template>
 
 <script>
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+
 import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { AgGridVue } from 'ag-grid-vue'
 import alert from '@/components/common/CompletePOP.vue'
 import { allUserList, srchUserList, modifyUserInfo, deleteUserInfo } from '@/api/adm/Auth.js'
 import { getSolution } from '@/api/log/Login.js'
+
 // import { extractValuestest } from './util'
 export default {
   name: 'KAKNM0103From',
@@ -83,6 +134,8 @@ export default {
       rowData: [],
       modules: AllCommunityModules,
       gridOptions: null,
+      gridSelectKeys: [],
+      settings: {},
 
       // form id
       userid: '', // 로그인 유저
@@ -99,13 +152,18 @@ export default {
       login_cnt: '',
       update_date: '',
       userSolutions: '',
+      flag: '',
       rows: [],
       reg_date: '', // 임시
       alertContent: '',
       isDialog: false,
-      items: [],
-      gridSelectKeys: [],
-      settings: {}
+      items: []
+
+    }
+  },
+  computed: {
+    chg_userid () {
+      return this.$store.state.userid
     }
   },
   beforeMount () {
@@ -163,7 +221,7 @@ export default {
     ]
   },
   created () {
-    this.getSolution()
+
   },
   mounted () {
     console.log('mounted!!')
@@ -178,11 +236,7 @@ export default {
       })
       .then((res) => console.log(res))
       .catch(console.error())
-  },
-  computed: {
-    chg_userid () {
-      return this.$store.state.userid
-    }
+    this.getSolution()
   },
   methods: {
     // sortChanged () {
@@ -366,13 +420,14 @@ export default {
       for (let i = 0; i < this.rows.length; i++) {
         const e = this.rows[i]
         const value = {
-          update_userid: e.update_userid,
+          update_userid: this.$store.state.userid,
           user_id: e.user_id,
           company: e.company,
           dept: e.dept,
           solution: e.solution,
           user_type: e.user_type,
           user_pw: e.user_pw,
+          login_cnt: e.login_cnt,
           login_lock: e.login_lock,
           use_yn: e.use_yn
         }
@@ -384,9 +439,8 @@ export default {
       modifyUserInfo(formData)
         .then((res) => {
           console.log('res=>>', res)
-          this.alertContent = this.rows + '등록되었습니다.'
           this.isDialog = true
-          this.$router.push('/adm/authList')
+          this.alertContent = this.rows.length + '건이 수정되었습니다.'
         })
         .catch(console.error())
     },
@@ -398,7 +452,7 @@ export default {
       for (let i = 0; i < this.rows.length; i++) {
         const e = this.rows[i]
         const value = {
-          update_userid: e.update_userid,
+          update_userid: this.$store.state.userid,
           user_id: e.user_id
         }
         formData.push(value)
@@ -406,14 +460,15 @@ export default {
       deleteUserInfo(formData)
         .then((res) => {
           console.log('res=>>', res)
-          this.alertContent = this.rows + '건이 삭제되었습니다.'
+          this.alertContent = this.rows.length + '건이 삭제되었습니다.'
           this.isDialog = true
-          this.$router.push('/adm/authList')
         })
         .catch(console.error())
     },
     close () {
       this.isDialog = !this.isDialog
+      this.onSubmit()
+      // this.$router.go(this.$router.currentRoute)
     }
   }
 }
@@ -421,4 +476,27 @@ export default {
 
 <style>
 
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* .pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+} */
 </style>

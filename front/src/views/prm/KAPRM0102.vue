@@ -92,6 +92,21 @@
                 담당솔루션
               </td>
               <td>
+                <select
+                  v-model="solution"
+                  class="form-control"
+                  title="선택하세요"
+                  @change="selectSolution"
+                >
+                  <option
+                    v-for="(item,index) in items"
+                    :key="index"
+                    :value="item.codeId"
+                  >
+                    {{ item.codeContent }}
+                  </option>
+                </select>
+                <!--
                 <v-select
                   v-model="solution"
                   class="form-control compact-form"
@@ -101,7 +116,7 @@
                   item-text="codeContent"
                   item-value="codeId"
                   @change="selectSolution"
-                />
+                /> -->
               </td>
             </tr>
             <tr>
@@ -109,7 +124,23 @@
                 권한
               </td>
               <td>
-                <v-select
+                <select
+                  v-model="user_type"
+                  class="form-control"
+                  title="선택하세요"
+                  @change="selectSolution"
+                >
+                  <option
+
+                    v-for="(item,index) in items2"
+                    :key="index"
+                    :value="item.code"
+                    @change="selectType"
+                  >
+                    {{ item.name }}
+                  </option>
+                </select>
+                <!-- <v-select
                   v-model="user_type"
                   class="form-control compact-form"
                   :items="items2"
@@ -118,7 +149,7 @@
                   item-text="name"
                   item-value="code"
                   @change="selectType"
-                />
+                /> -->
               </td>
             </tr>
             <tr>
@@ -237,6 +268,9 @@ export default {
     }
   },
   async created () {
+    this.$store.commit('SET_DEPTH1', '프로필관리')
+    this.$store.commit('SET_DEPTH2', '프로필편집')
+
     const { data } = await getSolution() // 솔루션 목록 가져오기
 
     console.log('data: ', data)
@@ -248,8 +282,9 @@ export default {
     this.solution = userSolution(this.code)
     console.log('솔루션명은?' + this.solution) // 솔루션 명 저장
     this.dept = this.$store.state.dept
-    console.log('this.items' + this.items)
-    this.solution = { codeContent: this.solution, codeId: this.code }
+    console.log('this.items', this.items)
+    this.solution = this.code
+    console.log('this.items', this.solution)
   },
   methods: {
     selectSolution () {
@@ -263,7 +298,7 @@ export default {
       this.user_type = userType(this.typeCode)
       console.log('this.typeCode', this.typeCode)
       console.log('this.user_type', this.user_type)
-      this.user_type = { name: this.user_type, code: this.typeCode }
+      this.user_type = this.typeCode
     },
     addBoard () {
       this.isAddBoard = true
@@ -311,11 +346,11 @@ export default {
           fd.append('profile_image', this.image)
           fd.append('user_id', this.user_id)
           const { data } = await formData(fd)
+          console.log('???', data)
           this.imgSrc = data
+          this.showNoImage = false
         }
       } catch (error) {
-      } finally {
-
       }
     },
     noImage () {

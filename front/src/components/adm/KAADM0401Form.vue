@@ -2,53 +2,78 @@
   <div id="ct">
     <section class="card">
       <header class="card-header">
-        <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-set"></i></span>솔루션</h2>
-        <h2 class="card-title text-pad">|</h2>
-        <h2 class="card-title text-tertiary"><a href="userList">사용자</a></h2>
+        <h2 class="card-title">
+          <span class="i-rounded bg-danger"><i class="icon-set" /></span>솔루션
+        </h2>
+        <h2 class="card-title text-pad">
+          |
+        </h2>
+        <h2 class="card-title text-tertiary">
+          <a href="userList">사용자</a>
+        </h2>
       </header>
       <div class="ct-header">
-                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-                <div id="collapse-filter" class="collapse collapse-filter">
-                    <div class="filter no-gutters">
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">등록기간</b>
-                                <input id="datePicker" type="text" class="form-control input-daterange">
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-primary" style="margin-left: 10px;" @click="onSubmit"><i class="icon-srch"></i>조회</button>
-                        </div>
-                    </div>
-                </div>
+        <button
+          type="button"
+          class="btn-filter collapsed d-xl-none"
+          data-toggle="collapse"
+          data-target="#collapse-filter"
+        >
+          검색 필터<i class="icon-down" />
+        </button>
+        <div
+          id="collapse-filter"
+          class="collapse collapse-filter"
+        >
+          <div class="filter no-gutters">
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">등록기간</b>
+                <input
+                  id="datePicker"
+                  type="text"
+                  class="form-control input-daterange"
+                >
+              </label>
             </div>
-            <div class="ct-content">
-              <v-app id="app">
-              <ag-grid-vue style="width: 100%; height:550px;"
-                          class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                          :columnDefs="columnDefs"
-                          :rowData="rowData"
-                          :grid-options="gridOptions"
-                          :get-row-style="getRowStyle"
-                          :grid-size-changed="gridSizeFit"
-                          :grid-ready="gridSizeFit"
-                          @cell-clicked="onCellClicked"
-                          @gridReady="gridSizeFit"
-                          @gridSizeChanged="gridSizeFit">
-              </ag-grid-vue>
-              <Modal
-              :dialog="isDialog"
-              :propsdata="params"
-              ref="popup"
-              @close="isDialog=false"
-              />
-              </v-app>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn btn-primary"
+                style="margin-left: 10px;"
+                @click="onSubmit"
+              >
+                <i class="icon-srch" />조회
+              </button>
             </div>
-
+          </div>
+        </div>
+      </div>
+      <div class="ct-content">
+        <v-app id="app">
+          <ag-grid-vue
+            style="width: 100%; height:250px;"
+            class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+            :column-defs="columnDefs"
+            :row-data="rowData"
+            :grid-options="gridOptions"
+            :get-row-style="getRowStyle"
+            :grid-size-changed="gridSizeFit"
+            :grid-ready="gridSizeFit"
+            @cell-clicked="onCellClicked"
+            @gridReady="gridSizeFit"
+            @gridSizeChanged="gridSizeFit"
+          />
+          <Modal
+            ref="popup"
+            :dialog="isDialog"
+            :propsdata="params"
+            @close="isDialog=false"
+          />
+        </v-app>
+      </div>
     </section>
-
   </div>
-
 </template>
 
 <script>
@@ -72,11 +97,11 @@ var $ = global.jQuery
 window.$ = $
 
 export default {
+  name: 'KAADM0401From',
   components: {
     Modal,
     AgGridVue
   },
-  name: 'KAADM0401From',
   data: () => {
     return {
       lists: '',
@@ -219,17 +244,31 @@ export default {
       this.rowData = []
       console.log('makeData << SOL >>')
       this.lists.forEach(e => {
-        const value = {
-          solution: e.solution,
-          question: e.question,
-          answer: e.answer,
-          notSuccess: e.notSuccess,
-          scoreCount: e.scoreCount,
-          avgScore: e.avgScore,
-          dueDate: e.dueDate,
-          point: e.point
+        if (e.dueDate === ' 일') {
+          const value = {
+            solution: e.solution,
+            question: e.question,
+            answer: e.answer,
+            notSuccess: e.notSuccess,
+            scoreCount: e.scoreCount,
+            avgScore: e.avgScore,
+            dueDate: '--' + e.dueDate,
+            point: e.point
+          }
+          this.rowData.push(value)
+        } else {
+          const value = {
+            solution: e.solution,
+            question: e.question,
+            answer: e.answer,
+            notSuccess: e.notSuccess,
+            scoreCount: e.scoreCount,
+            avgScore: e.avgScore,
+            dueDate: e.dueDate,
+            point: e.point
+          }
+          this.rowData.push(value)
         }
-        this.rowData.push(value)
       })
     },
     gridSizeFit (params) {

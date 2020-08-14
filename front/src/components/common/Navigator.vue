@@ -50,47 +50,51 @@
           ><i class="icon-arrange text-dark" />지식 자료실</a>
           <a
             class="menu-collapse-link collapsed"
+            style="color: #CFD8DC"
             data-toggle="collapse"
           ><i class="icon-graph text-dark" />지식자산 통계</a>
           <a
             href="/noticeList"
             class="menu-collapse-link collapsed"
           ><i class="icon-alarm text-dark" />공지사항</a>
-          <a
-            href="#menu-setting"
-            class="menu-collapse-link collapsed"
-            data-toggle="collapse"
-          ><i class="icon-set text-dark" />설정<i class="icon-down text-dark" /></a>
-          <ul
-            id="menu-setting"
-            class="menu-collapse collapse"
-            data-parent="#gnb"
-          >
-            <li class="menu-item">
-              <a
-                href="/adm/pjList"
-                class="menu-link"
-              >프로젝트</a>
-            </li>
-            <li class="menu-item">
-              <a
-                href="/adm/authList"
-                class="menu-link"
-              >사용자 권한</a>
-            </li>
-            <li class="menu-item">
-              <a
-                href="/adm/codeList"
-                class="menu-link"
-              >코드관리</a>
-            </li>
-            <li class="menu-item">
-              <a
-                href="/adm/solList"
-                class="menu-link"
-              >지식포인트</a>
-            </li>
-          </ul>
+          <!-- usertype이 운영자인 경우에만 설정 보이기 -->
+          <template v-if="this.$store.state.usertype === 'O'">
+            <a
+              href="#menu-setting"
+              class="menu-collapse-link collapsed"
+              data-toggle="collapse"
+            ><i class="icon-set text-dark" />설정<i class="icon-down text-dark" /></a>
+            <ul
+              id="menu-setting"
+              class="menu-collapse collapse"
+              data-parent="#gnb"
+            >
+              <li class="menu-item">
+                <a
+                  href="/adm/pjList"
+                  class="menu-link"
+                >프로젝트</a>
+              </li>
+              <li class="menu-item">
+                <a
+                  href="/adm/authList"
+                  class="menu-link"
+                >사용자 권한</a>
+              </li>
+              <li class="menu-item">
+                <a
+                  href="/adm/codeList"
+                  class="menu-link"
+                >코드관리</a>
+              </li>
+              <li class="menu-item">
+                <a
+                  href="/adm/solList"
+                  class="menu-link"
+                >지식포인트</a>
+              </li>
+            </ul>
+          </template>
           <a
             href="/profile"
             class="menu-collapse-link collapsed"

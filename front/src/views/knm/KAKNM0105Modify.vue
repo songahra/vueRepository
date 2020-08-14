@@ -1,7 +1,7 @@
 <template>
   <div id="ct">
     <section class="card">
-      <KAKNM0105Form :sendData='paramData'></KAKNM0105Form>
+      <KAKNM0105Form :send-data="paramData" />
     </section>
   </div>
 </template>
@@ -14,20 +14,12 @@ export default {
   components: {
     KAKNM0105Form
   },
+  props: ['sendData'],
   data () {
     return {
       userid: ''
       // paramData: []
     }
-  },
-  created () {
-    console.log('1. created dd', this.$route.params)
-    // this.userid = this.$store.state.userid
-    // this.paramData = this.$route.params
-    console.log('2. created dd', this.paramData)
-
-    this.$store.commit('SET_DEPTH1', '지식관리')
-    this.$store.commit('SET_DEPTH2', ' ')
   },
   computed: {
     useri_id: function () {
@@ -38,6 +30,15 @@ export default {
       console.log(' computed param ', this.$route.params)
       return this.$route.params
     }
+  },
+  created () {
+    console.log('1. created dd', this.$route.params)
+    // this.userid = this.$store.state.userid
+    // this.paramData = this.$route.params
+    console.log('2. created dd', this.paramData)
+
+    this.$store.commit('SET_DEPTH1', '지식관리')
+    this.$store.commit('SET_DEPTH2', '수정')
   }
 }
 </script>

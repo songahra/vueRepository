@@ -9,7 +9,7 @@ function getPjList () {
 }
 
 function srchPjList (srchData) {
-  return instance.get('adm/srchPjList', srchData)
+  return instance.get('adm/srchPjList', { params: srchData })
 }
 
 export { getPjList, srchPjList }

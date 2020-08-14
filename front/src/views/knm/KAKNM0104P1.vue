@@ -1,29 +1,49 @@
 <template>
- <div id="modal2" class="modal fade" tabindex="-1" role="dialog">
+  <div id="ct">
+    <section class="card">
       <v-dialog
         v-model="dialog"
         persistent
-        max-width="50%"
       >
-        <v-card>
-          <v-container fluid>
-
-              <div class="modal-dialog modal-dialog-centered modal-dialog-alert">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <i class="iconb-warn"></i>
-                    <p class="alert-text">질문하신 내용에 대해 추가 질문이 필요하신가요? </p>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn" data-dismiss="modal"  @click="reQuestion">다시질문하기</button>
-                    <button type="button" class="btn btn-primary"  @click="reQuClose">닫기</button>
-                  </div>
-                </div>
+        <div
+          id="modal1"
+          class="modal fade show"
+          tabindex="-1"
+          style="display: block;"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-dialog-alert">
+            <div class="modal-content">
+              <div class="modal-body">
+                <i class="iconb-warn" />
+                <p class="alert-text">
+                  질문하신 내용에 대해 추가 질문이 필요하신가요?
+                </p>
               </div>
-          </v-container>
-        </v-card>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn"
+                  data-dismiss="modal"
+                  @click.prevent="reQuestion"
+                >
+                  다시질문하기
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click.prevent="reQuClose"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </v-dialog>
-</div>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -39,6 +59,11 @@ export default {
       up_question_id: ''
     }
   },
+  computed: {
+    user_id () {
+      return this.$store.state.userid
+    }
+  },
   async created () {
     const formData = {
       question_id: this.$route.params.question_id
@@ -46,11 +71,6 @@ export default {
     const { data } = await srchQuId(formData)
     this.question_id = data.question_id
     this.userid = this.$store.state.userid
-  },
-  computed: {
-    user_id () {
-      return this.$store.state.userid
-    }
   },
   methods: {
     reQuestion () {

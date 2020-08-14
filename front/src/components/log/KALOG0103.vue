@@ -73,11 +73,6 @@
                             >
                               아이디 중복 확인
                             </button>
-                            <!-- <input
-                              type="button"
-                              style="position:absolute"
-                              value="dkdkdkdk"
-                            > -->
                           </span>
                         </div>
                       </div>
@@ -167,7 +162,7 @@
                       </div>
                       <div class="form-group">
                         <label class="control-label">담당</label>
-                        <v-combobox
+                        <v-select
                           v-model="user_type"
                           class="form-control compact-form"
                           :items="items2"
@@ -329,8 +324,8 @@ export default {
           user_name: this.user_name,
           user_pw: this.user_pw,
           company: this.company,
-          user_type: this.user_type.code,
-          solution: this.solution.codeId,
+          user_type: this.user_type,
+          solution: this.solution,
           dept: this.dept
 
         }
@@ -340,9 +335,6 @@ export default {
           this.type = 'move'
           this.isDialog = true
           this.alertContent = '회원가입 성공'
-
-          // this.
-          // this.$router.push('/home').catch(() => {})
         } else {
           this.failDialog = true
           this.alertContent = '회원가입 실패'
@@ -415,7 +407,7 @@ export default {
     },
     close () {
       if (this.type === 'move') {
-        this.$router.push('/home')
+        this.$router.go(this.$router.currentRoute)
       }
       this.isDialog = false
       this.failDialog = false

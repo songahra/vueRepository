@@ -35,49 +35,85 @@
             <div class="modal-body">
               <div class="form-group">
                 <label class="control-label">이전 비밀번호</label>
-                <v-text-field
-                  v-model="user_pw"
-                  :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="show1 ? 'text' : 'password'"
-                  solo
-                  dense
-                  outline
-                  class="form-control compact-form"
-                  placeholder="이전 비밀번호를 입력해 주세요."
-                  required
-                  @click:append="show1 = !show1"
-                />
+                <div style="position: relative">
+                  <v-text-field
+                    v-model="user_pw"
+                    :type="show1 ? 'text' : 'password'"
+                    solo
+                    dense
+                    class="form-control compact-form"
+                    placeholder="이전 비밀번호를 입력해 주세요."
+                    required
+                  />
+                  <template v-if="show1 === false">
+                    <img
+                      class="input-icon"
+                      src="@/assets/img/eye-closed.png"
+                      @click="()=>{show1 = true }"
+                    >
+                  </template>
+                  <template v-else>
+                    <i
+                      class="icon-eye input-icon"
+                      @click="()=>{show1 = false }"
+                    />
+                  </template>
+                </div>
               </div>
               <div class="form-group">
                 <label class="control-label">비밀번호</label>
-                <v-text-field
-                  v-model="update_pw"
-                  :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="show2 ? 'text' : 'password'"
-                  class="form-control"
-                  placeholder="비밀번호를 입력해 주세요."
-                  required
-                  solo
-                  dense
-                  outline
-                  @click:append="show2 = !show2"
-                />
+                <div style="position: relative">
+                  <v-text-field
+                    v-model="update_pw"
+                    :type="show2 ? 'text' : 'password'"
+                    class="form-control"
+                    placeholder="비밀번호를 입력해 주세요."
+                    required
+                    solo
+                    dense
+                  />
+                  <template v-if="show2 === false">
+                    <img
+                      class="input-icon"
+                      src="@/assets/img/eye-closed.png"
+                      @click="()=>{show2 = true }"
+                    >
+                  </template>
+                  <template v-else>
+                    <i
+                      class="icon-eye input-icon"
+                      @click="()=>{show2 = false }"
+                    />
+                  </template>
+                </div>
               </div>
               <div class="form-group">
                 <label class="control-label">비밀번호 확인</label>
-                <v-text-field
-                  v-model="check_pw"
-                  :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="show3 ? 'text' : 'password'"
-                  class="form-control"
-                  placeholder="동일한 비밀번호를 입력해 주세요."
-                  :rules="[v => !!v || '비밀번호를 확인해 주세요', v => v === this.update_pw || '비밀번호가 서로 일치하지 않습니다.']"
-                  required
-                  solo
-                  dense
-                  outline
-                  @click:append="show3 = !show3"
-                />
+                <div style="position: relative">
+                  <v-text-field
+                    v-model="check_pw"
+                    :type="show3 ? 'text' : 'password'"
+                    class="form-control"
+                    placeholder="동일한 비밀번호를 입력해 주세요."
+                    :rules="[v => !!v || '비밀번호를 확인해 주세요', v => v === this.update_pw || '비밀번호가 서로 일치하지 않습니다.']"
+                    required
+                    solo
+                    dense
+                  />
+                  <template v-if="show3 === false">
+                    <img
+                      class="input-icon"
+                      src="@/assets/img/eye-closed.png"
+                      @click="()=>{show3 = true }"
+                    >
+                  </template>
+                  <template v-else>
+                    <i
+                      class="icon-eye input-icon"
+                      @click="()=>{show3 = false }"
+                    />
+                  </template>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -92,6 +128,7 @@
               <button
                 type="submit"
                 class="btn btn-primary"
+                :disabled="!isFormValid"
               >
                 확인
               </button>

@@ -7,14 +7,16 @@
           <span class="i-rounded bg-danger"><i class="icon-alarm" /></span>공지사항 상세보기
         </h2>
         <div class="btn-container">
-          <a
-            class="btn btn-m"
-            @click="onClick()"
-          ><span class="hide">수정</span></a>
-          <a
-            class="btn btn-m"
-            @click="deleteBtn()"
-          ><span class="hide">삭제</span></a>
+          <template v-if="chkWriter()">
+            <a
+              class="btn btn-m"
+              @click="onClick()"
+            ><span class="hide">수정</span></a>
+            <a
+              class="btn btn-m"
+              @click="deleteBtn()"
+            ><span class="hide">삭제</span></a>
+          </template>
           <a
             href="/noticeList"
             class="btn btn-m"
@@ -131,15 +133,7 @@
                   <td><span class="placeholder">첨부할 파일을 선택해 주세요.</span></td>
                   <td />
                   <td>0kbytes</td>
-                  <td class="text-nowrap">
-                    <button
-                      type="button"
-                      class="btn"
-                      :disabled="!selectedFiles.length"
-                    >
-                      <i class="icon-delete" />삭제
-                    </button>
-                  </td>
+                  <td class="text-nowrap" />
                 </tr>
                 <tr
                   v-for="(file, index ) in selectedFiles"
@@ -298,6 +292,12 @@ export default {
 
       if (res.status === 200) {
         this.$router.push('/noticeList')
+      }
+    },
+    chkWriter () {
+      this.userid = this.$store.state.userid
+      if (this.userid === this.reg_userid) {
+        return true
       }
     }
   }

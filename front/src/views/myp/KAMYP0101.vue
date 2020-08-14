@@ -177,6 +177,9 @@ export default {
     }
   },
   async created () {
+    this.$store.commit('SET_DEPTH1', 'My Page')
+    this.$store.commit('SET_DEPTH2', ' ')
+
     const param = {
       user_id: this.$store.state.userid
     }

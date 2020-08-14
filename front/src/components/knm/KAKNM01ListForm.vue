@@ -1,18 +1,19 @@
 <!-- 기술문의 메인리스트 Form-->
 <template>
-    <div class="ct-content">
-        <div style="width: 100%; height:100%">
-            <ag-grid-vue style="width: 100%; height: 550px;"
-                         class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                         :columnDefs="columnDefs"
-                         :rowData="rowData"
-                         :gridOptions="gridOptions"
-                         @gridReady="gridSizeFit"
-                         @gridSizeChanged="gridSizeFit"
-                         @cell-clicked="onCellClicked">
-            </ag-grid-vue>
-         </div>
+  <div class="ct-content">
+    <div style="width: 100%; height:100%">
+      <ag-grid-vue
+        style="width: 100%; height: 550px;"
+        class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :grid-options="gridOptions"
+        @gridReady="gridSizeFit"
+        @gridSizeChanged="gridSizeFit"
+        @cell-clicked="onCellClicked"
+      />
     </div>
+  </div>
 </template>
 
 <script>
@@ -168,17 +169,12 @@ export default {
     },
     /* 그리드 클릭 이벤트 */
     onCellClicked (event) {
-      if (event.colDef.field === 'title') {
-        console.log('ddd2')
-        const params = {
-          reg_userid: event.data.reg_userid,
-          question_id: event.data.question_id,
-          answer_id: event.data.answer_id
-        }
-        this.$router.push({ name: 'KAKNM0104Detail', params: params })
-      } else {
-        return event
+      const params = {
+        reg_userid: event.data.reg_userid,
+        question_id: event.data.question_id,
+        answer_id: event.data.answer_id
       }
+      this.$router.push({ name: 'KAKNM0104Detail', params: params })
     }
   }
 }

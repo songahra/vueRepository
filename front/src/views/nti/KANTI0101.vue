@@ -47,7 +47,7 @@
                   <b class="control-label">정렬</b>
                   <select
                     v-model="sortType"
-                    class="form-control selectpicker"
+                    class="form-control"
                     title="선택하세요"
                     readonly
                   >
@@ -60,6 +60,7 @@
               <div class="col-auto">
                 <button
                   type="button"
+                  style="margin-left: 10px;"
                   class="btn btn-primary"
                   @click="onSubmit()"
                 >

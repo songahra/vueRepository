@@ -1,96 +1,158 @@
 <!-- 코드관리 리스트 Form -->
 <template>
-<div>
-
-             <div class="form-group" >
-            <header class="card-header" style="padding: 1.6rem 1rem;">
-                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-std-code"></i></span>코드관리</h2>
-                <div class="btn-container">
-                    <a href="" class="btn btn-primary" type="submit" @click.prevent="writeUserInfo"><span class="hide">등록</span></a>
-                    <a href="" class="btn btn-primary" type="submit" @click.prevent="modifyCodeInfo"><span class="hide">수정</span></a>
-                    <a href="" class="btn btn-primary" type="submit" @click.prevent="deleteCodeInfo"><span class="hide">삭제</span></a>
-                    <a href="" class="btn"  @click="() => this.$router.push({ name: 'KAADM0301List' })" ><span class="hide">목록보기</span></a>
-                </div>
-            </header>
-            <div class="ct-header">
-                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-                <div id="collapse-filter" class="collapse collapse-filter">
-                    <div class="filter no-gutters">
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">CODE명</b>
-                                <input type="text" class="form-control" placeholder="Code명을 입력해주세요." v-model="code_name">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">코드ID</b>
-                                <input type="text" class="form-control" placeholder="코드ID를 입력해주세요." v-model="code_id">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">코드값</b>
-                                <input type="text" class="form-control" placeholder="코드값을 입력해주세요." v-model="code_content">
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn" @click.prevent="onSearch"><i class="icon-srch"></i>전체조회</button>
-                        </div>
-                    </div>
-                </div>
+  <div>
+    <div class="form-group">
+      <header
+        class="card-header"
+        style="padding: 1.6rem 1rem;"
+      >
+        <h2 class="card-title">
+          <span class="i-rounded bg-danger"><i class="icon-std-code" /></span>코드관리
+        </h2>
+        <div class="btn-container">
+          <a
+            href=""
+            class="btn btn-primary"
+            type="submit"
+            @click.prevent="writeUserInfo"
+          ><span class="hide">등록</span></a>
+          <a
+            href=""
+            class="btn btn-primary"
+            type="submit"
+            @click.prevent="modifyCodeInfo"
+          ><span class="hide">수정</span></a>
+          <a
+            href=""
+            class="btn btn-primary"
+            type="submit"
+            @click.prevent="deleteCodeInfo"
+          ><span class="hide">삭제</span></a>
+          <a
+            href=""
+            class="btn"
+            @click="() => this.$router.push({ name: 'KAADM0301List' })"
+          ><span class="hide">목록보기</span></a>
+        </div>
+      </header>
+      <div class="ct-header">
+        <button
+          type="button"
+          class="btn-filter collapsed d-xl-none"
+          data-toggle="collapse"
+          data-target="#collapse-filter"
+        >
+          검색 필터<i class="icon-down" />
+        </button>
+        <div
+          id="collapse-filter"
+          class="collapse collapse-filter"
+        >
+          <div class="filter no-gutters">
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">CODE명</b>
+                <input
+                  v-model="code_name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Code명을 입력해주세요."
+                >
+              </label>
             </div>
-            <div>
-            <div class="col-lg-3">
-                     <div class="form-group">
-                        <v-treeview
-                          v-model="selection"
-                          :items="items"
-                          item-key="id"
-                          selectable
-                          selected-color="red"
-                          selection-type="leaf"
-                          return-object
-                          open-all
-                          open-on-click
-                          @input="selectCode"
-                        ></v-treeview>
-                     </div>
-              </div>
-              <div style="float:left;">
-              <div class="table-line"></div>
-              <div class="table-responsive">
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">코드ID</b>
+                <input
+                  v-model="code_id"
+                  type="text"
+                  class="form-control"
+                  placeholder="코드ID를 입력해주세요."
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">코드값</b>
+                <input
+                  v-model="code_content"
+                  type="text"
+                  class="form-control"
+                  placeholder="코드값을 입력해주세요."
+                >
+              </label>
+            </div>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn"
+                @click.prevent="onSearch"
+              >
+                <i class="icon-srch" />전체조회
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <v-treeview
+              v-model="selection"
+              :items="items"
+              item-key="id"
+              selectable
+              selected-color="red"
+              selection-type="leaf"
+              return-object
+              open-all
+              open-on-click
+              @input="selectCode"
+            />
+          </div>
+        </div>
+        <div style="float:left;">
+          <div class="table-line" />
+          <div class="table-responsive">
             <div class="ct-content">
-                <div class="table-responsive">
-                    <table class="table">
-                        <ag-grid-vue style="width: 100%; height: 520px;"
-                                      class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                                      :columnDefs="columnDefs"
-                                      :columnTypes="columnTypes"
-                                      :rowData="rowData"
-                                      :gridOptions="gridOptions"
-                                      :getRowHeight="getRowHeight"
-                                      :modules="modules"
-                                      @cellEditorSelector="cellEditorSelector"
-                                      @onCellEditingStarted="onCellEditingStarted"
-                                      @onCellEditingStopped="onCellEditingStopped"
-                                      @getRowStyle="getRowStyle"
-                                      @gridReady="gridSizeFit"
-                                      @gridSizeChanged="gridSizeFit"
-                                      @cellValueChanged="cellValueChanged"
-                                      @paginationChanged="paginationChanged"
-                                      >
-                        </ag-grid-vue>
-                    </table>
-                </div>
-                 <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
-                 <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
-            </div>
-                </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <ag-grid-vue
+                    style="width: 100%; height: 520px;"
+                    class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+                    :column-defs="columnDefs"
+                    :column-types="columnTypes"
+                    :row-data="rowData"
+                    :grid-options="gridOptions"
+                    :get-row-height="getRowHeight"
+                    :modules="modules"
+                    @cellEditorSelector="cellEditorSelector"
+                    @onCellEditingStarted="onCellEditingStarted"
+                    @onCellEditingStopped="onCellEditingStopped"
+                    @getRowStyle="getRowStyle"
+                    @gridReady="gridSizeFit"
+                    @gridSizeChanged="gridSizeFit"
+                    @cellValueChanged="cellValueChanged"
+                    @paginationChanged="paginationChanged"
+                  />
+                </table>
               </div>
-             </div>
+              <alert
+                :dialog="isDialog"
+                :send-data="alertContent"
+                @close="close"
+              />
+              <failAlert
+                :dialog="fDialog"
+                :send-data="alertContent"
+                @close="fDialog=false"
+              />
             </div>
-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -144,6 +206,11 @@ export default {
       codeList: [],
       items: [],
       item: []
+    }
+  },
+  computed: {
+    chg_userid () {
+      return this.$store.state.userid
     }
   },
   beforeMount () {
@@ -266,11 +333,6 @@ export default {
         this.items = treeArr
         this.myTree = myTree
       })
-  },
-  computed: {
-    chg_userid () {
-      return this.$store.state.userid
-    }
   },
   methods: {
     // 조회
@@ -470,9 +532,8 @@ export default {
       modifyCodeInfo(formData)
         .then((res) => {
           console.log('res=>>', res)
-          this.alertContent = '수정되었습니다.'
+          this.alertContent = this.rows.length + '건이 수정되었습니다.'
           this.isDialog = true
-          this.$router.go(this.$router.currentRoute)
         })
         .catch(console.error())
     },
@@ -498,9 +559,8 @@ export default {
       modifyCodeInfo(formData)
         .then((res) => {
           console.log('res=>>', res)
-          this.alertContent = '삭제되었습니다.'
+          this.alertContent = this.rows.length + '건이 삭제되었습니다.'
           this.isDialog = true
-          this.$router.go(this.$router.currentRoute)
         })
         .catch(console.error())
     },
@@ -510,8 +570,7 @@ export default {
     },
     // 팝업창 닫기
     close () {
-      this.isDialog = !this.isDialog
-      this.fDialog = !this.fDialog
+      this.$router.go(this.$router.currentRoute)
     }
   }
 }

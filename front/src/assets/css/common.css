@@ -122,6 +122,7 @@ br{font-family: arial}
 .iconb-alert{background-image: url(../img/alert.svg)}
 .iconb-warn{background-image: url(../img/warn.svg)}
 .iconb-danger{background-image: url(../img/danger.svg)}
+.iconb-eye-closed{background-image: url(../img/eye-closed.png)}
 .icon-delete{color: #ed3137}
 .icon-bookmark{vertical-align: top;color: #d0d0d3}
 .icon-bookmark.active{color: #fdc202}

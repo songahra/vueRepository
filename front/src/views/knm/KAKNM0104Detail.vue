@@ -1,11 +1,11 @@
 <!-- 지식관리 질문상세보기 -->
 <template>
-    <div id="ct">
-        <section class="card">
-           <div>
-              <KAKNM0104Form></KAKNM0104Form>
-           </div>
-        </section>
+  <div id="ct">
+    <section class="card">
+      <div>
+        <KAKNM0104Form />
+      </div>
+    </section>
   </div>
 </template>
 
@@ -20,10 +20,6 @@ export default {
 
     }
   },
-  created () {
-    this.$store.commit('SET_DEPTH1', '지식관리')
-    this.$store.commit('SET_DEPTH2', ' ')
-  },
   computed: {
     user_id: function () {
       console.log(' computed userid ', this.$store.state.userid)
@@ -37,6 +33,10 @@ export default {
       return this.$route.params.answer_id
     }
 
+  },
+  created () {
+    this.$store.commit('SET_DEPTH1', '지식관리')
+    this.$store.commit('SET_DEPTH2', '상세보기')
   }
 
 }

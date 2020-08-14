@@ -1,9 +1,9 @@
 <!-- 기술문의 등록화면 -->
 <template>
   <div id="ct">
-      <section class="card">
-          <KAKNM0102Form></KAKNM0102Form>
-      </section>
+    <section class="card">
+      <KAKNM0102Form />
+    </section>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
   },
   created () {
     this.$store.commit('SET_DEPTH1', '지식관리')
-    this.$store.commit('SET_DEPTH2', ' ')
+    this.$store.commit('SET_DEPTH2', '작성')
   }
 }
 </script>

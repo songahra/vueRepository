@@ -44,9 +44,8 @@
                 <b class="control-label">제품명</b>
                 <select
                   v-model="solution"
-                  class="form-control selectpicker"
+                  class="form-control"
                   title="선택하세요"
-                  readonly
                 >
                   <option
                     v-for="(item,index) in items"
@@ -89,12 +88,6 @@
                 <span
                   class="btn"
                 >파일 선택</span>
-                <button
-                  type="button"
-                  class="btn"
-                >
-                  업로드
-                </button>
               </label>
             </div>
           </div>
@@ -135,7 +128,15 @@
                   <td><span>{{ file.name }}</span></td>
                   <td>{{ file.type }}</td>
                   <td>{{ file.size / 1000 }} KBytes</td>
-                  <td class="text-nowrap" />
+                  <td class="text-nowrap">
+                    <button
+                      type="button"
+                      class="btn"
+                      @click="fileDel(index)"
+                    >
+                      <i class="icon-delete" />삭제
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -164,7 +165,6 @@
 
 import { common } from '@/assets/js/common.js'
 import { getSolution } from '@/api/log/Login.js'
-// import { postFile } from '@/api/File.js'
 import { writeNotice } from '@/api/nti/Notice.js'
 
 import Alert from '@/components/common/CompletePOP.vue' // 완료 alert
@@ -192,13 +192,17 @@ export default {
 
     }
   },
+  // async beforeCreated () {
+  //   const { data } = await getSolution() // 솔루션 목록 가져오기
+  //   this.items = data
+  //   console.log('this.items?', this.items)
+  // },
   async created () {
-    this.$store.commit('SET_DEPTH1', '공지사항')
-    this.$store.commit('SET_DEPTH2', '작성')
-
     const { data } = await getSolution() // 솔루션 목록 가져오기
     this.items = data
-    console.log('this.items?', this.items)
+
+    this.$store.commit('SET_DEPTH1', '공지사항')
+    this.$store.commit('SET_DEPTH2', '작성')
   },
 
   /* summernote jQuery */
@@ -206,7 +210,7 @@ export default {
     common.panelOpen('detail')
     $(function () {
       $('#summernote').summernote({
-        height: 300, // 에디터의 높이
+        height: 200, // 에디터의 높이
         disableResizeEditor: true,
         lang: 'ko-KR', // 기본 메뉴언어 US->KR로 변경
         callbacks: {

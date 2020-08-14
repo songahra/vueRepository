@@ -1,92 +1,226 @@
 <!-- 질문하기 Form -->
 <template>
-      <div>
-        <form id="KAKNM0102From" @submit.prevent="onSubmit" class="form">
-            <header class="card-header" style="padding: 1.6rem 1rem;">
-                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-std-code"></i></span>기술문의</h2>
-                <div class="btn-container">
-                    <a href="" class="btn btn-m" @click.prevent="previewOpen"  @previewClose="dialog=false"><span class="hide">미리보기</span></a>
-                    <a href="" class="btn btn-primary" type="submit" @click.prevent="onSubmit"><span class="hide">확인</span></a>
-                    <a href="" class="btn btn-primary"  @click="() => this.$router.go(-1)" ><span class="hide">목록보기</span></a>
-                </div>
-            </header>
-            <div class="ct-header">
-                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-                <div id="collapse-filter" class="collapse collapse-filter">
-                    <div class="filter no-gutters no-btn">
-                        <div class="col" style="min-width: 75%;">
-                          <p>{{this.requestion_id}}</p>
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">질문제목</b>
-                              <input type="text" class="form-control" placeholder="제목은 필수입력사항입니다." v-model="title">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label" data-toggle="modal">
-                                <b class="control-label" >프로젝트</b>
-                                <input type="text" class="form-control" placeholder="프로젝트명을 입력하세요" v-model="project_name" disabled>
-                            </label>
-                        </div>
-                         <button type="submit" class="btn btn-m" @click.prevent="btnSearch" @close="pjDialog=false"><i class="icon-srch"></i>찾기</button>
-                    </div>
-                    <div class="filter no-gutters no-btn">
-                        <div class="col">
-                          <label class="form-control-label">
-                            <b class="control-label">솔루션명</b>
-                              <select v-model="solution_id" class="form-control selectpicker" title="선택하세요">
-                               <option
-                                 v-for="(item,index) in items"
-                                 :key="index"
-                                 :value="item.codeId"
-                                >
-                                {{ item.codeContent }}
-                                </option>
-                              </select>
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">태그</b>
-                                <input type="text" class="form-control" placeholder="#02"  id="tag_tag" v-model="tag_tag">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">에러코드</b>
-                                <input type="text" class="form-control" placeholder="코드명" id="tag_erc" v-model="tag_erc">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">예외종류</b>
-                                <input type="text" class="form-control" placeholder="예외1" id="tag_ert" v-model="tag_ert">
-                            </label>
-                        </div>
-                    </div>
-                </div>
+  <div>
+    <form
+      id="KAKNM0102From"
+      class="form"
+      @submit.prevent="onSubmit"
+    >
+      <header
+        class="card-header"
+        style="padding: 1.6rem 1rem;"
+      >
+        <h2 class="card-title">
+          <span class="i-rounded bg-danger"><i class="icon-std-code" /></span>기술문의
+        </h2>
+        <div class="btn-container">
+          <a
+            href=""
+            class="btn btn-m"
+            @click.prevent="previewOpen"
+            @previewClose="dialog=false"
+          ><span class="hide">미리보기</span></a>
+          <a
+            href=""
+            class="btn btn-primary"
+            type="submit"
+            @click.prevent="onSubmit"
+          ><span class="hide">확인</span></a>
+          <a
+            href=""
+            class="btn btn-primary"
+            @click.prevent="goList"
+          ><span class="hide">목록보기</span></a>
+        </div>
+      </header>
+      <div class="ct-header">
+        <button
+          type="button"
+          class="btn-filter collapsed d-xl-none"
+          data-toggle="collapse"
+          data-target="#collapse-filter"
+        >
+          검색 필터<i class="icon-down" />
+        </button>
+        <div
+          id="collapse-filter"
+          class="collapse collapse-filter"
+        >
+          <div class="filter no-gutters no-btn">
+            <div
+              class="col"
+              style="min-width: 75%;"
+            >
+              <p>{{ this.requestion_id }}</p>
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">질문제목</b>
+                <input
+                  v-model="title"
+                  type="text"
+                  class="form-control"
+                  placeholder="제목은 필수입력사항입니다."
+                  maxlength="500"
+                >
+              </label>
             </div>
-            <div class="ct-content">
-                <div class="sub-bar">
-                    <i class="icon-right text-danger"></i><p class="font-weight-bold">질문</p>
-                </div>
-                <textarea class="textarea-basic-md"  id="content_q" v-model="content_q" ></textarea>
-                <div class="sub-bar">
-                    <i class="icon-right text-danger"></i><p class="font-weight-bold">환경 및 상황</p>
-                </div>
-                <textarea class="textarea-basic-md"  id="content_s"  v-model="content_s"></textarea>
-                <div class="sub-bar">
-                    <i class="icon-right text-danger"></i><p class="font-weight-bold">오류 로그</p>
-                </div>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+              >
+                <b class="control-label">프로젝트</b>
+                <input
+                  v-model="project_name"
+                  type="text"
+                  class="form-control"
+                  placeholder="프로젝트명을 입력하세요"
+                  disabled
+                >
+              </label>
             </div>
-            <div class="ct-content">
-                <textarea class="textarea-basic-lg" v-model="err_log"></textarea>
+            <button
+              type="submit"
+              class="btn btn-m"
+              @click.prevent="btnSearch"
+              @close="pjDialog=false"
+            >
+              <i class="icon-srch" />찾기
+            </button>
+          </div>
+          <div class="filter no-gutters no-btn">
+            <div class="col">
+              <label class="form-control-label">
+                <b class="control-label">솔루션명</b>
+                <select
+                  v-model="solution_id"
+                  class="form-control"
+                  title="선택하세요"
+                >
+                  <option
+                    v-for="(item,index) in items"
+                    :key="index"
+                    :value="item.codeId"
+                  >
+                    {{ item.codeContent }}
+                  </option>
+                </select>
+              </label>
             </div>
-                <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
-                <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
-                <KAKNM0102P1 :dialog="pvdialog" :sendData="paramData" @previewClose="previewClose"></KAKNM0102P1>
-                <KAKNM0103P1 :dialog="pjDialog" @pjClose="pjClose" @checkedbtn="checkedbtn"></KAKNM0103P1>
-        </form>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">태그</b>
+                <input
+                  id="tag_tag"
+                  v-model="tag_tag"
+                  type="text"
+                  class="form-control"
+                  placeholder="#Tag"
+                  maxlength="100"
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">에러코드</b>
+                <input
+                  id="tag_erc"
+                  v-model="tag_erc"
+                  type="text"
+                  class="form-control"
+                  placeholder="코드명"
+                  maxlength="100"
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">예외종류</b>
+                <input
+                  id="tag_ert"
+                  v-model="tag_ert"
+                  type="text"
+                  class="form-control"
+                  placeholder="예외"
+                  maxlength="100"
+                >
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="ct-content">
+        <div class="sub-bar">
+          <i class="icon-right text-danger" /><p class="font-weight-bold">
+            질문
+          </p>
+        </div>
+        <textarea
+          id="content_q"
+          v-model="content_q"
+          class="textarea-basic-md"
+        />
+        <div class="sub-bar">
+          <i class="icon-right text-danger" /><p class="font-weight-bold">
+            환경 및 상황
+          </p>
+        </div>
+        <textarea
+          id="content_s"
+          v-model="content_s"
+          class="textarea-basic-md"
+          maxlength="5000"
+        />
+        <div class="sub-bar">
+          <i class="icon-right text-danger" /><p class="font-weight-bold">
+            오류 로그
+          </p>
+        </div>
+      </div>
+      <div class="ct-content">
+        <textarea
+          v-model="err_log"
+          class="textarea-basic-lg"
+          maxlength="5000"
+        />
+      </div>
+      <alert
+        :dialog="isDialog"
+        :send-data="alertContent"
+        @close="close"
+      />
+      <failAlert
+        :dialog="fDialog"
+        :send-data="alertContent"
+        @close="fDialog=false"
+      />
+      <KAKNM0102P1
+        :dialog="pvdialog"
+        :send-data="paramData"
+        @previewClose="previewClose"
+      />
+      <KAKNM0103P1
+        :dialog="pjDialog"
+        @pjClose="pjClose"
+        @checkedbtn="checkedbtn"
+      />
+    </form>
+  </div>
 </template>
 
 <script>
@@ -135,6 +269,11 @@ export default {
       paramData: ''
     }
   },
+  computed: {
+    user_id () {
+      return this.$store.state.userid
+    }
+  },
   created () {
     this.getSolution()
     console.log('this.params 은?', this.params)
@@ -156,6 +295,7 @@ export default {
           this.solution_id = res.data.solution_id
           this.solution_name = res.data.solution_name
           this.project_id = res.data.project_id
+          this.status = 'RQ'
           this.project_name = res.data.project_name
           this.title = '[재질문] ' + res.data.title
           return res
@@ -174,11 +314,6 @@ export default {
   },
   mounted () {
     console.log('mounted!!')
-  },
-  computed: {
-    user_id () {
-      return this.$store.state.userid
-    }
   },
   methods: {
     // 등록
@@ -238,7 +373,7 @@ export default {
         modify(FormData)
         this.alertContent = '등록되었습니다. 메일을 확인해주세요'
         this.isDialog = true
-        this.$router.push('/knm/mainList')
+
         /* modify(FormData)
           .then((res) => {
             console.log('result', res.data)
@@ -289,7 +424,7 @@ export default {
       this.pjClose()
     },
     close () {
-      this.isDialog = !this.isDialog
+      this.$router.push({ name: 'KAKNM0101List' })
     },
     // 프로젝트 조회 팝업닫기
     pjClose () {
@@ -318,6 +453,9 @@ export default {
     previewClose () {
       console.log('previewClose')
       this.pvdialog = !this.pvdialog
+    },
+    goList () {
+      this.$router.push({ name: 'KAKNM0101List' })
     }
   }
 

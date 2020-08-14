@@ -1,73 +1,194 @@
 <!-- 코드관리 등록 -->
 <template>
   <div>
-        <form id="KAADM0302Form" @submit.prevent="onSubmit" class="form">
-            <header class="card-header" style="padding: 1.6rem 1rem;">
-                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-std-code"></i></span>코드 관리</h2>
-                <div class="btn-container">
-                    <a href="" class="btn btn-primary" type="submit" @click.prevent="onSubmit"><span class="hide">확인</span></a>
-                    <a href="" class="btn"  @click="movePage()" ><span class="hide">목록보기</span></a>
-                </div>
-            </header>
-            <div class="ct-header">
-                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-                <div id="collapse-filter" class="collapse collapse-filter">
-                    <div class="filter no-gutters no-btn">
-                        <div class="col" >
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">코드 ID</b>
-                              <input type="text" class="form-control" placeholder="코드 ID은 필수입력사항입니다." v-model="code_id" maxlength="8">
-                           </label>
-                        </div>
-                        <div class="col" style="min-width: 75%;">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label" >상위코드 ID</b>
-                                <input type="text" class="form-control" placeholder="상위코드 ID은 필수입력사항입니다." v-model="code_up_id" disabled>
-                            </label>
+    <form
+      id="KAADM0302Form"
+      class="form"
+      @submit.prevent="onSubmit"
+    >
+      <header
+        class="card-header"
+        style="padding: 1.6rem 1rem;"
+      >
+        <h2 class="card-title">
+          <span class="i-rounded bg-danger"><i class="icon-std-code" /></span>코드 관리
+        </h2>
+        <div class="btn-container">
+          <a
+            href=""
+            class="btn btn-primary"
+            type="submit"
+            @click.prevent="onSubmit"
+          ><span class="hide">확인</span></a>
+          <a
+            href=""
+            class="btn"
+            @click="movePage()"
+          ><span class="hide">목록보기</span></a>
+        </div>
+      </header>
 
-                        </div>
-                        <button type="submit" class="btn btn-primary" @click.prevent="btnSearch" @close="codeDialog=false"><i class="icon-srch"></i>찾기</button>
-                    </div>
-                        <div class="col" >
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">코드 명</b>
-                                <input type="text" class="form-control" placeholder="코드 명"  v-model="code_name" maxlength="50">
-                            </label>
-                        </div>
-                        <div class="col" >
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">코드 값 </b>
-                                <input type="text" class="form-control" placeholder="코드 값 (대문자 영문 2자리)" v-model="code_value" maxlength="2">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">유형</b>
-                                <input type="text" class="form-control" placeholder="유형"  v-model="code_type" maxlength="50">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label" data-toggle="modal" data-target="#">
-                                <b class="control-label">코드 정렬</b>
-                                <input type="number" min="0" max="10" class="form-control" placeholder="코드 정렬"  v-model="code_order" maxlength="10">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-               <div class="ct-content">
-                   <div class="sub-bar">
-                      <i class="icon-right text-danger"></i><p class="font-weight-bold">코드값 내용</p>
-                   </div>
-                      <textarea class="textarea-basic-md" v-model="code_content" maxlength="50"></textarea>
-                   <div class="sub-bar">
-                      <i class="icon-right text-danger"></i><p class="font-weight-bold">코드 설명</p>
-                   </div>
-                      <textarea class="textarea-basic-md" v-model="code_explain" maxlength="50" ></textarea>
-                </div>
-                <KAADM0302P1 :dialog="codeDialog" @codeClose="codeClose" @checkedbtn="checkedbtn"></KAADM0302P1>
-                <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
-        </form>
-    </div>
+      <div class="ct-header">
+        <button
+          type="button"
+          class="btn-filter collapsed d-xl-none"
+          data-toggle="collapse"
+          data-target="#collapse-filter"
+        >
+          검색 필터<i class="icon-down" />
+        </button>
+        <div
+          id="collapse-filter"
+          class="collapse collapse-filter"
+        >
+          <div class="filter no-gutters no-btn">
+            <div
+              class="col"
+              style="min-width: 75%;"
+            >
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">코드 ID</b>
+                <input
+                  v-model="code_id"
+                  type="text"
+                  class="form-control"
+                  placeholder="코드 ID은 필수입력사항입니다."
+                  maxlength="8"
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+              >
+                <b class="control-label">상위코드 ID</b>
+                <input
+                  v-model="code_up_id"
+                  type="text"
+                  class="form-control"
+                  placeholder="상위코드 ID은 필수입력사항입니다."
+                  maxlength="8"
+                  disabled
+                >
+              </label>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-m"
+              @click.prevent="btnSearch"
+              @close="codeDialog=false"
+            >
+              <i class="icon-srch" />찾기
+            </button>
+          </div>
+          <div class="filter no-gutters no-btn">
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+              >
+                <b class="control-label">코드 명</b>
+                <input
+                  v-model="code_name"
+                  type="text"
+                  class="form-control"
+                  placeholder="코드 명"
+                  maxlength="50"
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">코드 값</b>
+                <input
+                  v-model="code_value"
+                  type="text"
+                  class="form-control"
+                  placeholder="코드 값 (대문자 영문 2자리)"
+                  maxlength="2"
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">유형</b>
+                <input
+                  v-model="code_type"
+                  type="text"
+                  class="form-control"
+                  placeholder="유형"
+                  maxlength="50"
+                >
+              </label>
+            </div>
+            <div class="col">
+              <label
+                class="form-control-label"
+                data-toggle="modal"
+                data-target="#"
+              >
+                <b class="control-label">코드 정렬</b>
+                <input
+                  v-model="code_order"
+                  type="number"
+                  min="0"
+                  max="10"
+                  class="form-control"
+                  placeholder="코드 정렬"
+                  maxlength="10"
+                >
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ct-content">
+        <div class="sub-bar">
+          <i class="icon-right text-danger" /><p class="font-weight-bold">
+            코드값 내용
+          </p>
+        </div>
+        <textarea
+          v-model="code_content"
+          class="textarea-basic-md"
+          maxlength="50"
+        />
+        <div class="sub-bar">
+          <i class="icon-right text-danger" /><p class="font-weight-bold">
+            코드 설명
+          </p>
+        </div>
+        <textarea
+          v-model="code_explain"
+          class="textarea-basic-md"
+          maxlength="50"
+        />
+      </div>
+      <KAADM0302P1
+        :dialog="codeDialog"
+        @codeClose="codeClose"
+        @checkedbtn="checkedbtn"
+      />
+      <failAlert
+        :dialog="fDialog"
+        :send-data="alertContent"
+        @close="fDialog=false"
+      />
+    </form>
+  </div>
 </template>
 
 <script>
@@ -110,13 +231,13 @@ export default {
   porps: [
 
   ],
-  created () {
-
-  },
   computed: {
     chg_user_id () {
       return this.$store.state.userid
     }
+  },
+  created () {
+
   },
   methods: {
     // 수정

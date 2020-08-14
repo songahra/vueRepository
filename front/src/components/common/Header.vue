@@ -49,7 +49,7 @@
         class="icon-info"
         title="수신함"
       />
-      <span class="text-dark small">포인트 {{ this.total_point }} </span>
+      <span class="text-dark small">지식 포인트 {{ this.total_point }} </span>
 
       <a
         href="/profile"

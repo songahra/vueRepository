@@ -122,7 +122,6 @@ export default {
       return this.$store.state.username
     },
     user_id: function () {
-      console.log('컴퓨티드에 있는 user_id 함수가 실행된다')
       return this.$store.state.userid
     },
     company: function () {
@@ -135,6 +134,9 @@ export default {
   mounted () {
   },
   async created () {
+    this.$store.commit('SET_DEPTH1', '프로필관리')
+    this.$store.commit('SET_DEPTH2', '프로필관리')
+
     this.userType()
     this.userSolution()
 

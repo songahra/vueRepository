@@ -178,15 +178,6 @@ export default {
           }).join(''))
 
           const jwt = JSON.parse(jsonPayload)
-          console.log(jwt)
-          console.log(jwt.user_name)
-          console.log(jwt.user_id)
-          console.log(jwt.user_type)
-          console.log(jwt.company)
-          console.log(jwt.exp)
-          console.log(jwt.solution)
-          console.log(jwt.dept)
-
           this.$store.commit('SET_TOKEN', data.token)
           this.$store.commit('SET_USERNAME', jwt.user_name)
           this.$store.commit('SET_USERID', jwt.user_id)
@@ -197,8 +188,9 @@ export default {
           this.$store.commit('SET_EXP', jwt.exp)
 
           localStorage.setItem('token', data.token)
-          console.log(this.$store.state.token)
-          this.$router.push('/')
+
+          this.$router.push({ name: 'Home' }).catch((e) => {
+          })
         }
       } catch (error) {
         // 에러 핸들링할 코드

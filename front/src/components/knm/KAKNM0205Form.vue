@@ -1,20 +1,49 @@
 <template>
   <div>
-      <div class="sub-bar">
-        <div>
-          <p class="font-weight-bold">{{ this.ansName }}<br></p>
-          <p style="font-size: 12.5px">{{ this.upAnsName }}</p>
-        </div>
-        <div class="ml-auto form-inline m-full">
-          <div v-if = "chkUserType()">
-            <a href="" @click.prevent="clickDelete" class="btn btn-m"><span class="hide">삭제</span></a>
-            <a href="" @click.prevent="clickModify" class="btn btn-m"><span class="hide">수정</span></a>
-          </div>
+    <div class="sub-bar">
+      <div>
+        <i class="icon-right text-danger" />
+        <template
+          class="font-weight-bold"
+          style="font-weight:bold"
+        >
+          <b>{{ this.ansName }}</b><br>
+        </template>
+        <p style="font-size: 12.5px; margin-left: 10px;">
+          {{ this.upAnsName }}
+        </p>
+      </div>
+
+      <div class="ml-auto form-inline m-full">
+        <div v-if="chkUserType()">
+          <a
+            href=""
+            class="btn btn-m"
+            @click.prevent="clickDelete"
+          ><span class="hide">삭제</span></a>
+          <a
+            href=""
+            class="btn btn-m"
+            @click.prevent="clickModify"
+          ><span class="hide">수정</span></a>
         </div>
       </div>
-      <textarea class="textarea-basic-md" v-model="ansContent" readonly></textarea>
-      <alert :dialog="isDialog" @postDelete = "postDelete" @close="isDialog=false"></alert>
-      <failAlert :dialog="fDialog" :sendData="alertContent" @close="fDialog=false"></failAlert>
+    </div>
+    <textarea
+      v-model="ansContent"
+      class="textarea-basic-md"
+      readonly
+    />
+    <alert
+      :dialog="isDialog"
+      @postDelete="postDelete"
+      @close="isDialog=false"
+    />
+    <failAlert
+      :dialog="fDialog"
+      :send-data="alertContent"
+      @close="fDialog=false"
+    />
   </div>
 </template>
 
@@ -29,6 +58,7 @@ export default {
     alert,
     failAlert
   },
+  props: ['sendData'],
   data: () => {
     return {
       ansName: '',
@@ -50,18 +80,17 @@ export default {
       alertContent: ''
     }
   },
-  props: ['sendData'],
+  computed: {
+    user_id () {
+      return this.$store.state.userid
+    }
+  },
   created () {
     this.answerData = this.sendData
     this.score = this.answerData.score
     this.answer_id = this.answerData.answer_id
     this.reg_userid = this.answerData.reg_userid
     this.getAnswerDetail()
-  },
-  computed: {
-    user_id () {
-      return this.$store.state.userid
-    }
   },
   methods: {
     async getAnswerDetail () {
@@ -76,7 +105,7 @@ export default {
       this.content_t = data[0].content_t
       this.content_b = data[0].content_b
       if (data[0].upAnsName != null) {
-        this.upAnsName = '└ ' + data[0].upAnsName + '(' + data[0].upDept + ') 수정 답변 ' + '(' + data[0].update_date + ')'
+        this.upAnsName = ' └ ' + data[0].upAnsName + '(' + data[0].upDept + ') 수정 답변 ' + '(' + data[0].update_date + ')'
       }
     },
     chkWriter () {

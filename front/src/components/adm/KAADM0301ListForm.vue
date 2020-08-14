@@ -1,64 +1,113 @@
 <template>
-<div>
-<header class="card-header">
-                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-set"></i></span>코드관리</h2>
-                <div class="btn-container">
-                    <a href="" class="btn btn-m"  @click.prevent="deleteUserInfo()"><span class="hide">삭제</span></a>
-                    <a href="" class="btn btn-m"  @click.prevent="writeUserInfo()"><span class="hide">등록</span></a>
-                    <a href="" class="btn btn-primary" @click.prevent="modifyCodeInfo()"><span class="hide">저장</span></a>
-                </div>
-            </header>
-            <div class="ct-header">
-                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-                <div id="collapse-filter" class="collapse collapse-filter">
-                    <div class="filter no-gutters">
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">CODE명</b>
-                                <input type="text" class="form-control" placeholder="Code명을 입력해주세요." v-model="code_name">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">코드ID</b>
-                                <input type="text" class="form-control" placeholder="코드ID를 입력해주세요." v-model="code_id">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">코드값</b>
-                                <input type="text" class="form-control" placeholder="코드값을 입력해주세요." v-model="code_cotent">
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary" @click.prevent="onSearch" ><i class="icon-srch"></i>조회</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ct-content">
-                <div class="table-responsive">
-                    <table class="table">
-                        <ag-grid-vue style="width: 100%; height: 650px;"
-                                      class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                                      :columnDefs="columnDefs"
-                                      :rowData="rowData"
-                                      :gridOptions="gridOptions"
-                                      @cellEditorSelector="cellEditorSelector"
-                                      @onCellEditingStarted="onCellEditingStarted"
-                                      @onCellEditingStopped="onCellEditingStopped"
-                                      @getRowStyle="getRowStyle"
-                                      @gridReady="gridSizeFit"
-                                      @gridSizeChanged="gridSizeFit"
-                                      @cellValueChanged="cellValueChanged"
-                                      @paginationChanged="paginationChanged"
-                                      >
-                        </ag-grid-vue>
-                    </table>
-                </div>
-                 <alert :dialog="isDialog" :sendData="alertContent" @close="close"></alert>
-            </div>
-</div>
+  <div>
+    <header class="card-header">
+      <h2 class="card-title">
+        <span class="i-rounded bg-danger"><i class="icon-set" /></span>코드관리
+      </h2>
+      <div class="btn-container">
+        <a
+          href=""
+          class="btn btn-m"
+          @click.prevent="deleteUserInfo()"
+        ><span class="hide">삭제</span></a>
+        <a
+          href=""
+          class="btn btn-m"
+          @click.prevent="writeUserInfo()"
+        ><span class="hide">등록</span></a>
+        <a
+          href=""
+          class="btn btn-primary"
+          @click.prevent="modifyCodeInfo()"
+        ><span class="hide">저장</span></a>
+      </div>
+    </header>
+    <div class="ct-header">
+      <button
+        type="button"
+        class="btn-filter collapsed d-xl-none"
+        data-toggle="collapse"
+        data-target="#collapse-filter"
+      >
+        검색 필터<i class="icon-down" />
+      </button>
+      <div
+        id="collapse-filter"
+        class="collapse collapse-filter"
+      >
+        <div class="filter no-gutters">
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">CODE명</b>
+              <input
+                v-model="code_name"
+                type="text"
+                class="form-control"
+                placeholder="Code명을 입력해주세요."
+              >
+            </label>
+          </div>
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">코드ID</b>
+              <input
+                v-model="code_id"
+                type="text"
+                class="form-control"
+                placeholder="코드ID를 입력해주세요."
+              >
+            </label>
+          </div>
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">코드값</b>
+              <input
+                v-model="code_cotent"
+                type="text"
+                class="form-control"
+                placeholder="코드값을 입력해주세요."
+              >
+            </label>
+          </div>
+          <div class="col-auto">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              @click.prevent="onSearch"
+            >
+              <i class="icon-srch" />조회
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ct-content">
+      <div class="table-responsive">
+        <table class="table">
+          <ag-grid-vue
+            style="width: 100%; height: 650px;"
+            class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+            :column-defs="columnDefs"
+            :row-data="rowData"
+            :grid-options="gridOptions"
+            @cellEditorSelector="cellEditorSelector"
+            @onCellEditingStarted="onCellEditingStarted"
+            @onCellEditingStopped="onCellEditingStopped"
+            @getRowStyle="getRowStyle"
+            @gridReady="gridSizeFit"
+            @gridSizeChanged="gridSizeFit"
+            @cellValueChanged="cellValueChanged"
+            @paginationChanged="paginationChanged"
+          />
+        </table>
+      </div>
+      <alert
+        :dialog="isDialog"
+        :send-data="alertContent"
+        @close="close()"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -117,6 +166,11 @@ export default {
           return null
         }
       }
+    }
+  },
+  computed: {
+    chg_userid () {
+      return this.$store.state.userid
     }
   },
   beforeMount () {
@@ -178,11 +232,6 @@ export default {
       })
       .then((res) => console.log(res))
       .catch(console.error())
-  },
-  computed: {
-    chg_userid () {
-      return this.$store.state.userid
-    }
   },
   methods: {
     // sortChanged () {
@@ -358,9 +407,8 @@ export default {
       modifyCodeInfo(formData)
         .then((res) => {
           console.log('res=>>', res)
-          this.alertContent = this.rows + '수정되었습니다.'
           this.isDialog = true
-          KAKNM0205Form.push('/adm/codeList')
+          // this.alertContent = this.rows.lenght + '수정되었습니다.'
         })
         .catch(console.error())
     },
@@ -383,7 +431,6 @@ export default {
           console.log('res=>>', res)
           this.alertContent = this.rows + '삭제되었습니다.'
           this.isDialog = true
-          this.$router.push('/adm/codeList')
         })
         .catch(console.error())
     },
@@ -413,13 +460,12 @@ export default {
           console.log('res=>>', res)
           this.alertContent = '등록되었습니다.'
           this.isDialog = true
-          this.$router.push('/adm/codeList')
         })
         .catch(console.error())
     },
     // 팝업창 닫기
     close () {
-      this.isDialog = !this.isDialog
+      this.$router.push('/adm/codeList')
     }
   }
 }

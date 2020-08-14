@@ -10,13 +10,26 @@
 </template>
 
 <script>
+/* Header, Navigator */
 import Header from '@/components/common/Header.vue'
 import Navigator from '@/components/common/Navigator.vue'
+
+/* css */
 import '@/assets/vendor/bootstrap/css/bootstrap.min.css'
+import '@/assets/vendor/summernote/summernote-bs4.min.css'
+import '@/assets/vendor/summernote/summernote.min.css'
+
+import '@/assets/vendor/bootstrap-select/bootstrap-select.min.css'
 import '@/assets/css/common.css'
+
+/* js */
 import { common } from '@/assets/js/common.js'
 import '@/assets/vendor/bootstrap/js/bootstrap.bundle.min.js'
+import '@/assets/vendor/bootstrap-select/bootstrap-select.min.js'
+import '@/assets/vendor/jquery/jquery-3.3.1.min.js'
+import '@/assets/vendor/summernote/summernote-bs4.min.js'
 
+/* jquery */
 global.jQuery = require('jquery')
 var $ = global.jQuery
 window.$ = $
@@ -27,8 +40,10 @@ export default {
     Header,
     Navigator
   },
-  created () {
-    console.dir(location.pathname)
+  data () {
+    return {
+
+    }
   },
 
   mounted () {
@@ -61,18 +76,18 @@ export default {
     $tooltip.length && $tooltip.tooltip()
 
     // select
-    var select = $('.selectpicker')
-    select.length && select.selectpicker()
-    select.on({
-      'show.bs.select': function (e) {
-        var label = $(e.target).parents('.form-control-label')
-        label.length && label.addClass('active')
-      },
-      'hide.bs.select': function (e) {
-        var label = $(e.target).parents('.form-control-label')
-        label.length && label.removeClass('active')
-      }
-    })
+    // var select = $('.selectpicker')
+    // select.length && select.selectpicker()
+    // select.on({
+    //   'show.bs.select': function (e) {
+    //     var label = $(e.target).parents('.form-control-label')
+    //     label.length && label.addClass('active')
+    //   },
+    //   'hide.bs.select': function (e) {
+    //     var label = $(e.target).parents('.form-control-label')
+    //     label.length && label.removeClass('active')
+    //   }
+    // })
     $('.form-control-label:not(.label-select)').on({
       click: function () {
         $(this).addClass('active')
@@ -107,6 +122,7 @@ export default {
 </script>
 
 <style>
+
 textarea:focus {
   outline: none;
 }

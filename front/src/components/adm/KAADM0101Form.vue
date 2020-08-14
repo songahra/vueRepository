@@ -1,49 +1,82 @@
 <!-- 프로젝트 관리 Form -->
 <template>
-    <div>
-           <header class="card-header">
-                <h2 class="card-title"><span class="i-rounded bg-danger"><i class="icon-set"></i></span>프로젝트</h2>
-            </header>
-            <div class="ct-header">
-                <button type="button" class="btn-filter collapsed d-xl-none" data-toggle="collapse" data-target="#collapse-filter">검색 필터<i class="icon-down"></i></button>
-                <div id="collapse-filter" class="collapse collapse-filter">
-                    <div class="filter no-gutters">
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">프로젝트 명</b>
-                                <input type="text" class="form-control" v-model="project_name" placeholder="프로젝트 명을 입력하세요.">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label label-select">
-                                <b class="control-label">최종고객</b>
-                                <input type="text" class="form-control" v-model="customer" placeholder="최종고객을 입력하세요.">
-                            </label>
-                        </div>
-                        <div class="col">
-                            <label class="form-control-label">
-                                <b class="control-label">기간</b>
-                                <input id="datePicker" type="text" class="form-control input-daterange">
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary"><i class="icon-srch"></i>조회</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ct-content">
-                <ag-grid-vue style="width: 100%; height: 650px;"
-                             class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
-                            :columnDefs="columnDefs"
-                            :rowData="rowData"
-                            :gridOptions="gridOptions"
-                            @getRowStyle="getRowStyle"
-                            @gridReady="gridSizeFit"
-                            @gridSizeChanged="gridSizeFit">
-                </ag-grid-vue>
-            </div>
+  <div>
+    <header class="card-header">
+      <h2 class="card-title">
+        <span class="i-rounded bg-danger"><i class="icon-set" /></span>프로젝트
+      </h2>
+    </header>
+    <div class="ct-header">
+      <button
+        type="button"
+        class="btn-filter collapsed d-xl-none"
+        data-toggle="collapse"
+        data-target="#collapse-filter"
+      >
+        검색 필터<i class="icon-down" />
+      </button>
+      <div
+        id="collapse-filter"
+        class="collapse collapse-filter"
+      >
+        <div class="filter no-gutters">
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">프로젝트 명</b>
+              <input
+                v-model="project_name"
+                type="text"
+                class="form-control"
+                placeholder="프로젝트 명을 입력하세요."
+              >
+            </label>
+          </div>
+          <div class="col">
+            <label class="form-control-label ">
+              <b class="control-label">최종고객</b>
+              <input
+                v-model="customer"
+                type="text"
+                class="form-control"
+                placeholder="최종고객을 입력하세요."
+              >
+            </label>
+          </div>
+          <div class="col">
+            <label class="form-control-label">
+              <b class="control-label">기간</b>
+              <input
+                id="datePicker"
+                type="text"
+                class="form-control input-daterange"
+              >
+            </label>
+          </div>
+          <div class="col-auto">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              @click.prevent="onSubmit()"
+            >
+              <i class="icon-srch" />조회
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="ct-content">
+      <ag-grid-vue
+        style="width: 100%; height: 650px;"
+        class="flex-grow-1 flex-shrink-1 ag-theme-alpine"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :grid-options="gridOptions"
+        @getRowStyle="getRowStyle"
+        @gridReady="gridSizeFit"
+        @gridSizeChanged="gridSizeFit"
+      />
+    </div>
+  </div>
 </template>
 <script>
 /* AgGridVue */
@@ -113,7 +146,7 @@ export default {
     ]
   },
   created () {
-    this.time()
+    // this.time()
     var moment = require('moment')
     moment.locale('ko') // 언어팩 변경
     this.now = moment().format('YYYY-MM-DD HH:mm') // 현재 시간
@@ -131,6 +164,8 @@ export default {
       })
       .then((res) => console.log(res))
       .catch(console.error())
+
+    // daterangepicker
     $('#demo').daterangepicker({
       locale: {
         format: 'MM/DD/YYYY',
@@ -199,8 +234,8 @@ export default {
         project_id: this.project_id,
         project_name: this.project_name,
         customer: this.customer,
-        startDate: this.startDate,
-        endDate: this.endDate
+        project_start_date: this.startDate,
+        project_end_date: this.endDate
       }
       console.log('srchData', srchData)
 
