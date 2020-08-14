@@ -11,6 +11,7 @@
 <script>
 import KAKNM0101Form from '@/components/knm/KAKNM0101From.vue'
 import KAKNM01ListForm from '@/components/knm/KAKNM01ListForm.vue'
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   components: {
@@ -23,6 +24,8 @@ export default {
     }
   },
   created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     this.$store.commit('SET_DEPTH1', '지식관리')
     this.$store.commit('SET_DEPTH2', '지식관리')
   },

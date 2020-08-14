@@ -164,7 +164,7 @@
 <script>
 
 import { common } from '@/assets/js/common.js'
-import { getSolution } from '@/api/log/Login.js'
+import { getSolution, expToken } from '@/api/log/Login.js'
 import { writeNotice } from '@/api/nti/Notice.js'
 
 import Alert from '@/components/common/CompletePOP.vue' // 완료 alert
@@ -198,6 +198,8 @@ export default {
   //   console.log('this.items?', this.items)
   // },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     const { data } = await getSolution() // 솔루션 목록 가져오기
     this.items = data
 

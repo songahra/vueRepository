@@ -52,6 +52,7 @@ export default {
     return {
       cDialog: false,
       falg: 'D',
+      isDialog: false,
       delIsDialog: '',
       alertContent: ''
       // paramData:''
@@ -62,6 +63,9 @@ export default {
     delClose () {
       console.log('child-close')
       this.$emit('delClose')
+    },
+    close () {
+      this.$emit('close')
     },
     // 삭제
     deleteQuInfo () {

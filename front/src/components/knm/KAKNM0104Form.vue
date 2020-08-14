@@ -235,8 +235,8 @@
                   <v-rating
                     :id="rating"
                     :value="rating"
-                    background-color="orange lighten-3"
-                    color="orange"
+                    background-color="purple lighten-3"
+                    color="purple"
                     :dense="true"
                     :hover="true"
                     size="20"
@@ -605,6 +605,8 @@ export default {
 
 </script>
 
-<style scoped>
-
+<style>
+.theme--light.v-icon{
+ color: #ffc107;
+}
 </style>

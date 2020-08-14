@@ -9,6 +9,7 @@
 
 <script>
 import KAKNM0102Form from '@/components/knm/KAKNM0102Form.vue'
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   components: {
@@ -20,6 +21,8 @@ export default {
     }
   },
   created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     this.$store.commit('SET_DEPTH1', '지식관리')
     this.$store.commit('SET_DEPTH2', '작성')
   }

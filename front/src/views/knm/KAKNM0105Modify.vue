@@ -8,6 +8,7 @@
 
 <script>
 import KAKNM0105Form from '@/components/knm/KAKNM0105Form.vue'
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   name: 'KAKNM0105Modify',
@@ -32,6 +33,8 @@ export default {
     }
   },
   created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     console.log('1. created dd', this.$route.params)
     // this.userid = this.$store.state.userid
     // this.paramData = this.$route.params

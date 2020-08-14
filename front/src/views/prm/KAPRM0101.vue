@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { userType, userSolution } from '@/api/log/Login.js'
+import { userType, userSolution, expToken } from '@/api/log/Login.js'
 import { formData } from '@/api/log/Signup.js'
 import { selectProfile } from '@/api/prm/Profile.js'
 
@@ -134,6 +134,9 @@ export default {
   mounted () {
   },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
+
     this.$store.commit('SET_DEPTH1', '프로필관리')
     this.$store.commit('SET_DEPTH2', '프로필관리')
 

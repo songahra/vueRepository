@@ -70,6 +70,7 @@
 <script>
 import step1 from '@/components/log/KALOG0102.vue' // 약관동의 step1
 import step2 from '@/components/log/KALOG0103.vue' // 회원정보 입력 step2
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   components: {
@@ -88,6 +89,8 @@ export default {
     }
   },
   created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
   },
   methods: {
     onClose () {

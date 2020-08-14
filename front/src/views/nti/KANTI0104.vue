@@ -199,7 +199,7 @@
 <script>
 import { common } from '@/assets/js/common.js'
 import { detailNotice, updateNotice, deleteNotice } from '@/api/nti/Notice.js'
-import { userSolution, getSolution } from '@/api/log/Login.js'
+import { userSolution, getSolution, expToken } from '@/api/log/Login.js'
 import { getFileList, download, delFile } from '@/api/File.js'
 import alert from '@/components/common/CompletePOP.vue'
 import deleteAlert from '@/components/common/DeletePOP.vue'
@@ -240,6 +240,9 @@ export default {
     }
   },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
+
     const { data } = await getSolution() // 솔루션 목록 가져오기
     this.items = data
 

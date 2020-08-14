@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { userType, userSolution, getSolution } from '@/api/log/Login.js'
+import { userType, userSolution, getSolution, expToken } from '@/api/log/Login.js'
 import { updateProfile, selectProfile } from '@/api/prm/Profile.js'
 import { formData } from '@/api/log/Signup.js'
 import Modal from '@/components/prm/KAPRM0103.vue' // 1. 비밀번호 변경 모달
@@ -268,6 +268,8 @@ export default {
     }
   },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     this.$store.commit('SET_DEPTH1', '프로필관리')
     this.$store.commit('SET_DEPTH2', '프로필편집')
 

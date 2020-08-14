@@ -48,6 +48,7 @@
 
 <script>
 import { srchQuId } from '@/api/knm/Question.js'
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   name: 'KAKNM0104P1',
@@ -65,6 +66,8 @@ export default {
     }
   },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     const formData = {
       question_id: this.$route.params.question_id
     }

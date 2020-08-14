@@ -180,7 +180,8 @@
 <script>
 import { common } from '@/assets/js/common.js'
 import { detailNotice, deleteNotice } from '@/api/nti/Notice.js'
-import { userSolution } from '@/api/log/Login.js'
+import { userSolution, expToken } from '@/api/log/Login.js'
+
 import { getFileList, download } from '@/api/File.js'
 import deleteAlert from '@/components/common/DeletePOP.vue'
 
@@ -209,6 +210,10 @@ export default {
       deleteAlert: false,
       alertContent: ''
     }
+  },
+  created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
   },
   async mounted () {
     this.param = this.$route.params

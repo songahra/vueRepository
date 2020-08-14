@@ -101,7 +101,7 @@ import { AllCommunityModules } from '@ag-grid-community/all-modules'
 import { AgGridVue } from 'ag-grid-vue'
 
 import { selectNotice, searchNotice, plusCnt } from '@/api/nti/Notice.js'
-import { userSolution } from '@/api/log/Login.js'
+import { userSolution, expToken } from '@/api/log/Login.js'
 
 export default {
   components: {
@@ -123,6 +123,9 @@ export default {
     }
   },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
+
     this.$store.commit('SET_DEPTH1', '공지사항')
     this.$store.commit('SET_DEPTH2', ' ')
     // console.log(param)

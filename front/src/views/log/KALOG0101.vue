@@ -102,7 +102,8 @@
 </template>
 
 <script>
-import { loginUser } from '@/api/log/Login.js'
+import { loginUser, expToken } from '@/api/log/Login.js'
+
 import Modal3 from '@/components/log/KALOG0103.vue'
 import Modal from '@/components/log/KALOGPOP2.vue'
 
@@ -141,6 +142,8 @@ export default {
     console.log(this.user_id)
   },
   created: function () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     // 1. 화면 진입 시 쿠키에 아이디가 저장되어 있는지 확인을 한다.
     if (this.$cookie.get('idSave')) { // To get the value of a cookie use
       this.user_id = this.$cookie.get('idSave') // 2. 저장 되어 있다면 화면에 저장된 아이디를 보여준다.

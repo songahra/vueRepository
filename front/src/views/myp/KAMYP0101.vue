@@ -165,6 +165,7 @@
 
 <script>
 import { selectMypage, getId } from '@/api/myp/Mypage.js'
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   data: () => {
@@ -177,6 +178,9 @@ export default {
     }
   },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
+
     this.$store.commit('SET_DEPTH1', 'My Page')
     this.$store.commit('SET_DEPTH2', ' ')
 

@@ -1,9 +1,10 @@
 <template>
-  <KAADM0402Form></KAADM0402Form>
+  <KAADM0402Form />
 </template>
 
 <script>
 import KAADM0402Form from '@/components/adm/KAADM0402Form.vue'
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   components: {
@@ -13,6 +14,10 @@ export default {
     return {
 
     }
+  },
+  created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
   }
 }
 </script>

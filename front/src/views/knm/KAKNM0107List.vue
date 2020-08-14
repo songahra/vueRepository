@@ -1,16 +1,20 @@
 <!-- 지식관리 내가문의한 질문 -->
 <template>
-    <div id="ct">
+  <div id="ct">
     <section class="card">
-    <KAKNM0107Form @srchList="srchList"></KAKNM0107Form>
-    <KAKNM01ListForm ref="list" :sendData="flag"></KAKNM01ListForm>
+      <KAKNM0107Form @srchList="srchList" />
+      <KAKNM01ListForm
+        ref="list"
+        :send-data="flag"
+      />
     </section>
-    </div>
+  </div>
 </template>
 
 <script>
 import KAKNM0107Form from '@/components/knm/KAKNM0107Form.vue'
 import KAKNM01ListForm from '@/components/knm/KAKNM01ListForm.vue'
+import { expToken } from '@/api/log/Login.js'
 
 export default {
   components: {
@@ -25,6 +29,8 @@ export default {
     }
   },
   created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
     console.log('뷰 created ')
     console.log('flag  ', this.flag)
     // this.myList()

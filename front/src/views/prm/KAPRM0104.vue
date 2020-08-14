@@ -82,6 +82,7 @@
 
 <script>
 import { selectMonthPoint, selectTotalPoint } from '@/api/prm/Profile.js' // 사용자 총 누적 지식포인트 조회
+import { expToken } from '@/api/log/Login.js'
 
 /* ag-grid */
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -142,6 +143,9 @@ export default {
     ]
   },
   async created () {
+    const exp = this.$store.state.exp
+    expToken(exp)
+
     this.$store.commit('SET_DEPTH1', '프로필관리')
     this.$store.commit('SET_DEPTH2', '지식포인트')
 
